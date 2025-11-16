@@ -4,7 +4,7 @@ variable "tailscale_tailnet_id" {
 
 variable "tailscale_oauth" {
   type = map({
-    client_id = string
+    client_id     = string
     client_secret = string
   })
   sensitive = true
