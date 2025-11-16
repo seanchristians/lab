@@ -10,3 +10,9 @@ resource "spacelift_stack" "tailscale" {
   manage_state = true
   space_id     = spacelift_space.production.id
 }
+
+resource "spacelift_context_attachment" "tailscale" {
+  context_id = spacelift_context.lab.id
+  stack_id   = spacelift_stack.tailscale.id
+  priority   = 0
+}
