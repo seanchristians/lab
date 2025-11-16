@@ -3,7 +3,7 @@ data "spacelift_space" "root" {
 }
 
 resource "spacelift_space" "production" {
-  name = "production"
+  name             = "production"
   inherit_entities = true
-  parent_space_id = data.spacelift_space.root.id
+  parent_space_id  = data.spacelift_space.root.id
 }
