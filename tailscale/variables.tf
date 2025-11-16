@@ -3,7 +3,7 @@ variable "tailscale_tailnet_id" {
 }
 
 variable "tailscale_oauth" {
-  type = map({
+  type = object({
     client_id     = string
     client_secret = string
   })
