@@ -26,5 +26,5 @@ resource "spacelift_stack" "tailscale" {
 
 import {
   to = spacelift_stack.network
-  id = spacelift_stack.tailscale.id
+  id = "tailscale"
 }
