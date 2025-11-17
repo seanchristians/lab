@@ -3,7 +3,7 @@ data "local_file" "tailnet_policy" {
 }
 
 resource "tailscale_acl" "tailnet" {
-  acl                        = local_file.tailnet_policy.content
+  acl                        = data.local_file.tailnet_policy.content
   overwrite_existing_content = true
   reset_acl_on_destroy       = false
 }
