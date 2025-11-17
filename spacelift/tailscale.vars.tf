@@ -6,12 +6,12 @@ resource "spacelift_environment_variable" "tailscale_tailnet_id" {
 }
 
 resource "spacelift_environment_variable" "tailscale_oauth_client_id" {
-  name       = "tailscale_oauth_client_id"
+  name       = "ro_tailscale_oauth_client_id"
   context_id = spacelift_context.tailscale.id
   write_only = false
 }
 
 resource "spacelift_environment_variable" "tailscale_oauth_client_secret" {
-  name       = "tailscale_oauth_client_secret"
+  name       = "ro_tailscale_oauth_client_secret"
   context_id = spacelift_context.tailscale.id
 }
