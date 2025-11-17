@@ -1,0 +1,45 @@
+{
+	"tagOwners": {
+		"tag:home":           ["autogroup:admin"],
+		"tag:infrastructure": ["autogroup:admin"],
+	},
+
+	"acls": [
+		{
+			"action": "accept",
+			"src":    ["autogroup:admin"],
+			"dst":    ["autogroup:tagged:*"],
+		},
+		{
+			"action": "accept",
+			"src":    ["autogroup:member"],
+			"dst":    ["tag:home:443", "tag:home:80", "autogroup:self:*"],
+		},
+		{
+			"action": "accept",
+			"src":    ["tag:infrastructure"],
+			"dst":    ["tag:home:22"],
+		},
+	],
+
+	"ssh": [
+		{
+			"action": "accept",
+			"src":    ["autogroup:admin"],
+			"dst":    ["autogroup:tagged"],
+			"users":  ["root", "autogroup:nonroot"],
+		},
+		{
+			"action": "accept",
+			"src":    ["tag:infrastructure"],
+			"dst":    ["tag:home"],
+			"users":  ["autogroup:nonroot"],
+		},
+		{
+			"action": "accept",
+			"src":    ["autogroup:member"],
+			"dst":    ["autogroup:self"],
+			"users":  ["autogroup:nonroot"],
+		},
+	],
+}
