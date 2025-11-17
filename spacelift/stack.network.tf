@@ -13,9 +13,9 @@ resource "spacelift_stack" "network" {
 
 resource "spacelift_stack" "tailscale" {
   branch       = "main"
-  name         = "network"
+  name         = "tailscale"
   repository   = "lab"
-  project_root = "network"
+  project_root = "tailscale"
 
   allow_run_promotion = true
   autodeploy          = true
