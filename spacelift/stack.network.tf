@@ -23,8 +23,3 @@ resource "spacelift_stack" "tailscale" {
   manage_state = true
   space_id     = spacelift_space.production.id
 }
-
-import {
-  to = spacelift_stack.network
-  id = "tailscale"
-}
