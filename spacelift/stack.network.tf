@@ -1,4 +1,4 @@
-resource "network_stack" "network" {
+resource "spacelift_stack" "network" {
   branch       = "main"
   name         = "network"
   repository   = "lab"
