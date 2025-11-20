@@ -11,4 +11,10 @@ terraform {
 # Use AWS CLI to login locally
 provider "aws" {
   region = "ca-central-1"
+
+  default_tags {
+    tags = {
+      Managed-By = "terraform"
+    }
+  }
 }
