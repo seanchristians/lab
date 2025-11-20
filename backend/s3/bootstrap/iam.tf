@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
 }
 
 resource "aws_iam_role" "terraform" {
-  name               = "GitHubActionsTerraformRole"
+  name               = var.github_actions_terraform_role_name
   description        = "Terraform in github.com/${var.github_repository}"
   assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
 }
