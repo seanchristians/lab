@@ -14,7 +14,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Managed-By = "terraform"
+      Created-By = "terraform-backend-bootstrap"
     }
   }
 }
