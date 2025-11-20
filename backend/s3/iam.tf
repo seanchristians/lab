@@ -34,7 +34,10 @@ resource "aws_iam_role_policy_attachment" "terraform_iam" {
 data "aws_iam_policy_document" "terraform_s3" {
   statement {
     actions   = ["s3:*"]
-    resources = [aws_s3_bucket.terraform_state.arn]
+    resources = [
+      aws_s3_bucket.terraform_state.arn,
+      "${aws_s3_bucket.terraform_state.arn}/*"
+    ]
   }
 }
 
