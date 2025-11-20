@@ -10,14 +10,14 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:seanchristians/lab:*"]
+      values   = ["${var.github_repository}:*"]
     }
   }
 }
 
 resource "aws_iam_role" "terraform" {
   name               = "GitHubActionsTerraformRole"
-  description        = "Terraform in github.com/seanchristians/lab"
+  description        = "Terraform in github.com/${var.github_repository}"
   assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
 }
 
