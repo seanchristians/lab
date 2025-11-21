@@ -17,3 +17,8 @@ cd infrastructure/backends/s3
 terraform init -backend=false
 terraform apply -auto-approve
 ```
+3. Copy the output terraform_iam_role_arn for later
+
+#### Usage instructions
+
+Make a copy of [s3.tf](./s3.tf) in the local stack and call it `backend.tf`. Also choose a unique file path (key) to store the stack's `terraform.tfstate` file.
