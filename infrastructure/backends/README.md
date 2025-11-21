@@ -7,3 +7,13 @@ This project sets up the basic resources required to manage Terraform state with
 The intent with s3 is to create just enough that authentication can be passed from a manual AWS login to an IAM role assumed with the GitHub Actions OIDC token.
 
 This IAM role is quite limited: it has full IAM permissions, but only enough s3 permissions to work with the bucket that stores the state file.
+
+#### Setup instructions
+
+1. Authenticate to AWS with the AWS CLI
+2. Run the following commands
+```zsh
+cd infrastructure/backends/s3
+terraform init -backend=false
+terraform apply -auto-approve
+```
