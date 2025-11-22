@@ -1,8 +1,12 @@
 name: stacks/network terraform plan
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - infrastructure/network/**
+
+env:
+  stack: infrastructure/network
 
 permissions:
   id-token: write
@@ -11,7 +15,7 @@ permissions:
 defaults:
   run:
     shell: bash
-    working-directory: infrastructure/network
+    working-directory: ${{ env.stack }}
 
 jobs:
   terraform-plan:
@@ -28,6 +32,7 @@ jobs:
       - name: terraform init
         uses: seanchristians/lab/infrastructure/backends/s3@main
         with:
+          stack-path: ${{ env.stack }}
           aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 
       - name: terraform plan
