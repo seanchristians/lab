@@ -15,20 +15,17 @@ defaults:
     shell: bash
     working-directory: infrastructure/network
 
-env:
-  TAILSCALE_TAILNET: TA1163u8TV11CNTRL
-  TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
+    environment: terraform
     steps:
-      - name: Generate GitHub OIDC token for Tailscale
-        shell: bash
-        run: |
-          TOKEN=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$TAILSCALE_AUDIENCE")
-          echo "TAILSCALE_IDENTITY_TOKEN=${TOKEN}" >> $GITHUB_ENV
+      - name: Tailscale login
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          tags: tag:infrastructure
 
       - name: terraform init
         uses: seanchristians/lab/infrastructure/backends/s3@main
