@@ -12,12 +12,13 @@ runs:
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v3
 
-    - name: Setup Environment
-      shell: bash
-      run: |
-        echo '${{ secrets.GITHUB_TOKEN }}' > github_token.txt
-        echo 'AWS_WEB_IDENTITY_TOKEN_FILE=github_token.txt' >> $GITHUB_ENV
-        echo 'AWS_ROLE_ARN=${{ inputs.aws-role-arn }}' >> $GITHUB_ENV
+    - name: Authenticate with AWS
+      uses: aws-actions/configure-aws-credentials@v5
+      with:
+        aws-region: ca-central-1
+        role-to-assume: ${{ inputs.aws-role-arn }}
+
+    - uses: actions/checkout@v5
 
     - name: terraform init
       shell: bash
