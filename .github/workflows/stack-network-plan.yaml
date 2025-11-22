@@ -10,8 +10,27 @@ permissions:
   id-token: write
   contents: read
 
+defaults:
+  run:
+    shell: bash
+    working-directory: infrastructure/network
+
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
+    environment: terraform
     steps:
-      - uses: ./actions/terraform-plan.yaml@main
+      - name: Tailscale login
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          tags: tag:infrastructure
+
+      - name: terraform init
+        uses: seanchristians/lab/infrastructure/backends/s3@main
+        with:
+          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+
+      - name: terraform plan
+        run: terraform plan
