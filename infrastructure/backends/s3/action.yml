@@ -21,4 +21,4 @@ runs:
 
     - name: terraform init
       shell: bash
-      run: terraform init
+      run: terraform init -input=false
