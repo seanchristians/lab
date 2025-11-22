@@ -14,9 +14,12 @@ Make a copy of [s3.tf](./s3.tf) in the local stack and call it `backend.tf`. Als
 
 #### GitHub Action
 ```yaml
-runs:
+environment: "terraform"
+steps:
   - name: terraform init
     uses: seanchristians/lab/infrastructure/backends/s3
+    with:
+      aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 ```
 
 #### Setup instructions
