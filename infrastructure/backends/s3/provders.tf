@@ -4,6 +4,10 @@ terraform {
       source = "hashicorp/aws"
       version = "6.21.0"
     }
+    github = {
+      source = "integrations/github"
+      version = "6.8.3"
+    }
   }
 }
 
@@ -17,4 +21,8 @@ provider "aws" {
       Created-By = "terraform-backend-bootstrap"
     }
   }
+}
+
+provider "github" {
+
 }
