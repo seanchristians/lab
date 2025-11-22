@@ -1,9 +1,9 @@
 name: terraform init
-description: This action initializes terraform with the AWS S3 backend
+description: This action initializes terraform with the AWS S3 backend.
 
 inputs:
   aws-role-arn:
-    description: "AWS IAM role ARN for Terraform, both for the AWS provider and for the S3 state backend."
+    description: AWS IAM role ARN for Terraform, both for the AWS provider and for the S3 state backend.
     required: true
 
 runs:
