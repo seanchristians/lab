@@ -8,6 +8,5 @@ terraform {
 }
 
 provider "tailscale" {
-  tailnet             = var.tailscale_tailnet_id
   user_agent          = "Terraform / seanchristians/lab"
 }
