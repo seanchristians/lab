@@ -23,17 +23,17 @@ jobs:
   terraform-plan:
     runs-on: ubuntu-latest
     steps:
-      - name: terraform init
-        uses: seanchristians/lab/infrastructure/backends/s3@main
-        with:
-          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
-
       - name: Generate GitHub OIDC token for Tailscale
         shell: bash
         run: |
           TOKEN=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
           "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$TAILSCALE_AUDIENCE")
           echo "TAILSCALE_IDENTITY_TOKEN=${TOKEN}" >> $GITHUB_ENV
+
+      - name: terraform init
+        uses: seanchristians/lab/infrastructure/backends/s3@main
+        with:
+          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 
       - name: terraform plan
         run: terraform plan
