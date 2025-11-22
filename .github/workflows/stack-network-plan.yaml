@@ -36,4 +36,14 @@ jobs:
           aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 
       - name: terraform plan
-        run: terraform plan
+        run: |
+          cd '${{ env.stack }}'
+          terraform plan -input=false -out=plan.tfplan
+
+      - name: Store Plan Artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: ${{ github.ref }}-terraform-plan
+          path: plan.tfplan
+          retention-days: 10
+          overwrite: true
