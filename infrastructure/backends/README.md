@@ -11,6 +11,7 @@ This IAM role is quite limited: it has full IAM permissions, but only enough s3 
 #### Setup instructions
 
 1. Authenticate to AWS with the AWS CLI
+2. Authenticate to GitHub with the GitHub CLI
 2. Run the following commands
 ```zsh
 cd infrastructure/backends/s3
