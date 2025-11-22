@@ -14,7 +14,7 @@ This IAM role is quite limited: it has full IAM permissions, but only enough s3 
 2. Run the following commands
 ```zsh
 cd infrastructure/backends/s3
-terraform init -backend=false
+terraform init
 terraform apply -auto-approve
 ```
 3. Copy the output terraform_iam_role_arn for later
