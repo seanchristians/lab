@@ -1,11 +1,6 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket        = "terraform-state"
+  bucket        = "seanchristians-lab-terraform-state"
   force_destroy = true
-}
-
-resource "aws_s3_bucket_acl" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.id
-  acl    = "private"
 }
 
 resource "aws_s3_bucket_versioning" "terraform_state" {
