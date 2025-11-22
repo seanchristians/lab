@@ -17,7 +17,7 @@ Make a copy of [s3.tf](./s3.tf) in the local stack and call it `backend.tf`. Als
 environment: "terraform"
 steps:
   - name: terraform init
-    uses: seanchristians/lab/infrastructure/backends/s3
+    uses: seanchristians/lab/infrastructure/backends/s3@main
     with:
       aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 ```
