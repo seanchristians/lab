@@ -1,8 +1,6 @@
 name: stacks/network terraform plan
 on:
   pull_request:
-    types: [opened]
-    branches: [main]
     paths:
       - infrastructure/network/**
 
