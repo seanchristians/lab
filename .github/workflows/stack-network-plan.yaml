@@ -44,6 +44,11 @@ jobs:
           stack-path: ${{ env.stack }}
           aws-role-arn: ${{ needs.terraform-env.outputs.aws-role-arn }}
 
+      - name: terraform validate
+        run: |
+          cd '${{ env.stack }}'
+          terraform validate
+
       - name: terraform plan
         run: |
           cd '${{ env.stack }}'
