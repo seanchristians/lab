@@ -8,6 +8,20 @@ The intent with s3 is to create just enough that authentication can be passed fr
 
 This IAM role is quite limited: it has full IAM permissions, but only enough s3 permissions to work with the bucket that stores the state file.
 
+#### Use this backend for terraform
+
+Make a copy of [s3.tf](./s3.tf) in the local stack and call it `backend.tf`. Also choose a unique file path (key) to store the stack's `terraform.tfstate` file.
+
+#### GitHub Action
+```yaml
+environment: "terraform"
+steps:
+  - name: terraform init
+    uses: seanchristians/lab/infrastructure/backends/s3
+    with:
+      aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+```
+
 #### Setup instructions
 
 1. Generate an access key for the AWS console account
@@ -29,7 +43,3 @@ terraform init
 terraform apply
 ```
 3. Assuming all went well, commit the state file to git
-
-#### Usage instructions
-
-Make a copy of [s3.tf](./s3.tf) in the local stack and call it `backend.tf`. Also choose a unique file path (key) to store the stack's `terraform.tfstate` file.
