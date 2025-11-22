@@ -1,0 +1,17 @@
+name: stacks/network terraform plan
+on:
+  pull_request:
+    types: [opened]
+    branches: [main]
+    paths:
+      - infrastructure/network/**
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/terraform-plan.yaml@main
