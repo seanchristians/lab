@@ -14,4 +14,4 @@ jobs:
   terraform-plan:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/terraform-plan.yaml@main
+      - uses: ./actions/terraform-plan.yaml@main
