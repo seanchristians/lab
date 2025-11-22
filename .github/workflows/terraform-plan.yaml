@@ -1,0 +1,30 @@
+name: terraform plan
+on:
+  workflow_call:
+    inputs:
+      stack:
+        description: Working directory for Terraform
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ${{ inputs.stack }}
+
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    environment: terraform
+    steps:
+      - name: terraform init
+        uses: seanchristians/lab/infrastructure/backends/s3@main
+        with:
+          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+
+      - name: terraform plan
+        run: terraform plan
