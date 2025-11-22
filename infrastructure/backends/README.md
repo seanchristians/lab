@@ -10,13 +10,23 @@ This IAM role is quite limited: it has full IAM permissions, but only enough s3 
 
 #### Setup instructions
 
+1. Generate an access key for the AWS console account
 1. Authenticate to AWS with the AWS CLI
+```zsh
+brew install awscli
+aws login
+aws configure
+```
 2. Authenticate to GitHub with the GitHub CLI
+```zsh
+brew install gh
+gh auth login
+```
 2. Run the following commands
 ```zsh
 cd infrastructure/backends/s3
 terraform init
-terraform apply -auto-approve
+terraform apply
 ```
 3. Assuming all went well, commit the state file to git
 
