@@ -8,5 +8,5 @@ terraform {
 }
 
 provider "tailscale" {
-  user_agent          = "Terraform / seanchristians/lab"
+  user_agent = "Terraform / seanchristians/lab"
 }
