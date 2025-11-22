@@ -17,7 +17,7 @@ cd infrastructure/backends/s3
 terraform init
 terraform apply -auto-approve
 ```
-3. Copy the output terraform_iam_role_arn for later
+3. Assuming all went well, commit the state file to git
 
 #### Usage instructions
 

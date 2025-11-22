@@ -15,14 +15,13 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["seanchristians/lab:*"]
+      values   = ["${var.github_repo}:*"]
     }
   }
 }
 
 resource "aws_iam_role" "terraform" {
   name               = "GitHubActionsTerraformRole"
-  description        = "Terraform in github.com/seanchristians/lab"
   assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
 }
 
@@ -45,8 +44,4 @@ resource "aws_iam_role_policy" "terraform_s3" {
   name   = "terraform-s3"
   policy = data.aws_iam_policy_document.terraform_s3.json
   role   = aws_iam_role.terraform.name
-}
-
-output "terraform_iam_role_arn" {
-  value = aws_iam_role.terraform.arn
 }
