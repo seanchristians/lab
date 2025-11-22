@@ -5,12 +5,12 @@ on:
     paths:
       - infrastructure/network/**
 
+env:
+  stack: infrastructure/network
+
 permissions:
   id-token: write
   contents: read
-
-env:
-  stack: infrastructure/network
 
 defaults:
   run:
