@@ -14,14 +14,12 @@ runs:
   using: composite
   steps:
     - name: Request GitHub OIDC Token
-      shell: bash
-      run: |
-        export TOKEN=$(
-          curl -sL -G \
-          -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          --data-urlencode 'audience=${{ inputs.audience }}' \
-          "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value'
-        )
+      id: oidc-token
+      uses: seanchristians/lab/actions/github-actions-oidc@main
+      with:
+        audience: ${{ inputs.audience }}
 
-        echo "TAILSCALE_IDENTITY_TOKEN=${TOKEN}" >> "$GITHUB_ENV"
-        echo 'TAILSCALE_OAUTH_CLIENT_ID=${{ inputs.client-id }}' >> "$GITHUB_ENV"
+    - shell: bash
+      run: |
+        echo 'TAILSCALE_IDENTITY_TOKEN=${{ steps.oidc-token.outputs.oidc-token }}' >> $GITHUB_ENV
+        echo 'TAILSCALE_OAUTH_CLIENT_ID=${{ inputs.client-id }}' >> $GITHUB_ENV
