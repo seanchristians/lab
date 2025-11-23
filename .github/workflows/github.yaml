@@ -1,0 +1,90 @@
+name: Terraform Github Stack
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - infrastructure/github/**
+
+env:
+  stack: infrastructure/github
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  terraform-env:
+    name: Terraform Backend Environment Vars
+    runs-on: ubuntu-latest
+    environment: terraform
+    steps:
+      - run: echo "null"
+    outputs:
+      aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+
+  terraform-plan:
+    name: Prepare Terraform Plan
+    runs-on: ubuntu-latest
+    # environment: development
+    needs: terraform-env
+    steps:
+      - name: terraform init
+        uses: seanchristians/lab/infrastructure/backends/s3@main
+        with:
+          stack-path: ${{ env.stack }}
+          aws-role-arn: ${{ needs.terraform-env.outputs.aws-role-arn }}
+
+      - name: terraform validate
+        run: |
+          cd '${{ env.stack }}'
+          terraform validate
+
+      - name: terraform plan
+        run: |
+          cd '${{ env.stack }}'
+          terraform plan -input=false -out=plan.tfplan
+
+    #   - name: Store Plan Artifact
+    #     id: plan-upload-artifact
+    #     uses: actions/upload-artifact@v5
+    #     with:
+    #       name: ${{ github.ref }}-terraform-plan
+    #       path: ${{ env.stack }}/plan.tfplan
+    #       retention-days: 10
+    #       overwrite: true
+
+    # outputs:
+    #   plan-artifact-id: ${{ steps.plan-upload-artifact.outputs.artifact-id }}
+
+  # terraform-apply:
+  #   runs-on: ubuntu-latest
+  #   environment: production
+  #   needs: [terraform-env, terraform-plan]
+  #   steps:
+  #     - name: Download Plan Artifact
+  #       id: plan-download-artifact
+  #       uses: actions/download-artifact@v6
+  #       with:
+  #         artifact-ids: ${{ needs.terraform-plan.outputs.plan-artifact-id }}
+
+  #     - name: Tailscale login
+  #       uses: tailscale/github-action@v4
+  #       with:
+  #         oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+  #         audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+  #         tags: tag:infrastructure
+
+  #     - name: terraform init
+  #       uses: seanchristians/lab/infrastructure/backends/s3@main
+  #       with:
+  #         stack-path: ${{ env.stack }}
+  #         aws-role-arn: ${{ needs.terraform-env.outputs.aws-role-arn }}
+
+  #     - name: terraform apply
+  #       run: |
+  #         cd '${{ env.stack }}'
+  #         terraform apply -input=false '${{ steps.plan-download-artifact.outputs.download-path }}'
