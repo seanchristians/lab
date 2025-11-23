@@ -7,6 +7,7 @@ on:
 
 env:
   stack: infrastructure/network
+  AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
 
 permissions:
   id-token: write
@@ -31,7 +32,7 @@ jobs:
         uses: seanchristians/lab/actions/terraform-init@main
         with:
           stack-path: ${{ env.stack }}
-          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+          aws-role-arn: ${{ env.AWS_ROLE_ARN }}
 
       - name: terraform validate
         run: |
@@ -78,7 +79,7 @@ jobs:
         uses: seanchristians/lab/actions/terraform-init@main
         with:
           stack-path: ${{ env.stack }}
-          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+          aws-role-arn: ${{ env.AWS_ROLE_ARN }}
 
       - name: Download Plan Artifact
         id: plan-download-artifact
