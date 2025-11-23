@@ -1,0 +1,83 @@
+name: Terraform GitHub Stack
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - infrastructure/github/**
+
+env:
+  stack: infrastructure/github
+  AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    # environment: development
+    steps:
+      - name: terraform init
+        uses: seanchristians/lab/actions/terraform-init@main
+        with:
+          stack-path: ${{ env.stack }}
+          aws-role-arn: ${{ env.AWS_ROLE_ARN }}
+
+      - name: terraform validate
+        run: |
+          cd '${{ env.stack }}'
+          terraform validate
+
+      - name: terraform plan
+        run: |
+          cd '${{ env.stack }}'
+          CHANGE_CODE=0
+          terraform plan -detailed-exitcode -compact-warnings -no-color -out=plan.tfplan || CHANGE_CODE=$?
+          if [ $CHANGE_CODE -eq 1 ]; then
+            exit 1
+          fi
+          echo "CHANGES_PLANNED=$(test $CHANGE_CODE -eq 2 && echo 'true' || echo 'false')" >> $GITHUB_ENV
+
+      # - name: Store Plan Artifact
+      #   if: ${{ env.CHANGES_PLANNED == true }}
+      #   id: plan-upload-artifact
+      #   uses: actions/upload-artifact@v5
+      #   with:
+      #     name: ${{ github.run_id }}-terraform-plan
+      #     path: ${{ env.stack }}/plan.tfplan
+      #     retention-days: 10
+      #     overwrite: true
+
+    outputs:
+      changes-planned: ${{ env.CHANGES_PLANNED }}
+      plan-artifact-name: ${{ github.run_id }}-terraform-plan
+
+  # terraform-apply:
+  #   name: Terraform Apply
+  #   runs-on: ubuntu-latest
+  #   environment: production
+  #   needs: terraform-plan
+  #   if: ${{ needs.terraform-plan.outputs.changes-planned == true }}
+  #   steps:
+  #     - name: terraform init
+  #       uses: seanchristians/lab/actions/terraform-init@main
+  #       with:
+  #         stack-path: ${{ env.stack }}
+  #         aws-role-arn: ${{ env.AWS_ROLE_ARN }}
+
+  #     - name: Download Plan Artifact
+  #       id: plan-download-artifact
+  #       uses: actions/download-artifact@v6
+  #       with:
+  #         name: ${{ needs.terraform-plan.outputs.plan-artifact-name }}
+
+  #     - name: terraform apply
+  #       run: |
+  #         cd '${{ env.stack }}'
+  #         terraform apply -input=false '${{ steps.plan-download-artifact.outputs.download-path }}/plan.tfplan'
