@@ -1,5 +1,5 @@
 name: terraform init
-description: This action initializes terraform with the AWS S3 backend.
+description: This action initializes Terraform with the AWS S3 backend.
 
 inputs:
   aws-role-arn:

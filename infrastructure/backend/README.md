@@ -19,17 +19,6 @@ terraform {
 
 ```
 
-#### GitHub Action
-```yaml
-environment: "development"
-steps:
-  - name: terraform init
-    uses: seanchristians/lab/infrastructure/backend@main
-    with:
-      aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
-      stack-path: infrastructure/<stack>
-```
-
 #### Setup instructions
 
 1. Generate an access key for the AWS console account
