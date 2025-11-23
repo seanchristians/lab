@@ -70,12 +70,6 @@ jobs:
     environment: production
     needs: [terraform-env, terraform-plan]
     steps:
-      - name: Download Plan Artifact
-        id: plan-download-artifact
-        uses: actions/download-artifact@v6
-        with:
-          name: ${{ needs.terraform-plan.outputs.plan-artifact-name }}
-
       - uses: seanchristians/lab/actions/tailscale-login@main
         with:
           client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
@@ -87,7 +81,13 @@ jobs:
           stack-path: ${{ env.stack }}
           aws-role-arn: ${{ needs.terraform-env.outputs.aws-role-arn }}
 
+      - name: Download Plan Artifact
+        id: plan-download-artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: ${{ needs.terraform-plan.outputs.plan-artifact-name }}
+
       - name: terraform apply
         run: |
           cd '${{ env.stack }}'
-          terraform apply -input=false "$GITHUB_WORKSPACE/plan.tfplan"
+          terraform apply -input=false '${{ steps.plan-download-artifact.outputs.download-path }}/plan.tfplan'
