@@ -15,7 +15,6 @@ permissions:
 defaults:
   run:
     shell: bash
-    working-directory: ${{ env.stack }}
 
 jobs:
   terraform-env:
