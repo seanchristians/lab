@@ -15,13 +15,14 @@ permissions:
 defaults:
   run:
     shell: bash
-    working-directory: ${{ env.stack }}
 
 jobs:
   terraform-env:
     name: Terraform Backend Environment Vars
     runs-on: ubuntu-latest
     environment: terraform
+    steps:
+      - run: echo "null"
     outputs:
       aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 
