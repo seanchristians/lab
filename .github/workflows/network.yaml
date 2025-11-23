@@ -21,6 +21,7 @@ jobs:
     name: Terraform Backend Environment Vars
     runs-on: ubuntu-latest
     environment: terraform
+    steps: [run: echo]
     outputs:
       aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 
