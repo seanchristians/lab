@@ -45,3 +45,7 @@ resource "aws_iam_role_policy" "terraform_s3" {
   policy = data.aws_iam_policy_document.terraform_s3.json
   role   = aws_iam_role.terraform.name
 }
+
+output "IAM_ROLE_ARN" {
+  value = aws_iam_role.terraform.arn
+}
