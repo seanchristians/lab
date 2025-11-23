@@ -31,12 +31,10 @@ jobs:
     environment: development
     needs: terraform-env
     steps:
-      - name: Tailscale login
-        uses: tailscale/github-action@v4
+      - uses: seanchristians/lab/actions/tailscale-login@tailscale-login-action
         with:
-          oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          tags: tag:infrastructure
 
       - name: terraform init
         uses: seanchristians/lab/infrastructure/backends/s3@main
@@ -78,12 +76,10 @@ jobs:
         with:
           artifact-ids: ${{ needs.terraform-plan.outputs.plan-artifact-id }}
 
-      - name: Tailscale login
-        uses: tailscale/github-action@v4
+      - uses: seanchristians/lab/actions/tailscale-login@tailscale-login-action
         with:
-          oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          tags: tag:infrastructure
 
       - name: terraform init
         uses: seanchristians/lab/infrastructure/backends/s3@main
