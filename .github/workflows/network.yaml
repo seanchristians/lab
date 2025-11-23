@@ -58,7 +58,7 @@ jobs:
           echo "CHANGES_PLANNED=$(test $CHANGE_CODE -eq 2 && echo 'true' || echo 'false')" >> $GITHUB_ENV
 
       - name: Store Plan Artifact
-        if: ${{ env.CHANGES_PLANNED }}
+        if: ${{ env.CHANGES_PLANNED == true }}
         id: plan-upload-artifact
         uses: actions/upload-artifact@v5
         with:
@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: [terraform-env, terraform-plan]
-    if: ${{ needs.terraform-plan.outputs.changes-planned }}
+    if: ${{ needs.terraform-plan.outputs.changes-planned == true }}
     steps:
       - uses: seanchristians/lab/actions/tailscale-login@main
         with:
