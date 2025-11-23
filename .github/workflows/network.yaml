@@ -17,31 +17,21 @@ defaults:
     shell: bash
 
 jobs:
-  terraform-env:
-    name: Terraform Backend Environment Vars
-    runs-on: ubuntu-latest
-    environment: terraform
-    outputs:
-      aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
-
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
     environment: development
-    needs: terraform-env
     steps:
-      - name: Tailscale login
-        uses: tailscale/github-action@v4
+      - uses: seanchristians/lab/actions/tailscale-login@main
         with:
-          oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          tags: tag:infrastructure
 
       - name: terraform init
-        uses: seanchristians/lab/infrastructure/backends/s3@main
+        uses: seanchristians/lab/infrastructure/backend@main
         with:
           stack-path: ${{ env.stack }}
-          aws-role-arn: ${{ needs.terraform-env.outputs.aws-role-arn }}
+          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 
       - name: terraform validate
         run: |
@@ -51,46 +41,52 @@ jobs:
       - name: terraform plan
         run: |
           cd '${{ env.stack }}'
-          terraform plan -input=false -out=plan.tfplan
+          CHANGE_CODE=0
+          terraform plan -detailed-exitcode -compact-warnings -no-color -out=plan.tfplan || CHANGE_CODE=$?
+          if [ $CHANGE_CODE -eq 1 ]; then
+            exit 1
+          fi
+          echo "CHANGES_PLANNED=$(test $CHANGE_CODE -eq 2 && echo 'true' || echo 'false')" >> $GITHUB_ENV
 
       - name: Store Plan Artifact
+        if: ${{ env.CHANGES_PLANNED == true }}
         id: plan-upload-artifact
         uses: actions/upload-artifact@v5
         with:
-          name: ${{ github.ref }}-terraform-plan
+          name: ${{ github.run_id }}-terraform-plan
           path: ${{ env.stack }}/plan.tfplan
           retention-days: 10
           overwrite: true
 
     outputs:
-      plan-artifact-id: ${{ steps.plan-upload-artifact.outputs.artifact-id }}
+      changes-planned: ${{ env.CHANGES_PLANNED }}
+      plan-artifact-name: ${{ github.run_id }}-terraform-plan
 
   terraform-apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
     environment: production
-    needs: [terraform-env, terraform-plan]
+    needs: terraform-plan
+    if: ${{ needs.terraform-plan.outputs.changes-planned == true }}
     steps:
+      - uses: seanchristians/lab/actions/tailscale-login@main
+        with:
+          client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+
+      - name: terraform init
+        uses: seanchristians/lab/infrastructure/backend@main
+        with:
+          stack-path: ${{ env.stack }}
+          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+
       - name: Download Plan Artifact
         id: plan-download-artifact
         uses: actions/download-artifact@v6
         with:
-          artifact-ids: ${{ needs.terraform-plan.outputs.plan-artifact-id }}
-
-      - name: Tailscale login
-        uses: tailscale/github-action@v4
-        with:
-          oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          tags: tag:infrastructure
-
-      - name: terraform init
-        uses: seanchristians/lab/infrastructure/backends/s3@main
-        with:
-          stack-path: ${{ env.stack }}
-          aws-role-arn: ${{ needs.terraform-env.outputs.aws-role-arn }}
+          name: ${{ needs.terraform-plan.outputs.plan-artifact-name }}
 
       - name: terraform apply
         run: |
           cd '${{ env.stack }}'
-          terraform apply -input=false '${{ steps.plan-download-artifact.outputs.download-path }}'
+          terraform apply -input=false '${{ steps.plan-download-artifact.outputs.download-path }}/plan.tfplan'
