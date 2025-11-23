@@ -1,25 +1,22 @@
-# Terraform Backend Providers
+# Terraform Backend with AWS S3
 
 This project sets up the basic resources required to manage Terraform state without another provider like Spacelift.
 
-## AWS S3
-
-The intent with s3 is to create just enough that authentication can be passed from a manual AWS login to an IAM role assumed with the GitHub Actions OIDC token.
+This project creates just enough resources that authentication can be passed from a manual AWS login to an IAM role assumed with the GitHub Actions OIDC token.
 
 This IAM role is quite limited: it has full IAM permissions, but only enough s3 permissions to work with the bucket that stores the state file.
 
-#### Use this backend for terraform
-
-Make a copy of [s3.tf](./s3.tf) in the local stack and call it `backend.tf`. Also choose a unique file path (key) to store the stack's `terraform.tfstate` file.
-
-#### GitHub Action
+#### Terraform `backend` config
 ```yaml
-environment: "terraform"
-steps:
-  - name: terraform init
-    uses: seanchristians/lab/infrastructure/backends/s3@main
-    with:
-      aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+terraform {
+  backend "s3" {
+    bucket       = "seanchristians-lab-terraform-state"
+    key          = "<stack>/terraform.tfstate"
+    region       = "ca-central-1"
+    use_lockfile = true
+  }
+}
+
 ```
 
 #### Setup instructions
@@ -31,15 +28,10 @@ brew install awscli
 aws login
 aws configure
 ```
-2. Authenticate to GitHub with the GitHub CLI
+3. Run the following commands
 ```zsh
-brew install gh
-gh auth login
-```
-2. Run the following commands
-```zsh
-cd infrastructure/backends/s3
+cd infrastructure/backend
 terraform init
 terraform apply
 ```
-3. Assuming all went well, commit the state file to git
+4. Assuming all went well, commit the state file to git
