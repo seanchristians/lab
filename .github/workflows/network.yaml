@@ -25,7 +25,7 @@ jobs:
       aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 
   terraform-plan:
-    name: Prepare Terraform Plan
+    name: Terraform Plan
     runs-on: ubuntu-latest
     environment: development
     needs: terraform-env
@@ -66,6 +66,7 @@ jobs:
       plan-artifact-id: ${{ steps.plan-upload-artifact.outputs.artifact-id }}
 
   terraform-apply:
+    name: Terraform Apply
     runs-on: ubuntu-latest
     environment: production
     needs: [terraform-env, terraform-plan]
