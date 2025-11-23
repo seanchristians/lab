@@ -50,9 +50,15 @@ jobs:
       - name: terraform plan
         run: |
           cd '${{ env.stack }}'
-          terraform plan -compact-warnings -no-color -json -out=plan.tfplan | tee summary.txt
+          CHANGE_CODE=0
+          terraform plan -detailed-exitcode -compact-warnings -no-color -out=plan.tfplan || CHANGE_CODE=$?
+          if [ CHANGE_CODE -eq 1 ]; then
+            exit 1
+          fi
+          echo "CHANGES_PLANNED=$(test $CHANGE_CODE -eq 2 && echo 'true' || echo 'false')" >> $GITHUB_ENV
 
       - name: Store Plan Artifact
+        if: ${{ env.CHANGES_PLANNED }}
         id: plan-upload-artifact
         uses: actions/upload-artifact@v5
         with:
@@ -62,6 +68,7 @@ jobs:
           overwrite: true
 
     outputs:
+      changes-planned: ${{ env.CHANGES_PLANNED }}
       plan-artifact-name: ${{ github.run_id }}-terraform-plan
 
   terraform-apply:
@@ -69,6 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: [terraform-env, terraform-plan]
+    if: ${{ needs.terraform-plan.outputs.changes-planned }}
     steps:
       - uses: seanchristians/lab/actions/tailscale-login@main
         with:
