@@ -1,7 +1,3 @@
-data "github_user" "seanchristians" {
-  username = "seanchristians"
-}
-
 resource "github_repository_environment" "development" {
   environment         = "development"
   repository          = "lab"
