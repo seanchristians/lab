@@ -12,6 +12,6 @@ resource "github_repository_environment" "production" {
   prevent_self_review = false
 
   reviewers {
-    users = data.github_user.seanchristians.id
+    users = [data.github_user.seanchristians.id]
   }
 }
