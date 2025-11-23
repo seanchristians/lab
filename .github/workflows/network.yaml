@@ -31,7 +31,7 @@ jobs:
     environment: development
     needs: terraform-env
     steps:
-      - uses: seanchristians/lab/actions/tailscale-login@tailscale-login-action
+      - uses: seanchristians/lab/actions/tailscale-login@main
         with:
           client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
@@ -76,7 +76,7 @@ jobs:
         with:
           artifact-ids: ${{ needs.terraform-plan.outputs.plan-artifact-id }}
 
-      - uses: seanchristians/lab/actions/tailscale-login@tailscale-login-action
+      - uses: seanchristians/lab/actions/tailscale-login@main
         with:
           client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
