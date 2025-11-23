@@ -5,12 +5,14 @@ inputs:
   aws-role-arn:
     description: AWS IAM role ARN for Terraform, both for the AWS provider and for the S3 state backend.
     required: true
+  stack-path:
+    description: Path to stack directory
+    required: true
 
 runs:
   using: composite
   steps:
-    - name: Install Terraform
-      uses: hashicorp/setup-terraform@v3
+    - uses: actions/checkout@v5
 
     - name: Authenticate with AWS
       uses: aws-actions/configure-aws-credentials@v5
@@ -18,8 +20,11 @@ runs:
         aws-region: ca-central-1
         role-to-assume: ${{ inputs.aws-role-arn }}
 
-    - uses: actions/checkout@v5
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v3
 
     - name: terraform init
       shell: bash
-      run: terraform init -input=false
+      run: |
+        cd '${{ inputs.stack-path }}'
+        terraform init -input=false
