@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: ${{ github.ref }}-terraform-plan
-          path: plan.tfplan
+          path: ${{ env.stack }}/plan.tfplan
           retention-days: 10
           overwrite: true
 
