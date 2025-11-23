@@ -24,6 +24,7 @@ runs:
       uses: hashicorp/setup-terraform@v3
 
     - name: terraform init
-      working-directory: ${{ inputs.stack-path }}
       shell: bash
-      run: terraform init -input=false
+      run: |
+        cd '${{ inputs.stack-path }}'
+        terraform init -input=false
