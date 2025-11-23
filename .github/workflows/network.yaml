@@ -28,7 +28,7 @@ jobs:
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
 
       - name: terraform init
-        uses: seanchristians/lab/infrastructure/backends/s3@main
+        uses: seanchristians/lab/infrastructure/backend@main
         with:
           stack-path: ${{ env.stack }}
           aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
@@ -75,7 +75,7 @@ jobs:
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
 
       - name: terraform init
-        uses: seanchristians/lab/infrastructure/backends/s3@main
+        uses: seanchristians/lab/infrastructure/backend@main
         with:
           stack-path: ${{ env.stack }}
           aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
