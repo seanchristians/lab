@@ -8,7 +8,6 @@ on:
         type: choice
         options:
           - infrastructure/github
-          - infrastructure/network
 
 permissions:
   id-token: write
@@ -30,6 +29,8 @@ jobs:
           aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
 
       - name: terraform apply
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd '${{ inputs.stack }}'
           terraform apply -input=false -auto-approve
