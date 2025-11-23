@@ -20,10 +20,8 @@ runs:
           curl -sL \
           -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
           --data-urlencode 'audience=${{ inputs.audience }}' \
-          "$ACTIONS_ID_TOKEN_REQUEST_URL"
+          "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value'
         )
-
-        echo "${TOKEN}"
 
         echo "TAILSCALE_IDENTITY_TOKEN=${TOKEN}" >> $GITHUB_ENV
         echo 'TAILSCALE_OAUTH_CLIENT_ID=${{ inputs.client-id }}' >> $GITHUB_ENV
