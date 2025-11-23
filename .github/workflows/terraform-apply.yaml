@@ -1,0 +1,35 @@
+name: Terraform Apply
+on:
+  workflow_dispatch:
+    inputs:
+      stack:
+        description: Stack to deploy with Terraform
+        required: true
+        type: choice
+        options:
+          - infrastructure/github
+          - infrastructure/network
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  terraform-apply:
+    runs-on: ubuntu-latest
+    environment: terraform
+    steps:
+      - name: terraform init
+        uses: seanchristians/lab/infrastructure/backends/s3@main
+        with:
+          stack-path: ${{ inputs.stack }}
+          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+
+      - name: terraform apply
+        run: |
+          cd '${{ inputs.stack }}'
+          terraform apply -input=false -auto-approve
