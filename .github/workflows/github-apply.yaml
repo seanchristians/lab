@@ -1,0 +1,40 @@
+name: Terraform Apply Github Stack
+on:
+  workflow_dispatch:
+
+env:
+  stack: infrastructure/github
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  terraform-env:
+    name: Terraform Backend Environment Vars
+    runs-on: ubuntu-latest
+    environment: terraform
+    steps:
+      - run: echo "null"
+    outputs:
+      aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+
+
+  terraform-apply:
+    runs-on: ubuntu-latest
+    needs: terraform-env
+    steps:
+      - name: terraform init
+        uses: seanchristians/lab/infrastructure/backends/s3@main
+        with:
+          stack-path: ${{ env.stack }}
+          aws-role-arn: ${{ needs.terraform-env.outputs.aws-role-arn }}
+
+      - name: terraform apply
+        run: |
+          cd '${{ env.stack }}'
+          terraform apply -input=false -auto-approve
