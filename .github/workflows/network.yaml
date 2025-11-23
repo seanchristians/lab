@@ -1,4 +1,4 @@
-name: stacks/network terraform plan
+name: Terraform Network Stack
 on:
   workflow_dispatch:
   pull_request:
