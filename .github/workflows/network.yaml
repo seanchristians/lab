@@ -90,4 +90,4 @@ jobs:
       - name: terraform apply
         run: |
           cd '${{ env.stack }}'
-          terraform apply -input=false '$GITHUB_WORKSPACE/plan.tfplan'
+          terraform apply -input=false "$GITHUB_WORKSPACE/plan.tfplan"
