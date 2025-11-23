@@ -50,9 +50,9 @@ jobs:
       - name: terraform plan
         run: |
           cd '${{ env.stack }}'
-          terraform plan -input=false -out=plan.tfplan
-          echo "## Terraform Plan" > $GITHUB_STEP_SUMMARY
-          cat plan.tfplan >> $GITHUB_STEP_SUMMARY
+          terraform plan -input=false -compact-warnings -no-color -out=plan.tfplan | tee summary.txt
+          echo "## Terraform plan" > $GITHUB_STEP_SUMMARY
+          cat summary.txt >> $GITHUB_STEP_SUMMARY
 
       - name: Store Plan Artifact
         id: plan-upload-artifact
