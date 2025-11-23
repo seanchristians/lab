@@ -76,22 +76,18 @@ jobs:
         with:
           name: ${{ needs.terraform-plan.outputs.plan-artifact-name }}
 
-      - name: Show downloaded artifacts
+      - uses: seanchristians/lab/actions/tailscale-login@main
+        with:
+          client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+
+      - name: terraform init
+        uses: seanchristians/lab/infrastructure/backends/s3@main
+        with:
+          stack-path: ${{ env.stack }}
+          aws-role-arn: ${{ needs.terraform-env.outputs.aws-role-arn }}
+
+      - name: terraform apply
         run: |
-          ls -R
-
-      # - uses: seanchristians/lab/actions/tailscale-login@main
-      #   with:
-      #     client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-      #     audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-
-      # - name: terraform init
-      #   uses: seanchristians/lab/infrastructure/backends/s3@main
-      #   with:
-      #     stack-path: ${{ env.stack }}
-      #     aws-role-arn: ${{ needs.terraform-env.outputs.aws-role-arn }}
-
-      # - name: terraform apply
-      #   run: |
-      #     cd '${{ env.stack }}'
-      #     terraform apply -input=false '${{ steps.plan-download-artifact.outputs.download-path }}/${{ needs.terraform-plan.outputs.plan-artifact-name }}/plan.tfplan'
+          cd '${{ env.stack }}'
+          terraform apply -input=false '$GITHUB_WORKSPACE/plan.tfplan'
