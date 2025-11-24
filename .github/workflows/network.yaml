@@ -21,7 +21,6 @@ jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    environment: development
     steps:
       - uses: seanchristians/lab/actions/tailscale-login@main
         with:
