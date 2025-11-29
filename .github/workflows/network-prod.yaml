@@ -7,6 +7,7 @@ on:
       - infrastructure/network/**
 
 env:
+  TF_IN_AUTOMATION: true
   STACK: infrastructure/network
 
 permissions: {}
