@@ -8,6 +8,7 @@ on:
 
 env:
   TF_IN_AUTOMATION: true
+  TF_CLI_ARGS: -input=false
   STACK: infrastructure/network
 
 permissions: {}
@@ -38,8 +39,8 @@ jobs:
 
       - name: Terraform Init
         run: |
-          terraform -chdir="$STACK" init -input=false
+          terraform -chdir="$STACK" init
 
       - name: Terraform Apply
         run: |
-          terraform -chdir="$STACK" apply -input=false -auto-approve
+          terraform -chdir="$STACK" apply -auto-approve
