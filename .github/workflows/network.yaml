@@ -9,6 +9,7 @@ env:
   STACK: infrastructure/network
   AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
   WORKSPACE_REF: ${{ github.ref }}
+  PLAN_CACHE_KEY: tfplan-cache-${{ github.run_id }}.${{ github.run_attempt }}
 
 permissions:
   id-token: write
@@ -53,19 +54,16 @@ jobs:
           fi
           echo "CHANGES_PLANNED=$(test $CHANGE_CODE -eq 2 && echo 'true' || echo 'false')" >> $GITHUB_ENV
 
-      - name: Store Plan Artifact
-        if: ${{ env.CHANGES_PLANNED == true }}
-        id: plan-upload-artifact
-        uses: actions/upload-artifact@v5
+      - name: Cache Terraform Plan
+        if: env.CHANGES_PLANNED == true
+        id: plan-cache
+        uses: actions/cache/save@v4
         with:
-          name: ${{ github.run_id }}-terraform-plan
-          path: ${{ env.STACK }}/plan.tfplan
-          retention-days: 10
-          overwrite: true
+          path: ${{ env.STACK }}
+          key: ${{ env.PLAN_CACHE_KEY }}
 
     outputs:
       changes-planned: ${{ env.CHANGES_PLANNED }}
-      plan-artifact-name: ${{ github.run_id }}-terraform-plan
 
   terraform-apply:
     name: Terraform Apply
@@ -79,25 +77,26 @@ jobs:
           client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
 
-      - name: terraform init
-        uses: seanchristians/lab/actions/terraform-init@main
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v5
         with:
-          stack-path: ${{ env.STACK }}
-          aws-role-arn: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ca-central-1
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Restore Terraform Plan
+        uses: actions/cache/restore@v4
+        with:
+          key: ${{ env.PLAN_CACHE_KEY }}
+          fail-on-cache-miss: true
 
       - name: Switch to branch workspace
         if: github.ref_name != 'main'
         run: |
           terraform workspace select "$WORKSPACE_REF"
 
-      - name: Download Plan Artifact
-        id: plan-download-artifact
-        uses: actions/download-artifact@v6
-        with:
-          name: ${{ needs.terraform-plan.outputs.plan-artifact-name }}
-
       - name: terraform apply
-        env:
-          PLAN_ARTIFACT: ${{ steps.plan-download-artifact.outputs.download-path }}/plan.tfplan
         run: |
-          terraform -chdir="$STACK" apply -input=false "$PLAN_ARTIFACT"
+          terraform -chdir="$STACK" apply -input=false "$STACK/plan.tfplan"
