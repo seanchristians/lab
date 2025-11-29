@@ -1,0 +1,46 @@
+name: Terraform Apply Network Stack
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - infrastructure/network/**
+
+env:
+  TF_IN_AUTOMATION: true
+  TF_CLI_ARGS: -input=false
+  STACK: infrastructure/network
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Authenticate Terraform Providers
+        uses: ./.github/workflows/terraform-providers-auth/network.yaml
+        with:
+          AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+          TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          TAILSCALE_CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: |
+          terraform -chdir="$STACK" init
+
+      - name: Terraform Apply
+        run: |
+          terraform -chdir="$STACK" apply -auto-approve
