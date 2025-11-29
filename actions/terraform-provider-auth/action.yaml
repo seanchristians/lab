@@ -1,0 +1,26 @@
+name: Authenticate Terraform Providers
+author: Sean Christians
+description: Authenticate with Terraform providers by setting their environment variables.
+
+inputs:
+  AWS_ROLE_ARN:
+    description: AWS IAM role for GitHub actions to assume
+  TAILSCALE_AUDIENCE:
+    description: Tailscale OIDC Federated Identity Audience
+  TAILSCALE_CLIENT_ID:
+    description: Tailscale OIDC Federated Identity Client ID
+
+runs:
+  using: composite
+  steps:
+    - name: Authenticate with AWS
+      uses: aws-actions/configure-aws-credentials@v5
+      with:
+        aws-region: ca-central-1
+        role-to-assume: ${{ inputs.AWS_ROLE_ARN }}
+
+    - name: Authenticate with Tailscale
+      uses: seanchristians/lab/actions/tailscale-login@main
+      with:
+        client-id: ${{ inputs.TAILSCALE_CLIENT_ID }}
+        audience: ${{ inputs.TAILSCALE_AUDIENCE }}
