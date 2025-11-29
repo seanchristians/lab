@@ -31,6 +31,7 @@ jobs:
 
   tailscale:
     name: Authenticate with Tailscale
+    if: inputs.TAILSCALE_AUDIENCE != null && inputs.TAILSCALE_CLIENT_ID != null
     runs-on: ubuntu-latest
     permissions:
       id-token: write
