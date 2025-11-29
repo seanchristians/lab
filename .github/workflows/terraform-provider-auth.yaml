@@ -4,22 +4,20 @@ on:
     inputs:
       AWS_ROLE_ARN:
         description: AWS IAM role for GitHub actions to assume
-        required: true
         type: string
       TAILSCALE_AUDIENCE:
         description: Tailscale OIDC Federated Identity Audience
-        required: true
         type: string
       TAILSCALE_CLIENT_ID:
         description: Tailscale OIDC Federated Identity Client ID
-        required: true
         type: string
 
 permissions: {}
 
 jobs:
-  authenticate-terraform-providers:
-    name: Authenticate Terraform Providers
+  aws:
+    name: Authenticate with AWS
+    if: inputs.AWS_ROLE_ARN != null
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -30,6 +28,13 @@ jobs:
           aws-region: ca-central-1
           role-to-assume: ${{ inputs.AWS_ROLE_ARN }}
 
+  tailscale:
+    name: Authenticate with Tailscale
+    if: inputs.TAILSCALE_AUDIENCE != null && inputs.TAILSCALE_CLIENT_ID != null
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
       - name: Authenticate with Tailscale
         uses: seanchristians/lab/actions/tailscale-login@main
         with:
