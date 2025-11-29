@@ -7,7 +7,6 @@ on:
 
 env:
   TF_IN_AUTOMATION: true
-  TF_CLI_ARGS: -input=false
   STACK: infrastructure/network
 
 permissions: {}
@@ -46,4 +45,4 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          terraform -chdir="$STACK" plan -compact-warnings >> $GITHUB_STEP_SUMMARY
+          terraform -chdir="$STACK" plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
