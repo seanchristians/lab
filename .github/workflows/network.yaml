@@ -99,4 +99,4 @@ jobs:
 
       - name: terraform apply
         run: |
-          terraform -chdir="$STACK" apply -input=false "$STACK/plan.tfplan"
+          terraform -chdir="$STACK" apply -input=false plan.tfplan
