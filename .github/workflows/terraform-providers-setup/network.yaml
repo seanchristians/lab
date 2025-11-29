@@ -1,0 +1,46 @@
+name: Authenticate Terraform providers for the Network stack
+on:
+  workflow_call:
+    inputs:
+      AWS_ROLE_ARN:
+        description: AWS IAM role for GitHub actions to assume
+        required: true
+        type: string
+      TAILSCALE_AUDIENCE:
+        description: Tailscale OIDC Federated Identity Audience
+        required: true
+        type: string
+      TAILSCALE_CLIENT_ID:
+        description: Tailscale OIDC Federated Identity Client ID
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  authenticate-terraform-providers:
+    name: Authenticate Terraform Providers
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-region: ca-central-1
+          role-to-assume: ${{ inputs.AWS_ROLE_ARN }}
+
+      - name: Request GitHub OIDC token for Tailscale
+        id: tailscale-oidc-token
+        uses: seanchristians/lab/actions/github-actions-oidc@main
+        with:
+          audience: ${{ inputs.TAILSCALE_AUDIENCE }}
+
+      - name: Set Tailscale auth environment variables
+        shell: bash
+        env:
+          OIDC_TOKEN: ${{ steps.tailscale-oidc-token.outputs.oidc-token }}
+          CLIENT_ID: ${{ inputs.TAILSCALE_CLIENT_ID }}
+        run: |
+          echo "TAILSCALE_IDENTITY_TOKEN=$OIDC_TOKEN" >> $GITHUB_ENV
+          echo "TAILSCALE_OAUTH_CLIENT_ID=$CLIENT_ID" >> $GITHUB_ENV
