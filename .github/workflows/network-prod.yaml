@@ -1,4 +1,4 @@
-name: Terraform Network Stack (production)
+name: Terraform Apply Network Stack
 on:
   workflow_dispatch:
   push:
@@ -8,7 +8,6 @@ on:
 
 env:
   STACK: infrastructure/network
-  AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
 
 permissions: {}
 
@@ -20,8 +19,6 @@ jobs:
   terraform-apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
-    environment: production
-    if: github.ref_name	== 'main'
     permissions:
       id-token: write
       contents: read
@@ -40,8 +37,8 @@ jobs:
 
       - name: Terraform Init
         run: |
-          terraform -chdir="$STACK_PATH" init -input=false
+          terraform -chdir="$STACK" init -input=false
 
-      - name: terraform apply
+      - name: Terraform Apply
         run: |
-          terraform -chdir="$STACK" apply -input=false -auto-approve -refresh-only
+          terraform -chdir="$STACK" apply -input=false -auto-approve
