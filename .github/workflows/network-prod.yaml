@@ -1,0 +1,41 @@
+name: Terraform Network Stack (production)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - infrastructure/network/**
+
+env:
+  STACK: infrastructure/network
+  AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: seanchristians/lab/actions/tailscale-login@main
+        with:
+          client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+
+      - name: terraform init
+        uses: seanchristians/lab/actions/terraform-init@main
+        with:
+          stack-path: ${{ env.STACK }}
+          aws-role-arn: ${{ env.AWS_ROLE_ARN }}
+
+      - name: terraform apply
+        run: |
+          terraform -chdir="$STACK" apply -input=false -auto-approve -refresh-only
