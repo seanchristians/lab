@@ -63,7 +63,7 @@ jobs:
   terraform-apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
     needs: terraform-plan
     if: ${{ needs.terraform-plan.outputs.changes-planned == true }}
     steps:
