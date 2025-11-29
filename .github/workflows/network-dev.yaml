@@ -45,4 +45,4 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          terraform -chdir="$STACK" plan -input=false -compact-warnings >> $GITHUB_STEP_SUMMARY
+          terraform -chdir="$STACK" plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
