@@ -7,7 +7,6 @@ on:
 
 env:
   STACK: infrastructure/network
-  AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
   WORKSPACE_REF: ${{ github.ref }}
   PLAN_CACHE_KEY: tfplan-cache-${{ github.run_id }}.${{ github.run_attempt }}
 
@@ -26,27 +25,32 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: seanchristians/lab/actions/tailscale-login@main
-        with:
-          client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+      - uses: actions/checkout@v5
 
-      - name: terraform init
-        uses: seanchristians/lab/actions/terraform-init@main
+      - name: Authenticate Terraform Providers
+        uses: ./.github/workflows/terraform-providers-auth/network.yaml
         with:
-          stack-path: ${{ env.STACK }}
-          aws-role-arn: ${{ env.AWS_ROLE_ARN }}
+          AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+          TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          TAILSCALE_CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
 
-      - name: terraform validate
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: |
+          terraform -chdir="$STACK_PATH" init -input=false
+
+      - name: Terraform Validate
         run: |
           terraform -chdir="$STACK" validate
 
-      - name: Configure branch workspace
+      - name: Configure Branch Workspace
         run: |
           terraform -chdir="$STACK" state pull
           terraform -chdir="$STACK" workspace new -state=terraform.tfstate "$WORKSPACE_REF"
 
-      - name: terraform plan
+      - name: Terraform Plan
         run: |
           CHANGE_CODE=0
           terraform -chdir="$STACK" plan -detailed-exitcode -compact-warnings -no-color -out=plan.tfplan || CHANGE_CODE=$?
@@ -82,25 +86,21 @@ jobs:
           key: ${{ env.PLAN_CACHE_KEY }}
           fail-on-cache-miss: true
 
-      - uses: seanchristians/lab/actions/tailscale-login@main
+      - name: Authenticate Terraform Providers
+        uses: ./.github/workflows/terraform-providers-auth/network.yaml
         with:
-          client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-
-      - name: Authenticate with AWS
-        uses: aws-actions/configure-aws-credentials@v5
-        with:
-          aws-region: ca-central-1
-          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+          TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          TAILSCALE_CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Switch to branch workspace
+      - name: Switch to Branch Workspace
         if: github.ref_name != 'main'
         run: |
           terraform -chdir="$STACK" workspace select "$WORKSPACE_REF"
 
-      - name: terraform apply
+      - name: Terraform Apply
         run: |
           terraform -chdir="$STACK" apply -input=false plan.tfplan
