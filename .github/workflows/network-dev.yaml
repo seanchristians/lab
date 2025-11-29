@@ -21,6 +21,7 @@ jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    if: github.ref_name	!= 'main'
     permissions:
       id-token: write
       contents: read
@@ -41,7 +42,6 @@ jobs:
           terraform -chdir="$STACK" validate
 
       - name: Configure branch workspace
-        if: github.ref_name != 'main'
         run: |
           terraform -chdir="$STACK" state pull
           terraform -chdir="$STACK" workspace new -state=terraform.tfstate "$WORKSPACE_REF"
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: development
     needs: terraform-plan
-    if: ${{ needs.terraform-plan.outputs.changes-planned == true }}
+    if: github.ref_name	!= 'main' && needs.terraform-plan.outputs.changes-planned == true
     permissions:
       id-token: write
       contents: read
