@@ -4,6 +4,8 @@ on:
     paths:
       - "**.tf"
 
+permissions: {}
+
 defaults:
   run:
     shell: bash
