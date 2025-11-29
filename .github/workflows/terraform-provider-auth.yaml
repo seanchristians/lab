@@ -23,7 +23,6 @@ jobs:
       id-token: write
     steps:
       - name: Authenticate with AWS
-        if: inputs.AWS_ROLE_ARN != null
         uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: ca-central-1
