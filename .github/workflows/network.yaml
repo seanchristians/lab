@@ -6,7 +6,7 @@ on:
       - infrastructure/network/**
 
 env:
-  stack: infrastructure/network
+  STACK: infrastructure/network
   AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
 
 permissions:
@@ -30,21 +30,17 @@ jobs:
       - name: terraform init
         uses: seanchristians/lab/actions/terraform-init@main
         with:
-          stack-path: ${{ env.stack }}
+          stack-path: ${{ env.STACK }}
           aws-role-arn: ${{ env.AWS_ROLE_ARN }}
 
       - name: terraform validate
-        env:
-          STACK_PATH: ${{ env.stack }}
         run: |
-          terraform -chdir="$STACK_PATH" validate
+          terraform -chdir="$STACK" validate
 
       - name: terraform plan
-        env:
-          STACK_PATH: ${{ env.stack }}
         run: |
           CHANGE_CODE=0
-          terraform -chdir="$STACK_PATH" plan -detailed-exitcode -compact-warnings -no-color -out=plan.tfplan || CHANGE_CODE=$?
+          terraform -chdir="$STACK" plan -detailed-exitcode -compact-warnings -no-color -out=plan.tfplan || CHANGE_CODE=$?
           if [ $CHANGE_CODE -eq 1 ]; then
             exit 1
           fi
@@ -56,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: ${{ github.run_id }}-terraform-plan
-          path: ${{ env.stack }}/plan.tfplan
+          path: ${{ env.STACK }}/plan.tfplan
           retention-days: 10
           overwrite: true
 
@@ -79,7 +75,7 @@ jobs:
       - name: terraform init
         uses: seanchristians/lab/actions/terraform-init@main
         with:
-          stack-path: ${{ env.stack }}
+          stack-path: ${{ env.STACK }}
           aws-role-arn: ${{ env.AWS_ROLE_ARN }}
 
       - name: Download Plan Artifact
@@ -90,7 +86,6 @@ jobs:
 
       - name: terraform apply
         env:
-          STACK_PATH: ${{ env.stack }}
           PLAN_ARTIFACT: ${{ steps.plan-download-artifact.outputs.download-path }}/plan.tfplan
         run: |
-          terraform -chdir="$STACK_PATH" apply -input=false "$PLAN_ARTIFACT"
+          terraform -chdir="$STACK" apply -input=false "$PLAN_ARTIFACT"
