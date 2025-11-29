@@ -1,0 +1,23 @@
+name: Verify Terraform Code Formatting
+on:
+  pull_request:
+    paths:
+      - "**.tf"
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check-terraform-fmt:
+    name: Check Terraform Code Formatting
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: hashicorp/setup-terraform@v3
+      - run: |
+          terraform fmt -recursive -check >> $GITHUB_STEP_SUMMARY
