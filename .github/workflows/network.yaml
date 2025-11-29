@@ -42,8 +42,8 @@ jobs:
       - name: Configure branch workspace
         if: github.ref_name != 'main'
         run: |
-          terraform state pull
-          terraform workspace new -state=terraform.tfstate "$WORKSPACE_REF"
+          terraform -chdir="$STACK" state pull
+          terraform -chdir="$STACK" workspace new -state=terraform.tfstate "$WORKSPACE_REF"
 
       - name: terraform plan
         run: |
@@ -95,7 +95,7 @@ jobs:
       - name: Switch to branch workspace
         if: github.ref_name != 'main'
         run: |
-          terraform workspace select "$WORKSPACE_REF"
+          terraform -chdir="$STACK" workspace select "$WORKSPACE_REF"
 
       - name: terraform apply
         run: |
