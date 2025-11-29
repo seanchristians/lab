@@ -1,4 +1,4 @@
-name: Terraform Network Stack (development)
+name: Terraform Plan Network Stack
 on:
   workflow_dispatch:
   pull_request:
@@ -7,8 +7,6 @@ on:
 
 env:
   STACK: infrastructure/network
-  WORKSPACE_REF: ${{ github.ref }}
-  PLAN_CACHE_KEY: tfplan-cache-${{ github.run_id }}.${{ github.run_attempt }}
 
 permissions: {}
 
@@ -20,14 +18,11 @@ jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    if: github.ref_name	!= 'main'
     permissions:
       id-token: write
       contents: read
     steps:
       - uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Authenticate Terraform Providers
         uses: ./.github/workflows/terraform-providers-auth/network.yaml
@@ -41,70 +36,12 @@ jobs:
 
       - name: Terraform Init
         run: |
-          terraform -chdir="$STACK_PATH" init -input=false
+          terraform -chdir="$STACK" init -input=false
 
       - name: Terraform Validate
         run: |
           terraform -chdir="$STACK" validate
 
-      - name: Configure Branch Workspace
-        uses: ./.github/workflows/terraform-select-workspace.yaml
-        with:
-          STACK: ${{ env.STACK }}
-          WORKSPACE_REF: ${{ env.WORKSPACE_REF }}
-
       - name: Terraform Plan
         run: |
-          CHANGE_CODE=0
-          terraform -chdir="$STACK" plan -detailed-exitcode -compact-warnings -no-color -out=plan.tfplan || CHANGE_CODE=$?
-          if [ $CHANGE_CODE -eq 1 ]; then
-            exit 1
-          fi
-          echo "CHANGES_PLANNED=$(test $CHANGE_CODE -eq 2 && echo 'true' || echo 'false')" >> $GITHUB_ENV
-
-      - name: Cache Terraform Plan
-        if: env.CHANGES_PLANNED == true
-        id: plan-cache
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.STACK }}
-          key: ${{ env.PLAN_CACHE_KEY }}
-
-    outputs:
-      changes-planned: ${{ env.CHANGES_PLANNED }}
-
-  terraform-apply:
-    name: Terraform Apply
-    runs-on: ubuntu-latest
-    environment: development
-    needs: terraform-plan
-    if: github.ref_name	!= 'main' && needs.terraform-plan.outputs.changes-planned == true
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Restore Terraform Plan
-        uses: actions/cache/restore@v4
-        with:
-          key: ${{ env.PLAN_CACHE_KEY }}
-          fail-on-cache-miss: true
-
-      - name: Authenticate Terraform Providers
-        uses: ./.github/workflows/terraform-providers-auth/network.yaml
-        with:
-          AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
-          TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          TAILSCALE_CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Configure Branch Workspace
-        uses: ./.github/workflows/terraform-select-workspace.yaml
-        with:
-          STACK: ${{ env.STACK }}
-          WORKSPACE_REF: ${{ env.WORKSPACE_REF }}
-
-      - name: Terraform Apply
-        run: |
-          terraform -chdir="$STACK" apply -input=false plan.tfplan
+          terraform -chdir="$STACK" plan -compact-warnings -no-color -out=plan.tfplan
