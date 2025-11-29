@@ -11,9 +11,7 @@ env:
   WORKSPACE_REF: ${{ github.ref }}
   PLAN_CACHE_KEY: tfplan-cache-${{ github.run_id }}.${{ github.run_attempt }}
 
-permissions:
-  id-token: write
-  contents: read
+permissions: {}
 
 defaults:
   run:
@@ -23,6 +21,9 @@ jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: seanchristians/lab/actions/tailscale-login@main
         with:
@@ -71,6 +72,9 @@ jobs:
     environment: development
     needs: terraform-plan
     if: ${{ needs.terraform-plan.outputs.changes-planned == true }}
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Restore Terraform Plan
         uses: actions/cache/restore@v4
