@@ -72,6 +72,12 @@ jobs:
     needs: terraform-plan
     if: ${{ needs.terraform-plan.outputs.changes-planned == true }}
     steps:
+      - name: Restore Terraform Plan
+        uses: actions/cache/restore@v4
+        with:
+          key: ${{ env.PLAN_CACHE_KEY }}
+          fail-on-cache-miss: true
+
       - uses: seanchristians/lab/actions/tailscale-login@main
         with:
           client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
@@ -85,12 +91,6 @@ jobs:
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
-
-      - name: Restore Terraform Plan
-        uses: actions/cache/restore@v4
-        with:
-          key: ${{ env.PLAN_CACHE_KEY }}
-          fail-on-cache-miss: true
 
       - name: Switch to branch workspace
         if: github.ref_name != 'main'
