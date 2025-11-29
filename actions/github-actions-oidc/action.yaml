@@ -17,11 +17,13 @@ runs:
   steps:
     - shell: bash
       id: request-token
+      env:
+        AUDIENCE: ${{ inputs.audience }}
       run: |
         export TOKEN=$(
           curl -sL -G \
           -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          --data-urlencode 'audience=${{ inputs.audience }}' \
+          --data-urlencode "audience=$AUDIENCE" \
           "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value'
         )
 

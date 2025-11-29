@@ -20,6 +20,9 @@ runs:
         audience: ${{ inputs.audience }}
 
     - shell: bash
+      env:
+        OIDC_TOKEN: ${{ steps.oidc-token.outputs.oidc-token }}
+        CLIENT_ID: ${{ inputs.client-id }}
       run: |
-        echo 'TAILSCALE_IDENTITY_TOKEN=${{ steps.oidc-token.outputs.oidc-token }}' >> $GITHUB_ENV
-        echo 'TAILSCALE_OAUTH_CLIENT_ID=${{ inputs.client-id }}' >> $GITHUB_ENV
+        echo "TAILSCALE_IDENTITY_TOKEN=$OIDC_TOKEN" >> $GITHUB_ENV
+        echo "TAILSCALE_OAUTH_CLIENT_ID=$CLIENT_ID" >> $GITHUB_ENV

@@ -25,6 +25,7 @@ runs:
 
     - name: terraform init
       shell: bash
+      env:
+        STACK_PATH: ${{ inputs.stack-path }}
       run: |
-        cd '${{ inputs.stack-path }}'
-        terraform init -input=false
+        terraform -chdir="$STACK_PATH" init -input=false
