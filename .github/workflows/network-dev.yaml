@@ -26,6 +26,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Authenticate Terraform Providers
         uses: ./.github/workflows/terraform-providers-auth/network.yaml
@@ -46,9 +48,10 @@ jobs:
           terraform -chdir="$STACK" validate
 
       - name: Configure Branch Workspace
-        run: |
-          terraform -chdir="$STACK" state pull
-          terraform -chdir="$STACK" workspace new -state=terraform.tfstate "$WORKSPACE_REF"
+        uses: ./.github/workflows/terraform-select-workspace.yaml
+        with:
+          STACK: ${{ env.STACK }}
+          WORKSPACE_REF: ${{ env.WORKSPACE_REF }}
 
       - name: Terraform Plan
         run: |
@@ -96,10 +99,11 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Switch to Branch Workspace
-        if: github.ref_name != 'main'
-        run: |
-          terraform -chdir="$STACK" workspace select "$WORKSPACE_REF"
+      - name: Configure Branch Workspace
+        uses: ./.github/workflows/terraform-select-workspace.yaml
+        with:
+          STACK: ${{ env.STACK }}
+          WORKSPACE_REF: ${{ env.WORKSPACE_REF }}
 
       - name: Terraform Apply
         run: |
