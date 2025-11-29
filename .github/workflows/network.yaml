@@ -1,4 +1,4 @@
-name: Terraform Network Stack
+name: Terraform Network Stack (development)
 on:
   workflow_dispatch:
   pull_request:
@@ -8,6 +8,7 @@ on:
 env:
   STACK: infrastructure/network
   AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+  WORKSPACE_REF: ${{ github.ref }}
 
 permissions:
   id-token: write
@@ -36,6 +37,12 @@ jobs:
       - name: terraform validate
         run: |
           terraform -chdir="$STACK" validate
+
+      - name: Configure branch workspace
+        if: github.ref_name != 'main'
+        run: |
+          terraform state pull
+          terraform workspace new -state=terraform.tfstate "$WORKSPACE_REF"
 
       - name: terraform plan
         run: |
@@ -77,6 +84,11 @@ jobs:
         with:
           stack-path: ${{ env.STACK }}
           aws-role-arn: ${{ env.AWS_ROLE_ARN }}
+
+      - name: Switch to branch workspace
+        if: github.ref_name != 'main'
+        run: |
+          terraform workspace select "$WORKSPACE_REF"
 
       - name: Download Plan Artifact
         id: plan-download-artifact
