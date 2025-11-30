@@ -1,45 +1,64 @@
 {
 	"tagOwners": {
-		"tag:home":           ["autogroup:admin"],
-		"tag:infrastructure": ["autogroup:admin"],
+		"tag:home": ["autogroup:admin"],
+		"tag:infrastructure": ["autogroup:admin"]
 	},
 
-	"acls": [
+	"grants": [
 		{
-			"action": "accept",
-			"src":    ["autogroup:admin"],
-			"dst":    ["autogroup:tagged:*"],
+			"src": ["autogroup:admin"],
+			"dst": ["autogroup:tagged"],
+			"ip": ["*"]
 		},
 		{
-			"action": "accept",
-			"src":    ["autogroup:member"],
-			"dst":    ["tag:home:443", "tag:home:80", "autogroup:self:*"],
+			"src": ["autogroup:member"],
+			"dst": ["tag:home"],
+			"ip": ["80", "443"]
 		},
 		{
-			"action": "accept",
-			"src":    ["tag:infrastructure"],
-			"dst":    ["tag:home:22"],
+			"src": ["autogroup:member"],
+			"dst": ["autogroup:self"],
+			"ip": ["*"]
 		},
+		{
+			"src": ["tag:infrastructure"],
+			"dst": ["tag:home"],
+			"ip": ["22"]
+		}
 	],
 
 	"ssh": [
 		{
 			"action": "accept",
-			"src":    ["autogroup:admin"],
-			"dst":    ["autogroup:tagged"],
-			"users":  ["root", "autogroup:nonroot"],
+			"src": ["autogroup:admin"],
+			"dst": ["autogroup:tagged"],
+			"users": ["root", "autogroup:nonroot"]
 		},
 		{
 			"action": "accept",
-			"src":    ["tag:infrastructure"],
-			"dst":    ["tag:home"],
-			"users":  ["autogroup:nonroot"],
+			"src": ["tag:infrastructure"],
+			"dst": ["tag:home"],
+			"users": ["autogroup:nonroot"]
 		},
 		{
 			"action": "accept",
-			"src":    ["autogroup:member"],
-			"dst":    ["autogroup:self"],
-			"users":  ["autogroup:nonroot"],
-		},
+			"src": ["autogroup:member"],
+			"dst": ["autogroup:self"],
+			"users": ["autogroup:nonroot"]
+		}
 	],
+
+	"sshTests": [
+		{
+			"src": "tag:infrastructure",
+			"dst": ["tag:home"],
+			"accept": ["certmgr"],
+			"deny": ["root"]
+		},
+		{
+			"src": "tag:home",
+			"dst": ["tag:infrastructure"],
+			"deny": ["root", "ubuntu", "ec2-user"]
+		}
+	]
 }
