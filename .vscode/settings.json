@@ -1,5 +1,8 @@
 {
 	"files.associations": {
-        "*.hujson": "jsonc"
-    }
+		"*.hujson": "jsonc"
+	},
+	"[terraform]": {
+		"editor.defaultFormatter": "hashicorp.terraform"
+	}
 }
