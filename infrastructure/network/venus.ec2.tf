@@ -3,6 +3,10 @@ resource "aws_instance" "venus" {
   subnet_id           = aws_default_subnet.cac1-az4.id
   enable_primary_ipv6 = true
 
+  vpc_security_group_ids = [
+    aws_security_group.venus.id
+  ]
+
   tags = {
     "Name" = "Venus"
   }
