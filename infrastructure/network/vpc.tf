@@ -8,3 +8,13 @@ resource "aws_default_subnet" "cac1-az4" {
   assign_ipv6_address_on_creation = true
   map_public_ip_on_launch         = false
 }
+
+import {
+  to = aws_default_vpc.ca-central-1
+  id = "vpc-0af7febe903b8bfc1"
+}
+
+import {
+  to = aws_default_subnet.cac1-az4
+  id = "subnet-08c44bd473664cd8b"
+}
