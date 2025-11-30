@@ -20,7 +20,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Created-By = "terraform-network"
+      Managed-By = "terraform"
     }
   }
 }
