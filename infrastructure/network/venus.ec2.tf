@@ -13,7 +13,21 @@ resource "aws_instance" "venus" {
   }
 }
 
+resource "aws_ebs_volume" "venus" {
+  availability_zone = aws_default_subnet.cac1-az4.availability_zone
+  encrypted         = true
+  size              = "8"
+  type              = "gp3"
+  iops              = "3000"
+  throughput        = "125"
+}
+
 import {
   to = aws_instance.venus
   id = "i-03250ab66e443ceba"
+}
+
+import {
+  to = aws_ebs_volume.venus
+  id = "vol-086f93c1a420c9722"
 }
