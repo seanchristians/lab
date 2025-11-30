@@ -22,11 +22,9 @@ jobs:
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           tags: tag:ci
 
-      - uses: appleboy/ssh-action@v1
-        with:
-          host: venus.scchq.net
-          username: root
-          script: |
-            /usr/bin/dnf upgrade --security --assumeyes --releasever=latest
-            /usr/bin/dnf autoremove --assumeyes
-            /usr/sbin/reboot
+      - env:
+          SSH: ssh -o StrictHostKeyChecking=no root@veronica.scchq.net
+        run: |
+          $SSH '/usr/bin/dnf upgrade --security --assumeyes --releasever=latest'
+          $SSH '/usr/bin/dnf autoremove --assumeyes'
+          $SSH '/usr/sbin/reboot'
