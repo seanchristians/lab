@@ -21,9 +21,10 @@ jobs:
           oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           tags: tag:ci
+          ping: venus.scchq.net
 
       - env:
-          SSH: ssh -o StrictHostKeyChecking=no root@veronica.scchq.net
+          SSH: ssh -o StrictHostKeyChecking=no root@venus.scchq.net
         run: |
           $SSH '/usr/bin/dnf upgrade --security --assumeyes --releasever=latest'
           $SSH '/usr/bin/dnf autoremove --assumeyes'
