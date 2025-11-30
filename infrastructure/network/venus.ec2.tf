@@ -1,7 +1,7 @@
 resource "aws_instance" "venus" {
   ami                 = "ami-0c9146af31980eb75"
   instance_type       = "t4g.nano"
-  subnet_id           = aws_default_subnet.cac1-az4.id
+  availability_zone   = aws_default_subnet.cac1-az4.availability_zone
   enable_primary_ipv6 = true
 
   vpc_security_group_ids = [
