@@ -46,5 +46,19 @@
 			"dst": ["autogroup:self"],
 			"users": ["autogroup:nonroot"]
 		}
+	],
+
+	"sshTests": [
+		{
+			"src": "tag:infrastructure",
+			"dst": ["tag:home"],
+			"accept": ["certmgr"],
+			"deny": ["root"]
+		},
+		{
+			"src": "tag:home",
+			"dst": ["tag:infrastructure"],
+			"deny": ["root", "ubuntu", "ec2-user"]
+		}
 	]
 }
