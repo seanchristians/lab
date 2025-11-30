@@ -1,7 +1,8 @@
 {
 	"tagOwners": {
 		"tag:home": ["autogroup:admin"],
-		"tag:infrastructure": ["autogroup:admin"]
+		"tag:infrastructure": ["autogroup:admin"],
+		"tag:ci": ["autogroup:admin"]
 	},
 
 	"grants": [
@@ -24,6 +25,11 @@
 			"src": ["tag:infrastructure"],
 			"dst": ["tag:home"],
 			"ip": ["22"]
+		},
+		{
+			"src": ["tag:ci"],
+			"dst": ["tag:infrastructure"],
+			"ip": ["*"]
 		}
 	],
 
@@ -45,6 +51,12 @@
 			"src": ["autogroup:member"],
 			"dst": ["autogroup:self"],
 			"users": ["autogroup:nonroot"]
+		},
+		{
+			"action": "accept",
+			"src": ["tag:ci"],
+			"dst": ["tag:infrastructure"],
+			"users": ["root"]
 		}
 	],
 
