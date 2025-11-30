@@ -22,6 +22,12 @@ resource "aws_ebs_volume" "venus" {
   throughput        = "125"
 }
 
+resource "aws_volume_attachment" "venus" {
+  instance_id = aws_instance.venus.id
+  volume_id   = aws_ebs_volume.venus.id
+  device_name = "/dev/xvda"
+}
+
 import {
   to = aws_instance.venus
   id = "i-03250ab66e443ceba"
