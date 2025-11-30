@@ -1,5 +1,5 @@
 resource "aws_instance" "venus" {
-  ami                 = data.aws_ami.amazon_linux_latest.id
+  ami                 = "ami-0c9146af31980eb75"
   instance_type       = "t4g.nano"
   subnet_id           = aws_default_subnet.cac1-az4.id
   enable_primary_ipv6 = true
@@ -10,25 +10,6 @@ resource "aws_instance" "venus" {
 
   tags = {
     Name = "Venus"
-  }
-}
-
-data "aws_ami" "amazon_linux_latest" {
-  owners      = ["amazon"]
-  most_recent = true
-  filter {
-    name   = "architecture"
-    values = ["arm64"]
-  }
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-*-arm64"]
-  }
-
-  filter {
-    name   = "free-tier-eligible"
-    values = ["true"]
   }
 }
 
