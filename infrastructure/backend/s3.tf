@@ -13,7 +13,7 @@ resource "aws_s3_bucket_versioning" "terraform_state" {
 resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
   bucket = aws_s3_bucket.terraform_state.id
   rule {
-    id = "version-history"
+    id     = "version-history"
     status = "Enabled"
     noncurrent_version_expiration {
       noncurrent_days = 30
