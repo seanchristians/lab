@@ -12,8 +12,3 @@ resource "aws_instance" "venus" {
     Name = "Venus"
   }
 }
-
-import {
-  to = aws_instance.venus
-  id = "i-03250ab66e443ceba"
-}
