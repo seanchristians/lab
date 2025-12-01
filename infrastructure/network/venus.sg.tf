@@ -1,6 +1,6 @@
 resource "aws_security_group" "venus" {
   name   = "Venus"
-  vpc_id = aws_default_vpc.ca-central-1.id
+  vpc_id = data.aws_vpc.default_ca_central_1.id
 }
 
 resource "aws_vpc_security_group_egress_rule" "venus_all_all_v6" {

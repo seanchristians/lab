@@ -1,10 +1,8 @@
-resource "aws_default_vpc" "ca-central-1" {
-  assign_generated_ipv6_cidr_block = true
+data "aws_vpc" "default_ca_central_1" {
+  default = true
 }
 
-resource "aws_default_subnet" "cac1-az4" {
-  availability_zone               = "ca-central-1d"
-  ipv6_native                     = true
-  assign_ipv6_address_on_creation = true
-  map_public_ip_on_launch         = false
+data "aws_subnet" "default_cac1_az4" {
+  vpc_id         = data.aws_vpc.default_ca_central_1.id
+  default_for_az = true
 }
