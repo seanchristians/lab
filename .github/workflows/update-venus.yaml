@@ -16,14 +16,16 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: tailscale/github-action@v4
+      - name: Connect to Tailnet
+        uses: tailscale/github-action@v4
         with:
           oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           tags: tag:ci
           ping: venus.scchq.net
 
-      - env:
+      - name: Software Update
+        env:
           SSH: ssh -o StrictHostKeyChecking=no root@venus.scchq.net
         run: |
           $SSH '/usr/bin/dnf upgrade --security --assumeyes --releasever=latest && /usr/bin/dnf autoremove --assumeyes && /usr/sbin/reboot'
