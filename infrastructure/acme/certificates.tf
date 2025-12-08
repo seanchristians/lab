@@ -20,10 +20,15 @@ resource "acme_certificate" "veronica" {
 
   provisioner "file" {
     content     = "${self.certificate_pem}${self.issuer_pem}"
-    destination = "/home/certmgr/ssl/fullchain.cer"
+    destination = "/home/certmgr/ssl/${self.certificate_domain}.fullchain.cer"
   }
 
   provisioner "remote-exec" {
-    inline = ["/etc/init.d/uhttpd restart"]
+    inline = [
+      "/sbin/uci set uhttpd.main.key='/home/certmgr/ssl/${self.certificate_domain}.key'",
+      "/sbin/uci set uhttpd.main.cert='/home/certmgr/ssl/${self.certificate_domain}.fullchain.cer'",
+      "/sbin/uci commit uhttpd",
+      "/etc/init.d/uhttpd restart"
+    ]
   }
 }

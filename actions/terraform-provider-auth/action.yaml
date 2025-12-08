@@ -3,6 +3,9 @@ author: Sean Christians
 description: Authenticate with Terraform providers by setting their environment variables.
 
 inputs:
+  step:
+    description: Terraform step, either plan or apply
+    default: plan
   stack:
     description: Path to Terraform code
     required: true
@@ -17,14 +20,14 @@ runs:
         role-to-assume: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
 
     - name: Authenticate with Tailscale
-      if: inputs.stack == 'infrstructure/network'
+      if: inputs.stack == 'infrastructure/network'
       uses: seanchristians/lab/actions/tailscale-login@main
       with:
         client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
         audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
 
     - name: Join Tailnet
-      if: inputs.stack == 'infrastructure/acme'
+      if: inputs.stack == 'infrastructure/acme' && inputs.step == 'apply'
       uses: tailscale/github-action@v4
       with:
         oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
