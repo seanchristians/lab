@@ -32,3 +32,13 @@ runs:
         tags: tag:ci
         version: latest
         ping: veronica.scchq.net
+
+    - name: Load Porkbun API Secrets
+      if: inputs.stack == 'infrastructure/acme'
+      shell: bash
+      env:
+        PORKBUN_API_KEY: ${{ secrets.PORKBUN_API_KEY }}
+        PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_API_KEY }}
+      run: |
+        echo "PORKBUN_API_KEY=$PORKBUN_API_KEY" >> $GITHUB_ENV
+        echo "PORKBUN_SECRET_API_KEY=$PORKBUN_SECRET_API_KEY" >> $GITHUB_ENV
