@@ -27,7 +27,7 @@ runs:
       uses: actions/cache/restore@v4
       with:
         path: |
-          ${{ env.TF_DATA_DIR }}
+          ${{ env.TF_DATA_DIR }}/providers
           ${{ steps.env.outputs.LOCKFILE_PATH }}
         key: tf-provider-cache-${{ runner.os }}-${{ inputs.working-directory }}
 
@@ -47,6 +47,6 @@ runs:
       uses: actions/cache/save@v4
       with:
         path: |
-          ${{ env.TF_DATA_DIR }}
+          ${{ env.TF_DATA_DIR }}/providers
           ${{ steps.env.outputs.LOCKFILE_PATH }}
         key: tf-provider-cache-${{ runner.os }}-${{ inputs.working-directory }}
