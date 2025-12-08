@@ -41,7 +41,6 @@ runs:
       run: |
         echo "LOCKFILE_START_HASH=$LOCKFILE_START_HASH" >> $GITHUB_OUTPUT
         terraform -chdir="$WORKDIR" init
-        ls -lAR .terraform
         ls -lAR "$WORKDIR/.terraform"
 
     - name: Update Terrafork Providers Cache
