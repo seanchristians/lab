@@ -51,28 +51,28 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    env:
-      STACK: ${{ matrix.stack }}
     steps:
       - uses: actions/checkout@v5
 
       - name: Authenticate Terraform Providers
-        uses: seanchristians/lab/actions/terraform-provider-auth@main
+        uses: ./actions/terraform-provider-auth
         with:
-          AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
-          TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          TAILSCALE_CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          stack: ${{ matrix.stack }}
 
       - name: Terraform Init
         uses: seanchristians/lab/actions/terraform-init@main
         with:
-          working-directory: ${{ env.STACK }}
+          working-directory: ${{ matrix.stack }}
 
       - name: Terraform Validate
+        env:
+          STACK: ${{ matrix.stack }}
         run: |
           terraform -chdir="$STACK" validate
 
       - name: Terraform Plan
+        env:
+          STACK: ${{ matrix.stack }}
         run: |
           terraform -chdir="$STACK" plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
 
@@ -88,23 +88,21 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    env:
-      STACK: ${{ matrix.stack }}
     steps:
       - uses: actions/checkout@v5
 
       - name: Authenticate Terraform Providers
-        uses: seanchristians/lab/actions/terraform-provider-auth@main
+        uses: ./actions/terraform-provider-auth
         with:
-          AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
-          TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          TAILSCALE_CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          stack: ${{ matrix.stack }}
 
       - name: Terraform Init
         uses: seanchristians/lab/actions/terraform-init@main
         with:
-          working-directory: ${{ env.STACK }}
+          working-directory: ${{ matrix.stack }}
 
       - name: Terraform Apply
+        env:
+          STACK: ${{ matrix.stack }}
         run: |
           terraform -chdir="$STACK" apply -input=false -auto-approve
