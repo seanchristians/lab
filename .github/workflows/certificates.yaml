@@ -29,6 +29,7 @@ jobs:
       - name: Authenticate Terraform Providers
         uses: ./actions/terraform-provider-auth
         with:
+          step: apply
           stack: ${{ env.STACK }}
 
       - name: Terraform Init
