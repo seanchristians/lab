@@ -1,5 +1,9 @@
+ephemeral "tls_private_key" "veronica" {
+  algorithm = "ED25519"
+}
+
 resource "tls_cert_request" "veronica" {
-  private_key_pem = var.cert_private_key_veronica
+  private_key_pem = ephemeral.tls_private_key.veronica.private_key_pem
   dns_names       = ["veronica.${var.domain}"]
 
   subject {
@@ -13,5 +17,22 @@ resource "acme_certificate" "veronica" {
 
   dns_challenge {
     provider = "porkbun"
+  }
+
+  connection {
+    type            = "ssh"
+    user            = "certmgr"
+    host            = self.certificate_domain
+    target_platform = "unix"
+  }
+
+  provisioner "file" {
+    content     = self.private_key_pem
+    destination = "/home/certmgr/ssl/${self.certificate_domain}.key"
+  }
+
+  provisioner "file" {
+    content     = "${self.certificate_pem}${self.issuer_pem}"
+    destination = "/home/certmgr/ssl/fullchain.cer"
   }
 }
