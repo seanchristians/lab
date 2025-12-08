@@ -27,7 +27,7 @@ runs:
       if: inputs.stack == 'infrastructure/acme'
       uses: tailscale/github-action@v4
       with:
-        oidc-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+        oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
         audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
         tags: tag:ci
         version: latest
