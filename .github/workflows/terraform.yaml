@@ -46,7 +46,7 @@ jobs:
       matrix:
         stack: ${{ fromJSON(needs.scan-branches.outputs.matrix) }}
       fail-fast: false
-    name: Plan ${{ matrix.stack }}
+    name: ${{ matrix.stack && "Plan ${{ matrix.stack }}" || "Plan" }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -83,7 +83,7 @@ jobs:
       matrix:
         stack: ${{ fromJSON(needs.scan-branches.outputs.matrix) }}
       fail-fast: false
-    name: Apply ${{ matrix.stack }}
+    name: ${{ matrix.stack && "Apply ${{ matrix.stack }}" || "Apply" }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
