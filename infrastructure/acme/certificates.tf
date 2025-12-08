@@ -1,5 +1,5 @@
 resource "tls_cert_request" "veronica" {
-  private_key_pem = ""
+  private_key_pem = var.cert_private_key_veronica
   dns_names       = ["veronica.${var.domain}"]
 
   subject {
