@@ -22,4 +22,8 @@ resource "acme_certificate" "veronica" {
     content     = "${self.certificate_pem}${self.issuer_pem}"
     destination = "/home/certmgr/ssl/fullchain.cer"
   }
+
+  provisioner "remote-exec" {
+    inline = ["/etc/init.d/uhttpd restart"]
+  }
 }
