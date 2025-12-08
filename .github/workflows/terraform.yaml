@@ -20,6 +20,8 @@ on:
 
 env:
   TF_IN_AUTOMATION: true
+  PORKBUN_API_KEY: ${{ secrets.PORKBUN_API_KEY }}
+  PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_API_KEY }}
 
 permissions: {}
 
