@@ -32,12 +32,10 @@ jobs:
           TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           TAILSCALE_CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-
       - name: Terraform Init
-        run: |
-          terraform -chdir="$STACK" init
+        uses: seanchristians/lab/actions/terraform-init@main
+        with:
+          working-directory: ${{ env.STACK }}
 
       - name: Terraform Validate
         run: |
