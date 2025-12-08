@@ -22,8 +22,8 @@
 			"ip": ["*"]
 		},
 		{
-			"src": ["tag:infrastructure"],
-			"dst": ["tag:home"],
+			"src": ["tag:ci"],
+			"dst": ["autogroup:tagged"],
 			"ip": ["22"]
 		}
 	],
@@ -37,8 +37,8 @@
 		},
 		{
 			"action": "accept",
-			"src": ["tag:infrastructure"],
-			"dst": ["tag:home"],
+			"src": ["tag:ci"],
+			"dst": ["autogroup:tagged"],
 			"users": ["autogroup:nonroot"]
 		},
 		{
@@ -51,7 +51,7 @@
 
 	"sshTests": [
 		{
-			"src": "tag:infrastructure",
+			"src": "tag:ci",
 			"dst": ["tag:home"],
 			"accept": ["certmgr"],
 			"deny": ["root"]
