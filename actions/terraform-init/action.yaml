@@ -19,15 +19,16 @@ runs:
       shell: bash
       env:
         LOCKFILE_PATH: ${{ inputs.working-directory }}/.terraform.lock.hcl
+        PROVIDER_PATH: ${{ inputs.working-directory }}/.terraform/providers
       run: |
-        echo "TF_DATA_DIR=.terraform" >> $GITHUB_ENV
+        echo "PROVIDER_PATH=$PROVIDER_PATH" >> $GITHUB_OUTPUT
         echo "LOCKFILE_PATH=$LOCKFILE_PATH" >> $GITHUB_OUTPUT
 
     - name: Restore Terraform Providers from Cache
       uses: actions/cache/restore@v4
       with:
         path: |
-          ${{ env.TF_DATA_DIR }}/providers
+          ${{ steps.env.outputs.PROVIDER_PATH }}
           ${{ steps.env.outputs.LOCKFILE_PATH }}
         key: tf-provider-cache-${{ runner.os }}-${{ inputs.working-directory }}
 
@@ -41,13 +42,12 @@ runs:
       run: |
         echo "LOCKFILE_START_HASH=$LOCKFILE_START_HASH" >> $GITHUB_OUTPUT
         terraform -chdir="$WORKDIR" init
-        ls -lAR "$WORKDIR/.terraform"
 
     - name: Update Terrafork Providers Cache
       if: hashFiles(steps.env.outputs.LOCKFILE_PATH) != steps.tf-init.outputs.LOCKFILE_START_HASH
       uses: actions/cache/save@v4
       with:
         path: |
-          ${{ env.TF_DATA_DIR }}/providers
+          ${{ steps.env.outputs.PROVIDER_PATH }}
           ${{ steps.env.outputs.LOCKFILE_PATH }}
         key: tf-provider-cache-${{ runner.os }}-${{ inputs.working-directory }}
