@@ -1,6 +1,14 @@
 name: Terraform
 on:
   workflow_dispatch:
+    inputs:
+      stack:
+        description: Terraform Stack
+        required: true
+        type: choice
+        options:
+          - infrastructure/acme
+          - infrastructure/network
   pull_request:
     paths:
       - infrastructure/**
@@ -12,6 +20,8 @@ on:
 
 env:
   TF_IN_AUTOMATION: true
+  PORKBUN_API_KEY: ${{ secrets.PORKBUN_API_KEY }}
+  PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_API_KEY }}
 
 permissions: {}
 
@@ -26,10 +36,11 @@ jobs:
     permissions:
       contents: read
     outputs:
-      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
+      matrix: ${{ github.event_name == 'workflow_dispatch' && steps.selected-stack.outputs.stack || steps.changed-files.outputs.all_changed_files }}
     steps:
       - uses: actions/checkout@v5
       - id: changed-files
+        if: github.event_name != 'workflow_dispatch'
         uses: tj-actions/changed-files@v47
         with:
           dir_names: true
@@ -38,6 +49,12 @@ jobs:
           files: infrastructure/**
           files_ignore: infrastructure/backend/**
           matrix: true
+      - id: selected-stack
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          STACK: ${{ inputs.stack }}
+        run: |
+          echo "stack=[\"$STACK\"]" >> $GITHUB_OUTPUT
 
   terraform-plan:
     if: github.ref_name != 'main'
