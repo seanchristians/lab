@@ -1,0 +1,110 @@
+name: Terraform
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - infrastructure/**
+  push:
+    branches:
+      - main
+    paths:
+      - infrastructure/**
+
+env:
+  TF_IN_AUTOMATION: true
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  scan-branches:
+    name: Scan Stacks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: changed-files
+        uses: tj-actions/changed-files@v47
+        with:
+          dir_names: true
+          dir_names_exclude_current_dir: true
+          dir_names_max_depth: 2
+          files: infrastructure/**
+          files_ignore: infrastructure/backend/**
+          matrix: true
+
+  terraform-plan:
+    if: github.event_name == 'pull_request'
+    needs: scan-branches
+    strategy:
+      matrix:
+        stack: ${{ fromJSON(needs.scan-branches.outputs.matrix) }}
+      fail-fast: false
+    name: Plan ${{ matrix.stack }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      STACK: ${{ matrix.stack }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Authenticate Terraform Providers
+        uses: seanchristians/lab/actions/terraform-provider-auth@main
+        with:
+          AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+          TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          TAILSCALE_CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+
+      - name: Terraform Init
+        uses: seanchristians/lab/actions/terraform-init@main
+        with:
+          working-directory: ${{ env.STACK }}
+
+      - name: Terraform Validate
+        run: |
+          terraform -chdir="$STACK" validate
+
+      - name: Terraform Plan
+        run: |
+          terraform -chdir="$STACK" plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
+
+  terraform-apply:
+    if: github.event_name == 'push'
+    needs: scan-branches
+    strategy:
+      matrix:
+        stack: ${{ fromJSON(needs.scan-branches.outputs.matrix) }}
+      fail-fast: false
+    name: Apply ${{ matrix.stack }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      STACK: ${{ matrix.stack }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Authenticate Terraform Providers
+        uses: seanchristians/lab/actions/terraform-provider-auth@main
+        with:
+          AWS_ROLE_ARN: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+          TAILSCALE_AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          TAILSCALE_CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+
+      - name: Terraform Init
+        uses: seanchristians/lab/actions/terraform-init@main
+        with:
+          working-directory: ${{ env.STACK }}
+
+      - name: Terraform Apply
+        run: |
+          terraform -chdir="$STACK" apply -input=false -auto-approve
