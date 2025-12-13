@@ -25,10 +25,7 @@ resource "acme_certificate" "veronica" {
 
   provisioner "remote-exec" {
     inline = [
-      "/sbin/uci set uhttpd.main.key='/home/certmgr/ssl/${self.certificate_domain}.key'",
-      "/sbin/uci set uhttpd.main.cert='/home/certmgr/ssl/${self.certificate_domain}.fullchain.cer'",
-      "/sbin/uci commit uhttpd",
-      "/etc/init.d/uhttpd restart"
+      "sudo /etc/init.d/uhttpd restart"
     ]
   }
 }
