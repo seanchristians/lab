@@ -25,7 +25,7 @@ resource "acme_certificate" "veronica" {
 
   provisioner "remote-exec" {
     inline = [
-      "/etc/init.d/uhttpd restart"
+      "sudo /etc/init.d/uhttpd restart"
     ]
   }
 }
