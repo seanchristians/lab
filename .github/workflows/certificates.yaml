@@ -40,6 +40,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
+          PLAN_EXIT_CODE=0
           terraform -chdir="$STACK" plan -input=false -no-color -compact-warnings -detailed-exitcode -out=tfplan || PLAN_EXIT_CODE=$?
           echo "plan=$PLAN_EXIT_CODE" >> $GITHUB_OUTPUT
 
