@@ -42,15 +42,9 @@ jobs:
         run: |
           PLAN_EXIT_CODE=0
           terraform -chdir="$STACK" plan -input=false -no-color -compact-warnings -detailed-exitcode -out=tfplan || PLAN_EXIT_CODE=$?
-          if [ $PLAN_EXIT_CODE -eq 2 ]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
-          elif [ $PLAN_EXIT_CODE -eq 0 ]; then
-            echo "changes=false" >> $GITHUB_OUTPUT
-          else
-            exit $PLAN_EXIT_CODE
-          fi
+          echo "plan=$PLAN_EXIT_CODE" >> $GITHUB_OUTPUT
 
       - name: Terraform Apply
-        if: steps.plan.outputs.changes == 'true'
+        if: steps.plan.outputs.plan == 2
         run: |
           terraform -chdir="$STACK" apply -input=false -auto-approve tfplan
