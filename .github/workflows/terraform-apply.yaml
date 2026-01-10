@@ -1,0 +1,66 @@
+name: Terraform Apply
+on:
+  workflow_dispatch:
+    inputs:
+      stack:
+        description: Terraform Stack
+        required: true
+        type: choice
+        options:
+          - infrastructure/acme
+          - infrastructure/network
+  push:
+    branches:
+      - main
+    paths:
+      - infrastructure/**
+
+env:
+  TF_IN_AUTOMATION: true
+  PORKBUN_API_KEY: ${{ secrets.PORKBUN_API_KEY }}
+  PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_API_KEY }}
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  select-stack:
+    uses: ./.github/workflows/terraform-select-stack.yaml
+
+  terraform-apply:
+    needs: select-stack
+    strategy:
+      matrix:
+        stack: ${{ fromJSON(github.event_name == 'workflow_dispatch' && steps.selected-stack.outputs.stack || needs.select-stack.outputs.matrix) }}
+      fail-fast: false
+    name: ${{ matrix.stack }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Authenticate Terraform Providers
+        uses: ./actions/terraform-provider-auth
+        with:
+          step: apply
+          stack: ${{ matrix.stack }}
+
+      - name: Terraform Init
+        env:
+          STACK: ${{ matrix.stack }}
+        run: |
+          terraform -chdir="$STACK" init
+
+      - name: Terraform Apply
+        env:
+          STACK: ${{ matrix.stack }}
+        run: |
+          terraform -chdir="$STACK" apply -input=false -auto-approve
