@@ -1,0 +1,30 @@
+name: Select Terraform Stack
+on:
+  workflow_call:
+    outputs:
+      matrix:
+        value: ${{ jobs.scan.outputs.matrix }}
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: changed-files
+        uses: tj-actions/changed-files@v47
+        with:
+          dir_names: true
+          dir_names_exclude_current_dir: true
+          dir_names_max_depth: 2
+          files: infrastructure/**
+          files_ignore: infrastructure/backend/**
+          matrix: true
