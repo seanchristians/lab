@@ -7,20 +7,20 @@ resource "acme_certificate" "veronica" {
   }
 }
 
-# Spearating the resource from the provisioner allows me to use Terraform's
+# Separating the resource from the provisioner allows me to use Terraform's
 # "replace" method when I need to re-run the provisioner without having to
 # fully re-create the resource
 
 locals {
-  manual_cert_redeploy_token = {
-    veronica = "0BA76587-7E57-4E7B-85AF-90B43E839502"
+  deployment_sentinel_value = {
+    certificate_veronica = "0BA76587-7E57-4E7B-85AF-90B43E839502"
   }
 }
 
 resource "terraform_data" "certificate_provisioner_veronica" {
   triggers_replace = [
     acme_certificate.veronica.certificate_serial,
-    local.manual_cert_redeploy_token.veronica
+    local.deployment_sentinel_value.certificate_veronica
   ]
 
   connection {
