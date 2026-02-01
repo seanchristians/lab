@@ -60,7 +60,7 @@ jobs:
 
       - name: Stack context
         if: ${{ hashFiles(format('{0}/action.yaml', matrix.stack)) != '' }}
-        uses: seanchristians/lab/actions/stack-context
+        uses: ./actions/stack-context
         with:
           stack: ${{ matrix.stack }}
 
