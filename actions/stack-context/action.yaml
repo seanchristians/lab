@@ -21,8 +21,8 @@ runs:
       env:
         STACK: ${{ inputs.stack }}
       run: |
-        mkdir $GITHUB_WORKSPACE/context
-        cp "$STACK/action.yaml" $GITHUB_WORKSPACE/context/
+        mkdir "$GITHUB_WORKSPACE/context"
+        cp "$STACK/action.yaml" "$GITHUB_WORKSPACE/context/"
 
     - name: Run stack context action
       uses: ./context
