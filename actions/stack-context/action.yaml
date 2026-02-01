@@ -12,6 +12,8 @@ runs:
   steps:
     - name: Download SOPS
       shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         gh release download -R getsops/sops -p 'sops-*.linux.amd64' -O '/usr/local/bin/sops'
         chmod +x '/usr/local/bin/sops'
