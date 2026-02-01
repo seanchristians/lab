@@ -58,6 +58,12 @@ jobs:
           aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
           role-to-assume: ${{ vars.TF_BACKEND_AWS_ROLE }}
 
+      - name: Stack context
+        if: ${{ hashFiles(format('{0}/action.yaml', matrix.stack)) != '' }}
+        uses: seanchristians/lab/actions/stack-context
+        with:
+          stack: ${{ matrix.stack }}
+
       - name: Terraform Init
         env:
           TF_BACKEND_AWS_BUCKET: ${{ vars.TF_BACKEND_AWS_BUCKET }}

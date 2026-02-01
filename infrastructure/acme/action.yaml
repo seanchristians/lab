@@ -1,0 +1,7 @@
+name: ACME stack context
+author: Sean Christians
+description: Provide context and automation for the ACME stack.
+
+runs:
+  using: composite
+  steps:

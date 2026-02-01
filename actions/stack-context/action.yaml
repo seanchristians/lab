@@ -1,0 +1,28 @@
+name: Stack context
+author: Sean Christians
+description: Provide context and automation for Terraform stacks.
+
+inputs:
+  stack:
+    description: Path to Terraform code
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Download SOPS
+      shell: bash
+      run: |
+        gh release download -R getsops/sops -p 'sops-*.linux.amd64' -O '/usr/local/bin/sops'
+        chmod +x '/usr/local/bin/sops'
+
+    - name: Import stack context action
+      shell: bash
+      env:
+        STACK: ${{ inputs.stack }}
+      run: |
+        mkdir $GITHUB_WORKSPACE/context
+        cp "$STACK/action.yaml" $GITHUB_WORKSPACE/context/
+
+    - name: Run stack context action
+      uses: ./context
