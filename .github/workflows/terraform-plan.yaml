@@ -62,12 +62,13 @@ jobs:
         env:
           TF_BACKEND_AWS_BUCKET: ${{ vars.TF_BACKEND_AWS_BUCKET }}
           TF_BACKEND_AWS_REGION: ${{ vars.TF_BACKEND_AWS_REGION }}
+          STACK: ${{ matrix.stack }}
         run: |
           cat > backend.tf << HCP
           terraform {
             backend "s3" {
               bucket       = "${TF_BACKEND_AWS_BUCKET}"
-              key          = "$(basename $PWD)/terraform.tfstate"
+              key          = "$STACK/terraform.tfstate"
               region       = "${TF_BACKEND_AWS_REGION}"
               use_lockfile = true
             }
