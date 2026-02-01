@@ -40,8 +40,9 @@ jobs:
         stack: ${{ fromJSON(needs.select-stack.outputs.matrix) }}
       fail-fast: false
     name: ${{ matrix.stack }}
-    env:
-      STACK: ${{ matrix.stack }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.stack }}
     permissions:
       id-token: write
       contents: read
@@ -62,15 +63,22 @@ jobs:
           TF_BACKEND_AWS_BUCKET: ${{ vars.TF_BACKEND_AWS_BUCKET }}
           TF_BACKEND_AWS_REGION: ${{ vars.TF_BACKEND_AWS_REGION }}
         run: |
-          terraform -chdir="$STACK" init \
-            -backend-config="bucket=${TF_BACKEND_AWS_BUCKET}" \
-            -backend-config="region=${TF_BACKEND_AWS_REGION}" \
-            -backend-config="key=$(basename $STACK)/terraform.tfstate"
+          cat > backend.tf <<- HCP
+            terraform {
+              backend "s3" {
+                bucket       = "${TF_BACKEND_AWS_BUCKET}"
+                key          = "$(basename $PWD)/terraform.tfstate"
+                region       = "${TF_BACKEND_AWS_REGION}"
+                use_lockfile = true
+              }
+            }
+          HCP
+          terraform init
 
       - name: Terraform Validate
         run: |
-          terraform -chdir="$STACK" validate
+          terraform validate
 
       - name: Terraform Plan
         run: |
-          terraform -chdir="$STACK" plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
+          terraform plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
