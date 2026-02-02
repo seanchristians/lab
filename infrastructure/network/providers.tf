@@ -1,5 +1,9 @@
 terraform {
   required_providers {
+    sops = {
+      source  = "carlpett/sops"
+      version = "1.3.0"
+    }
     tailscale = {
       source  = "tailscale/tailscale"
       version = "0.24.0"
@@ -10,6 +14,8 @@ terraform {
     }
   }
 }
+
+provider "sops" {}
 
 provider "tailscale" {
   user_agent = "Terraform / seanchristians/lab"
