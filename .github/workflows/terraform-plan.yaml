@@ -42,55 +42,15 @@ jobs:
         stack: ${{ fromJSON(needs.select-stack.outputs.matrix) }}
       fail-fast: false
     name: ${{ matrix.stack }}
-    defaults:
-      run:
-        working-directory: ${{ matrix.stack }}
     permissions:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Authenticate with AWS
-        uses: aws-actions/configure-aws-credentials@v5
+      - uses: seanchristians/lab/actions/terraform
         with:
-          aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
-          role-to-assume: ${{ vars.TF_BACKEND_AWS_ROLE }}
-
-      - name: Stack context
-        if: ${{ hashFiles(format('{0}/action.yaml', matrix.stack)) != '' }}
-        uses: ./actions/stack-context
-        with:
+          tf-backend-aws-bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
+          tf-backend-aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
+          tf-backend-aws-role: ${{ vars.TF_BACKEND_AWS_ROLE }}
+          sops-age-key: ${{ secrets.SOPS_AGE_KEY }}
           stack: ${{ matrix.stack }}
           mode: plan
-
-      - name: Terraform Init
-        env:
-          TF_BACKEND_AWS_BUCKET: ${{ vars.TF_BACKEND_AWS_BUCKET }}
-          TF_BACKEND_AWS_REGION: ${{ vars.TF_BACKEND_AWS_REGION }}
-          STACK: ${{ matrix.stack }}
-        run: |
-          cat > backend.tf << HCP
-          terraform {
-            backend "s3" {
-              bucket       = "${TF_BACKEND_AWS_BUCKET}"
-              key          = "$STACK/terraform.tfstate"
-              region       = "${TF_BACKEND_AWS_REGION}"
-              use_lockfile = true
-            }
-          }
-          HCP
-          terraform init
-
-      - name: Terraform Validate
-        run: |
-          terraform validate
-
-      - name: Terraform Plan
-        env:
-          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        run: |
-          terraform plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY

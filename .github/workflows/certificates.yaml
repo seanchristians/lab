@@ -25,41 +25,12 @@ jobs:
       run:
         working-directory: ${{ env.STACK }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Authenticate with AWS
-        uses: aws-actions/configure-aws-credentials@v5
+      - uses: seanchristians/lab/actions/terraform
         with:
-          aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
-          role-to-assume: ${{ vars.TF_BACKEND_AWS_ROLE }}
-
-      - name: Stack context
-        if: ${{ hashFiles(format('{0}/action.yaml', matrix.stack)) != '' }}
-        uses: ./actions/stack-context
-        with:
-          stack: ${{ matrix.stack }}
-          mode: apply
-
-      - name: Terraform Init
-        env:
-          TF_BACKEND_AWS_BUCKET: ${{ vars.TF_BACKEND_AWS_BUCKET }}
-          TF_BACKEND_AWS_REGION: ${{ vars.TF_BACKEND_AWS_REGION }}
-          STACK: ${{ matrix.stack }}
-        run: |
-          cat > backend.tf << HCP
-          terraform {
-            backend "s3" {
-              bucket       = "${TF_BACKEND_AWS_BUCKET}"
-              key          = "$STACK/terraform.tfstate"
-              region       = "${TF_BACKEND_AWS_REGION}"
-              use_lockfile = true
-            }
-          }
-          HCP
-          terraform init
+          tf-backend-aws-bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
+          tf-backend-aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
+          tf-backend-aws-role: ${{ vars.TF_BACKEND_AWS_ROLE }}
+          stack: ${{ env.STACK }}
 
       - name: Terraform Plan
         id: plan

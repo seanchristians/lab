@@ -1,0 +1,87 @@
+name: Terraform init
+author: Sean Christians
+description: Initialize terraform
+
+inputs:
+  tf-backend-aws-bucket:
+    description: AWS bucket name where Terraform backend is stored.
+    required: true
+  tf-backend-aws-region:
+    description: AWS region of the Terraform backend bucket.
+    required: true
+  tf-backend-aws-role:
+    description: AWS role ARN to authenticate with OIDC identity federation.
+    required: true
+  sops-age-key:
+    description: Encryption key for SOPS secrets stored in Terraform stacks.
+  stack:
+    description: Path to Terraform code.
+    required: true
+  mode:
+    description: Terraform provisioning step.
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+
+    - name: Authenticate with AWS
+      uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
+      with:
+        aws-region: ${{ inputs.tf-backend-aws-region }}
+        role-to-assume: ${{ inputs.tf-backend-aws-role }}
+
+    - name: Stack context
+      if: ${{ hashFiles(format('{0}/action.yaml', inputs.stack)) != '' }}
+      uses: ./actions/stack-context
+      with:
+        stack: ${{ inputs.stack }}
+        mode: ${{ inputs.mode }}
+
+    - name: Terraform Init
+      shell: bash
+      working-directory: ${{ inputs.stack }}
+      env:
+        TF_BACKEND_AWS_BUCKET: ${{ inputs.tf-backend-aws-bucket }}
+        TF_BACKEND_AWS_REGION: ${{ inputs.tf-backend-aws-region }}
+        STACK: ${{ inputs.stack }}
+      run: |
+        cat > backend.tf << HCP
+        terraform {
+          backend "s3" {
+            bucket       = "${TF_BACKEND_AWS_BUCKET}"
+            key          = "$STACK/terraform.tfstate"
+            region       = "${TF_BACKEND_AWS_REGION}"
+            use_lockfile = true
+          }
+        }
+        HCP
+        terraform init
+
+    - name: Terraform Validate
+      if: inputs.mode == 'plan'
+      shell: bash
+      working-directory: ${{ inputs.stack }}
+      run: |
+        terraform validate
+
+    - name: Terraform Plan
+      if: inputs.mode == 'plan'
+      shell: bash
+      working-directory: ${{ inputs.stack }}
+      env:
+        SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+      run: |
+        terraform plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
+
+    - name: Terraform Apply
+      if: inputs.mode == 'apply'
+      shell: bash
+      working-directory: ${{ inputs.stack }}
+      env:
+        SOPS_AGE_KEY: ${{ inputs.SOPS_AGE_KEY }}
+      run: |
+        terraform apply -input=false -auto-approve
