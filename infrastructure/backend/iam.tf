@@ -29,7 +29,3 @@ resource "aws_iam_role_policy_attachment" "terraform_admin" {
   role       = aws_iam_role.terraform.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
-
-output "IAM_ROLE_ARN" {
-  value = aws_iam_role.terraform.arn
-}
