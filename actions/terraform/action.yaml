@@ -34,11 +34,19 @@ runs:
         aws-region: ${{ inputs.tf-backend-aws-region }}
         role-to-assume: ${{ inputs.tf-backend-aws-role }}
 
-    - name: Stack context
+    - name: Import stack context action
       if: ${{ hashFiles(format('{0}/action.yaml', inputs.stack)) != '' }}
-      uses: ./actions/stack-context
+      shell: bash
+      env:
+        STACK: ${{ inputs.stack }}
+      run: |
+        mkdir "$GITHUB_WORKSPACE/context"
+        cp "$STACK/action.yaml" "$GITHUB_WORKSPACE/context/"
+
+    - name: Run stack context action
+      if: ${{ hashFiles(format('{0}/action.yaml', inputs.stack)) != '' }}
+      uses: ./context
       with:
-        stack: ${{ inputs.stack }}
         mode: ${{ inputs.mode }}
 
     - name: Terraform Init
