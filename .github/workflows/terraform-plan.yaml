@@ -61,6 +61,8 @@ jobs:
       - name: Stack context
         if: ${{ hashFiles(format('{0}/action.yaml', matrix.stack)) != '' }}
         uses: ./actions/stack-context
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         with:
           stack: ${{ matrix.stack }}
 
