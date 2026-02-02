@@ -22,9 +22,9 @@ jobs:
       matrix: ${{ steps.changed-files.outputs.all_changed_files }}
       change-count: ${{ steps.changed-files.outputs.all_changed_files_count }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - id: changed-files
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@e0021407031f5be11a464abee9a0776171c79891 # v47.0.1
         with:
           dir_names: true
           dir_names_exclude_current_dir: true
@@ -42,55 +42,15 @@ jobs:
         stack: ${{ fromJSON(needs.select-stack.outputs.matrix) }}
       fail-fast: false
     name: ${{ matrix.stack }}
-    defaults:
-      run:
-        working-directory: ${{ matrix.stack }}
     permissions:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v6.0.2
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Authenticate with AWS
-        uses: aws-actions/configure-aws-credentials@v5
+      - uses: seanchristians/lab/actions/terraform@main
         with:
-          aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
-          role-to-assume: ${{ vars.TF_BACKEND_AWS_ROLE }}
-
-      - name: Stack context
-        if: ${{ hashFiles(format('{0}/action.yaml', matrix.stack)) != '' }}
-        uses: ./actions/stack-context
-        with:
+          tf-backend-aws-bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
+          tf-backend-aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
+          tf-backend-aws-role: ${{ vars.TF_BACKEND_AWS_ROLE }}
+          sops-age-key: ${{ secrets.SOPS_AGE_KEY }}
           stack: ${{ matrix.stack }}
           mode: plan
-
-      - name: Terraform Init
-        env:
-          TF_BACKEND_AWS_BUCKET: ${{ vars.TF_BACKEND_AWS_BUCKET }}
-          TF_BACKEND_AWS_REGION: ${{ vars.TF_BACKEND_AWS_REGION }}
-          STACK: ${{ matrix.stack }}
-        run: |
-          cat > backend.tf << HCP
-          terraform {
-            backend "s3" {
-              bucket       = "${TF_BACKEND_AWS_BUCKET}"
-              key          = "$STACK/terraform.tfstate"
-              region       = "${TF_BACKEND_AWS_REGION}"
-              use_lockfile = true
-            }
-          }
-          HCP
-          terraform init
-
-      - name: Terraform Validate
-        run: |
-          terraform validate
-
-      - name: Terraform Plan
-        env:
-          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        run: |
-          terraform plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
