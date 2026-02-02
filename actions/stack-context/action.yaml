@@ -1,0 +1,27 @@
+name: Stack context
+author: Sean Christians
+description: Provide context and automation for Terraform stacks.
+
+inputs:
+  stack:
+    description: Path to Terraform code
+    required: true
+  mode:
+    description: Terraform provisioning step
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Import stack context action
+      shell: bash
+      env:
+        STACK: ${{ inputs.stack }}
+      run: |
+        mkdir "$GITHUB_WORKSPACE/context"
+        cp "$STACK/action.yaml" "$GITHUB_WORKSPACE/context/"
+
+    - name: Run stack context action
+      uses: ./context
+      with:
+        mode: ${{ inputs.mode }}

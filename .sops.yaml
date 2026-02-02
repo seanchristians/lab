@@ -1,0 +1,4 @@
+creation_rules:
+  - path_regex: .*
+    age: age1yvca0v0gdwn64rskwudat49m4u4u25p3a2vvw66emar0qxzh5pjqn7gq4c
+    # secret key stored in Bitwarden as "Lab SOPS AGE key"
