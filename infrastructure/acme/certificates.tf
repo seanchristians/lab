@@ -7,9 +7,12 @@ resource "acme_certificate" "veronica" {
   common_name     = "veronica.${var.domain}"
 
   dns_challenge {
-    provider               = "porkbun"
-    PORKBUN_API_KEY        = data.sops_file.dns_providers.data["PORKBUN_API_KEY"]
-    PORKBUN_SECRET_API_KEY = data.sops_file.dns_providers.data["PORKBUN_SECRET_API_KEY"]
+    provider = "porkbun"
+
+    config = {
+      PORKBUN_API_KEY        = data.sops_file.dns_providers.data["PORKBUN_API_KEY"]
+      PORKBUN_SECRET_API_KEY = data.sops_file.dns_providers.data["PORKBUN_SECRET_API_KEY"]
+    }
   }
 }
 
