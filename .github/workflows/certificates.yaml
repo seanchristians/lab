@@ -7,8 +7,6 @@ on:
 env:
   TF_IN_AUTOMATION: true
   STACK: infrastructure/acme
-  PORKBUN_API_KEY: ${{ secrets.PORKBUN_API_KEY }}
-  PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_API_KEY }}
 
 permissions: {}
 
@@ -23,30 +21,58 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    defaults:
+      run:
+        working-directory: ${{ env.STACK }}
     steps:
       - uses: actions/checkout@v5
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Authenticate Terraform Providers
-        uses: ./actions/terraform-provider-auth
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v5
         with:
-          step: apply
-          stack: ${{ env.STACK }}
+          aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
+          role-to-assume: ${{ vars.TF_BACKEND_AWS_ROLE }}
+
+      - name: Stack context
+        if: ${{ hashFiles(format('{0}/action.yaml', matrix.stack)) != '' }}
+        uses: ./actions/stack-context
+        with:
+          stack: ${{ matrix.stack }}
+          mode: apply
 
       - name: Terraform Init
+        env:
+          TF_BACKEND_AWS_BUCKET: ${{ vars.TF_BACKEND_AWS_BUCKET }}
+          TF_BACKEND_AWS_REGION: ${{ vars.TF_BACKEND_AWS_REGION }}
+          STACK: ${{ matrix.stack }}
         run: |
-          terraform -chdir="$STACK" init
+          cat > backend.tf << HCP
+          terraform {
+            backend "s3" {
+              bucket       = "${TF_BACKEND_AWS_BUCKET}"
+              key          = "$STACK/terraform.tfstate"
+              region       = "${TF_BACKEND_AWS_REGION}"
+              use_lockfile = true
+            }
+          }
+          HCP
+          terraform init
 
       - name: Terraform Plan
         id: plan
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
           PLAN_EXIT_CODE=0
-          terraform -chdir="$STACK" plan -input=false -no-color -compact-warnings -detailed-exitcode -out=tfplan || PLAN_EXIT_CODE=$?
+          terraform plan -input=false -no-color -compact-warnings -detailed-exitcode -out=tfplan || PLAN_EXIT_CODE=$?
           echo "plan=$PLAN_EXIT_CODE" >> $GITHUB_OUTPUT
 
       - name: Terraform Apply
         if: steps.plan.outputs.plan == 2
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
-          terraform -chdir="$STACK" apply -input=false -auto-approve tfplan
+          terraform apply -input=false -auto-approve tfplan
