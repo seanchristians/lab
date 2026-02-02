@@ -25,7 +25,7 @@ jobs:
       run:
         working-directory: ${{ env.STACK }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.2
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
