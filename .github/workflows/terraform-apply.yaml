@@ -1,14 +1,5 @@
 name: Terraform Apply
 on:
-  workflow_dispatch:
-    inputs:
-      stack:
-        description: Terraform Stack
-        required: true
-        type: choice
-        options:
-          - infrastructure/acme
-          - infrastructure/network
   push:
     branches:
       - main
@@ -17,8 +8,6 @@ on:
 
 env:
   TF_IN_AUTOMATION: true
-  PORKBUN_API_KEY: ${{ secrets.PORKBUN_API_KEY }}
-  PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_API_KEY }}
 
 permissions: {}
 
@@ -28,16 +17,34 @@ defaults:
 
 jobs:
   select-stack:
-    uses: ./.github/workflows/terraform-select-stack.yaml
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: changed-files
+        uses: tj-actions/changed-files@v47
+        with:
+          dir_names: true
+          dir_names_exclude_current_dir: true
+          dir_names_max_depth: 2
+          files: infrastructure/**
+          files_ignore: infrastructure/backend/**
+          matrix: true
 
-  terraform-apply:
+  apply:
     needs: select-stack
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        stack: ${{ fromJSON(github.event_name == 'workflow_dispatch' && steps.selected-stack.outputs.stack || needs.select-stack.outputs.matrix) }}
+        stack: ${{ fromJSON(needs.select-stack.outputs.matrix) }}
       fail-fast: false
     name: ${{ matrix.stack }}
-    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ matrix.stack }}
     permissions:
       id-token: write
       contents: read
@@ -47,20 +54,39 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Authenticate Terraform Providers
-        uses: ./actions/terraform-provider-auth
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v5
         with:
-          step: apply
+          aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
+          role-to-assume: ${{ vars.TF_BACKEND_AWS_ROLE }}
+
+      - name: Stack context
+        if: ${{ hashFiles(format('{0}/action.yaml', matrix.stack)) != '' }}
+        uses: ./actions/stack-context
+        with:
           stack: ${{ matrix.stack }}
+          mode: apply
 
       - name: Terraform Init
         env:
+          TF_BACKEND_AWS_BUCKET: ${{ vars.TF_BACKEND_AWS_BUCKET }}
+          TF_BACKEND_AWS_REGION: ${{ vars.TF_BACKEND_AWS_REGION }}
           STACK: ${{ matrix.stack }}
         run: |
-          terraform -chdir="$STACK" init
+          cat > backend.tf << HCP
+          terraform {
+            backend "s3" {
+              bucket       = "${TF_BACKEND_AWS_BUCKET}"
+              key          = "$STACK/terraform.tfstate"
+              region       = "${TF_BACKEND_AWS_REGION}"
+              use_lockfile = true
+            }
+          }
+          HCP
+          terraform init
 
       - name: Terraform Apply
         env:
-          STACK: ${{ matrix.stack }}
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
-          terraform -chdir="$STACK" apply -input=false -auto-approve
+          terraform apply -input=false -auto-approve
