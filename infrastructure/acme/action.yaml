@@ -2,10 +2,16 @@ name: ACME stack context
 author: Sean Christians
 description: Provide context and automation for the ACME stack.
 
+inputs:
+  mode:
+    description: Terraform provisioning step
+    required: true
+
 runs:
   using: composite
   steps:
     - name: Join Tailnet
+      if: inputs.mode == 'apply'
       uses: tailscale/github-action@v4
       with:
         oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
