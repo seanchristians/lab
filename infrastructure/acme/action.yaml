@@ -5,3 +5,11 @@ description: Provide context and automation for the ACME stack.
 runs:
   using: composite
   steps:
+    - name: Join Tailnet
+      uses: tailscale/github-action@v4
+      with:
+        oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+        audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+        tags: tag:ci
+        version: latest
+        ping: veronica.scchq.net
