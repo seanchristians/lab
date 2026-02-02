@@ -25,7 +25,7 @@ jobs:
       run:
         working-directory: ${{ env.STACK }}
     steps:
-      - uses: seanchristians/lab/actions/terraform
+      - uses: seanchristians/lab/actions/terraform@main
         with:
           tf-backend-aws-bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
           tf-backend-aws-region: ${{ vars.TF_BACKEND_AWS_REGION }}
