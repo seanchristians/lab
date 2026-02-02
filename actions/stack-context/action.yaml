@@ -6,6 +6,9 @@ inputs:
   stack:
     description: Path to Terraform code
     required: true
+  mode:
+    description: Terraform provisioning step
+    required: true
 
 runs:
   using: composite
@@ -20,3 +23,5 @@ runs:
 
     - name: Run stack context action
       uses: ./context
+      with:
+        mode: ${{ inputs.mode }}

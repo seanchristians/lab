@@ -63,6 +63,7 @@ jobs:
         uses: ./actions/stack-context
         with:
           stack: ${{ matrix.stack }}
+          mode: plan
 
       - name: Terraform Init
         env:
