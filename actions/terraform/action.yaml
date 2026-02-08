@@ -3,8 +3,6 @@ author: Sean Christians
 description: Manage deployments with Terraform
 
 inputs:
-  sops-age-key:
-    description: Encryption key for SOPS secrets stored in Terraform stacks.
   stack:
     description: Path to Terraform code.
     required: true
@@ -69,8 +67,6 @@ runs:
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
       working-directory: ${{ inputs.stack }}
-      env:
-        SOPS_AGE_KEY: ${{ inputs.sops-age-key }}
       run: |
         terraform plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
 
@@ -78,7 +74,5 @@ runs:
       if: steps.mode.outputs.mode == 'apply'
       shell: bash
       working-directory: ${{ inputs.stack }}
-      env:
-        SOPS_AGE_KEY: ${{ inputs.sops-age-key }}
       run: |
         terraform apply -input=false -auto-approve
