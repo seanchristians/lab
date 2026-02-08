@@ -21,7 +21,7 @@ runs:
       id: mode
       shell: bash
       env:
-        MODE: ${{ github.ref_name == 'main' && 'apply' || 'plan' }}
+        MODE: ${{ github.ref_name == github.event.repository.default_branch && 'apply' || 'plan' }}
       run: |
         echo "mode=$MODE" >> $GITHUB_OUTPUT
 
