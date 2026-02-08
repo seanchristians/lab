@@ -24,11 +24,20 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Authenticate with Tailscale
-        uses: seanchristians/lab/actions/tailscale-login@main
-        with:
-          client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+      - shell: bash
+        env:
+          CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+        run: |
+          ACCESS_TOKEN=$(
+            curl -sSL --retry 5 --retry-all-errors -G \
+            -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            --data-urlencode "audience=$AUDIENCE" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value'
+          )
+
+          echo "TAILSCALE_OAUTH_CLIENT_ID=$CLIENT_ID" >> $GITHUB_ENV
+          echo "TAILSCALE_IDENTITY_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
       - uses: seanchristians/lab/actions/terraform@main
         with:
