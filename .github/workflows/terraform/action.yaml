@@ -1,6 +1,6 @@
-name: Terraform init
+name: Terraform
 author: Sean Christians
-description: Initialize terraform
+description: Manage deployments with Terraform
 
 inputs:
   tf-backend-aws-bucket:
