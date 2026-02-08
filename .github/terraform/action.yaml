@@ -30,21 +30,6 @@ runs:
         aws-region: ca-central-1
         role-to-assume: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
 
-    - name: Import stack context action
-      if: ${{ hashFiles(format('{0}/action.yaml', inputs.stack)) != '' }}
-      shell: bash
-      env:
-        STACK: ${{ inputs.stack }}
-      run: |
-        mkdir "$GITHUB_WORKSPACE/context"
-        cp "$STACK/action.yaml" "$GITHUB_WORKSPACE/context/"
-
-    - name: Run stack context action
-      if: ${{ hashFiles(format('{0}/action.yaml', inputs.stack)) != '' }}
-      uses: ./context
-      with:
-        mode: ${{ inputs.mode }}
-
     - name: Terraform Init
       shell: bash
       working-directory: ${{ inputs.stack }}
