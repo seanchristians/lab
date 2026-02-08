@@ -36,6 +36,12 @@ jobs:
           version: latest
           ping: veronica.scchq.net
 
+      - name: SOPS setup
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          echo "SOPS_AGE_KEY=$SOPS_AGE_KEY" >> $GITHUB_ENV
+
       - uses: seanchristians/lab/actions/terraform@main
         with:
           stack: infrastructure/acme
