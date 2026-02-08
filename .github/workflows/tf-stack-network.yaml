@@ -1,4 +1,4 @@
-name: Network Terraform Stack
+name: Terraform Stack Network
 on:
   pull_request:
     paths:
