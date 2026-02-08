@@ -27,13 +27,7 @@ runs:
         echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
         echo "STACK=$STACK" >> $GITHUB_ENV
 
-    - name: Authenticate with AWS
-      uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
-      with:
-        aws-region: ca-central-1
-        role-to-assume: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
-
-    - name: Terraform Init
+    - name: Terraform backend
       shell: bash
       working-directory: ${{ inputs.stack }}
       run: |
@@ -48,6 +42,16 @@ runs:
         }
         HCP
 
+    - name: Authenticate with AWS
+      uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
+      with:
+        aws-region: ca-central-1
+        role-to-assume: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+
+    - name: Terraform Init
+      shell: bash
+      working-directory: ${{ inputs.stack }}
+      run: |
         terraform init
 
     - name: Terraform Validate
