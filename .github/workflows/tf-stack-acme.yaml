@@ -38,5 +38,4 @@ jobs:
 
       - uses: seanchristians/lab/actions/terraform@main
         with:
-          sops-age-key: ${{ secrets.SOPS_AGE_KEY }}
           stack: infrastructure/acme
