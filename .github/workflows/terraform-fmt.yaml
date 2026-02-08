@@ -11,8 +11,7 @@ defaults:
     shell: bash
 
 jobs:
-  check-terraform-fmt:
-    name: Check Terraform Code Formatting
+  terraform-fmt:
     runs-on: ubuntu-latest
     permissions:
       contents: read
