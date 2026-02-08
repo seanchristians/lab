@@ -1,18 +1,9 @@
-data "sops_file" "dns_providers" {
-  source_file = "dns-providers.enc.json"
-}
-
 resource "acme_certificate" "veronica" {
   account_key_pem = acme_registration.letsencrypt.account_key_pem
   common_name     = "veronica.${var.domain}"
 
   dns_challenge {
     provider = "porkbun"
-
-    config = {
-      PORKBUN_API_KEY        = data.sops_file.dns_providers.data["PORKBUN_API_KEY"]
-      PORKBUN_SECRET_API_KEY = data.sops_file.dns_providers.data["PORKBUN_SECRET_API_KEY"]
-    }
   }
 }
 
