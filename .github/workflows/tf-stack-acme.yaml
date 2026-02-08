@@ -2,12 +2,12 @@ name: ACME Terraform Stack
 on:
   pull_request:
     paths:
-      - infrastructure/**
+      - infrastructure/acme/**
   push:
     branches:
       - main
     paths:
-      - infrastructure/**
+      - infrastructure/acme/**
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
