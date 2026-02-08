@@ -1,4 +1,4 @@
-name: ACME Terraform Stack
+name: Terraform Stack ACME
 on:
   pull_request:
     paths:
