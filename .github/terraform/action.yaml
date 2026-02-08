@@ -3,15 +3,6 @@ author: Sean Christians
 description: Manage deployments with Terraform
 
 inputs:
-  tf-backend-aws-bucket:
-    description: AWS bucket name where Terraform backend is stored.
-    required: true
-  tf-backend-aws-region:
-    description: AWS region of the Terraform backend bucket.
-    required: true
-  tf-backend-aws-role:
-    description: AWS role ARN to authenticate with OIDC identity federation.
-    required: true
   sops-age-key:
     description: Encryption key for SOPS secrets stored in Terraform stacks.
   stack:
@@ -28,11 +19,16 @@ runs:
     - name: Install Terraform
       uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
 
+    - name: Terraform environment
+      shell: bash
+      run: |
+        echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
+
     - name: Authenticate with AWS
       uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
       with:
-        aws-region: ${{ inputs.tf-backend-aws-region }}
-        role-to-assume: ${{ inputs.tf-backend-aws-role }}
+        aws-region: ca-central-1
+        role-to-assume: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
 
     - name: Import stack context action
       if: ${{ hashFiles(format('{0}/action.yaml', inputs.stack)) != '' }}
@@ -53,20 +49,19 @@ runs:
       shell: bash
       working-directory: ${{ inputs.stack }}
       env:
-        TF_BACKEND_AWS_BUCKET: ${{ inputs.tf-backend-aws-bucket }}
-        TF_BACKEND_AWS_REGION: ${{ inputs.tf-backend-aws-region }}
         STACK: ${{ inputs.stack }}
       run: |
         cat > backend.tf << HCP
         terraform {
           backend "s3" {
-            bucket       = "${TF_BACKEND_AWS_BUCKET}"
+            bucket       = "seanchristians-lab-terraform-state"
             key          = "$STACK/terraform.tfstate"
-            region       = "${TF_BACKEND_AWS_REGION}"
+            region       = "ca-central-1"
             use_lockfile = true
           }
         }
         HCP
+
         terraform init
 
     - name: Terraform Validate
