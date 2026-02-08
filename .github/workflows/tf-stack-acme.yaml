@@ -1,0 +1,42 @@
+name: ACME Terraform Stack
+on:
+  pull_request:
+    paths:
+      - infrastructure/acme/**
+  push:
+    branches:
+      - main
+    paths:
+      - infrastructure/acme/**
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Join Tailnet
+        if: github.ref_name == github.event.repository.default_branch
+        uses: tailscale/github-action@53acf823325fe9ca47f4cdaa951f90b4b0de5bb9 # v4.1.1
+        with:
+          oauth-client-id: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          audience: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          tags: tag:ci
+          version: latest
+          ping: veronica.scchq.net
+
+      - uses: seanchristians/lab/actions/terraform@main
+        with:
+          sops-age-key: ${{ secrets.SOPS_AGE_KEY }}
+          stack: infrastructure/acme
