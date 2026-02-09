@@ -26,8 +26,8 @@ jobs:
 
       - shell: bash
         env:
-          CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
-          AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
+          CLIENT_ID: ${{ vars.TAILSCALE_CLIENT_ID }}
+          AUDIENCE: ${{ format('api.tailscale.com/{0}', vars.TAILSCALE_CLIENT_ID) }}
         run: |
           ACCESS_TOKEN=$(
             curl -sSL --retry 5 --retry-all-errors -G \
