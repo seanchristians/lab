@@ -3,5 +3,5 @@ resource "tailscale_dns_preferences" "default" {
 }
 
 resource "tailscale_dns_search_paths" "network" {
-  search_paths = [data.porkbun_domain.network]
+  search_paths = [data.porkbun_domain.network.domain]
 }
