@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - shell: bash
+      - name: Tailscale setup
         env:
           CLIENT_ID: TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
           AUDIENCE: api.tailscale.com/TA1163u8TV11CNTRL-kTzGLf2dGf11CNTRL
