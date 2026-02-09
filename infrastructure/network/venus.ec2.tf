@@ -7,6 +7,11 @@ resource "aws_instance" "venus" {
     aws_security_group.venus.id
   ]
 
+  metadata_options {
+    http_protocol_ipv6 = "enabled"
+    http_tokens        = "required"
+  }
+
   tags = {
     Name = "Venus"
   }
