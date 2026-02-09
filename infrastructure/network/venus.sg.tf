@@ -1,6 +1,5 @@
 resource "aws_security_group" "venus" {
-  name   = "Venus"
-  vpc_id = data.aws_vpc.default_ca_central_1.id
+  name = "Venus"
 }
 
 resource "aws_vpc_security_group_egress_rule" "venus_allow_internet_v6" {
