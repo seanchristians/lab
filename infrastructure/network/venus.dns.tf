@@ -6,5 +6,5 @@ resource "porkbun_dns_record" "venus" {
   domain    = data.porkbun_domain.network.domain
   subdomain = "venus"
   type      = "CNAME"
-  content   = "${local.tailnet_dns_name}.${data.tailscale_device.venus.hostname}"
+  content   = "${data.tailscale_device.venus.hostname}.${local.tailnet_dns_name}"
 }
