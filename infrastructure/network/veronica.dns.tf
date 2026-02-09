@@ -3,7 +3,7 @@ data "tailscale_device" "veronica" {
 }
 
 resource "porkbun_dns_record" "veronica" {
-  domain    = data.porkbun_domain.scchq_net.domain
+  domain    = data.porkbun_domain.network.domain
   subdomain = "veronica"
   type      = "CNAME"
   content   = data.tailscale_device.veronica.name
