@@ -7,4 +7,6 @@ resource "porkbun_dns_record" "veronica" {
   subdomain = "veronica"
   type      = "CNAME"
   content   = data.tailscale_device.veronica.name
+
+  depends_on = [tailscale_dns_preferences.default]
 }

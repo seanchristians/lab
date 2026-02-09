@@ -7,4 +7,6 @@ resource "porkbun_dns_record" "venus" {
   subdomain = "venus"
   type      = "CNAME"
   content   = data.tailscale_device.venus.name
+
+  depends_on = [tailscale_dns_preferences.default]
 }
