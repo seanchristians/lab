@@ -1,4 +1,4 @@
 output "fqdn" {
-  value       = porkbun_dns_record.this.content
+  value       = "${var.subdomain}.${local.domain}"
   description = "Fully-qualified domain name of the device"
 }

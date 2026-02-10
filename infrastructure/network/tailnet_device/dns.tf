@@ -1,6 +1,5 @@
 locals {
-  tailnet_dns_name = "tail18a6a8.ts.net"
-  domain           = "scchq.net"
+  domain = "scchq.net"
 }
 
 data "tailscale_device" "this" {
@@ -8,8 +7,10 @@ data "tailscale_device" "this" {
 }
 
 resource "porkbun_dns_record" "this" {
+  for_each = toset(data.tailscale_device.this.addresses)
+
   domain    = local.domain
   subdomain = var.subdomain
-  type      = "CNAME"
-  content   = "${data.tailscale_device.this.hostname}.${local.tailnet_dns_name}"
+  type      = can(cidrnetmask("${each.key}/32")) ? "A" : "AAAA"
+  content   = each.key
 }
