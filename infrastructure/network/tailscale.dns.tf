@@ -3,9 +3,10 @@ resource "tailscale_dns_preferences" "default" {
 }
 
 resource "tailscale_dns_search_paths" "network" {
-  search_paths = [data.porkbun_domain.network.domain]
+  search_paths = [local.domain]
 }
 
 locals {
   tailnet_dns_name = "tail18a6a8.ts.net"
+  domain           = "scchq.net"
 }
