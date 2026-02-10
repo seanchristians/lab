@@ -17,3 +17,9 @@ resource "aws_instance" "venus" {
     Name = "Venus"
   }
 }
+
+module "dns_venus" {
+  source           = "./tailnet_device"
+  subdomain        = "venus"
+  tailnet_hostname = split(".", aws_instance.venus.private_dns)[0]
+}
