@@ -18,7 +18,7 @@ resource "porkbun_dns_record" "tailnet" {
   for_each = tomap({ for device in local.tailnet_tagged_ips : device.ip => device })
 
   domain    = data.porkbun_domain.network.domain
-  subdomain = each.value.device.hostname
+  subdomain = each.value.device.name
   type      = each.value.is_ipv4 ? "A" : "AAAA"
   content   = each.key
 }
