@@ -18,13 +18,18 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  PORKBUN_API_KEY: ${{ secrets.PORKBUN_API_KEY }}
+  PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_API_KEY }}
+
 jobs:
   terraform:
+    name: ${{ github.ref_name == github.event.repository.default_branch && 'apply' || 'plan' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - shell: bash
+      - name: Tailscale setup
         env:
           CLIENT_ID: ${{ vars.TAILSCALE_CLIENT_ID }}
           AUDIENCE: ${{ format('api.tailscale.com/{0}', vars.TAILSCALE_CLIENT_ID) }}

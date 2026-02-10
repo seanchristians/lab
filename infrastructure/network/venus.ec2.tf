@@ -1,14 +1,25 @@
 resource "aws_instance" "venus" {
   ami                 = "ami-0c096d78166072826"
   instance_type       = "t4g.nano"
-  availability_zone   = data.aws_subnet.default_cac1_az4.availability_zone
   enable_primary_ipv6 = true
+  monitoring          = true
 
   vpc_security_group_ids = [
     aws_security_group.venus.id
   ]
 
+  metadata_options {
+    http_protocol_ipv6 = "enabled"
+    http_tokens        = "required"
+  }
+
   tags = {
     Name = "Venus"
   }
+}
+
+module "dns_venus" {
+  source           = "./tailnet_device"
+  subdomain        = "venus"
+  tailnet_hostname = split(".", aws_instance.venus.private_dns)[0]
 }
