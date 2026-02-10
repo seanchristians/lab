@@ -2,8 +2,6 @@ resource "tailscale_dns_preferences" "default" {
   magic_dns = false
 }
 
-data "tailscale_devices" "tailnet" {}
-
 locals {
   tailnet_tagged_ips = flatten([
     for device in data.tailscale_devices.tailnet.devices : [
@@ -19,7 +17,7 @@ locals {
 resource "porkbun_dns_record" "tailnet" {
   for_each = tomap({ for device in local.tailnet_tagged_ips : device.ip => device })
 
-  domain    = "scchq.net"
+  domain    = data.porkbun_domain.network.domain
   subdomain = each.value.device.hostname
   type      = each.value.is_ipv4 ? "A" : "AAAA"
   content   = each.key
