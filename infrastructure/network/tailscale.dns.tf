@@ -8,7 +8,7 @@ locals {
       for address in device.addresses : {
         ip      = address
         is_ipv4 = can(cidrnetmask("${address}/32"))
-        name    = device.machine_key
+        name    = slice(split(".", device.name), 0, -3)
       } if length(device.tags) > 0
     ]
   ])
