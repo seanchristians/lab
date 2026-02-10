@@ -17,9 +17,7 @@ locals {
 }
 
 resource "porkbun_dns_record" "tailnet" {
-  for_each = tomap({
-    for device in local.tailnet_tagged_ips : device.ip => device
-  })
+  for_each = tomap({ for device in local.tailnet_tagged_ips : device.ip => device })
 
   domain    = "scchq.net"
   subdomain = each.value.device.hostname
