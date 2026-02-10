@@ -8,19 +8,21 @@ locals {
   tailnet_tagged_ips = flatten([
     for device in data.tailscale_devices.tailnet.devices : [
       for address in device.addresses : {
-        device  = device.hostname
         ip      = address
         is_ipv4 = can(cidrnetmask("${address}/32"))
+        device  = device
       } if length(device.tags) > 0
     ]
   ])
 }
 
-# resource "porkbun_dns_record" "tailnet" {
-#   for_each = []
+resource "porkbun_dns_record" "tailnet" {
+  for_each = tomap({
+    for device in local.tailnet_tagged_ips : device.ip => device
+  })
 
-#   domain    = local.domain
-#   subdomain = var.subdomain
-#   type      = can(cidrnetmask("${each.key}/32")) ? "A" : "AAAA"
-#   content   = each.key
-# }
+  domain    = "scchq.net"
+  subdomain = each.value.device.hostname
+  type      = each.value.is_ipv4 ? "A" : "AAAA"
+  content   = each.key
+}
