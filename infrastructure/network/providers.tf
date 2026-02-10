@@ -29,4 +29,6 @@ provider "aws" {
   }
 }
 
-provider "porkbun" {}
+provider "porkbun" {
+  max_retries = 5
+}
