@@ -12,3 +12,8 @@ resource "porkbun_dns_record" "ipv4" {
   type      = "A"
   content   = data.tailscale_device.this.addresses
 }
+
+moved {
+  from = porkbun_dns_record.this
+  to   = porkbun_dns_record.ipv4
+}
