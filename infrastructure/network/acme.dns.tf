@@ -47,7 +47,7 @@ resource "desec_token_policy" "acme_challenge" {
   type       = "TXT"
 }
 
-data "terraform_data" "desec_tokens" {
+resource "terraform_data" "desec_tokens" {
   for_each = desec_token.acme_challenge
 
   input = each.value.token
