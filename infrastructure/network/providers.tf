@@ -12,6 +12,10 @@ terraform {
       source  = "marcfrederick/porkbun"
       version = "1.3.1"
     }
+    gcore = {
+      source  = "G-Core/gcore"
+      version = "0.32.8"
+    }
   }
 }
 
@@ -32,3 +36,5 @@ provider "aws" {
 provider "porkbun" {
   max_retries = 5
 }
+
+provider "gcore" {}
