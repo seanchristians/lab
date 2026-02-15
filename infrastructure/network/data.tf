@@ -12,3 +12,7 @@ data "tailscale_devices" "tailnet" {}
 data "porkbun_domain" "network" {
   domain = "scchq.net"
 }
+
+data "porkbun_domain" "acme_challenge" {
+  domain = "sean.directory"
+}
