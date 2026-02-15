@@ -36,10 +36,6 @@ resource "desec_token" "acme_challenge" {
   perm_create_domain = false
   perm_delete_domain = false
   perm_manage_tokens = false
-
-  lifecycle {
-    ignore_changes = [token]
-  }
 }
 
 resource "desec_token_policy" "acme_challenge" {
@@ -49,4 +45,14 @@ resource "desec_token_policy" "acme_challenge" {
   perm_write = true
   domain     = each.value.name
   type       = "TXT"
+}
+
+data "terraform_data" "desec_tokens" {
+  for_each = desec_token.acme_challenge
+
+  input = each.value.token
+
+  lifecycle {
+    ignore_changes = [input]
+  }
 }
