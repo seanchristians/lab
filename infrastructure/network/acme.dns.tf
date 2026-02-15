@@ -21,10 +21,32 @@ resource "desec_domain" "acme_challenge" {
 }
 
 resource "porkbun_dns_record" "acme_challenge" {
-  for_each = toset(local.acme_challenge_domains)
+  for_each = desec_domain.acme_challenge
 
   domain    = data.porkbun_domain.network.domain
   subdomain = "_acme-challenge.${each.key}"
   type      = "CNAME"
-  content   = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
+  content   = each.value.name
+}
+
+resource "desec_token" "acme_challenge" {
+  for_each = desec_domain.acme_challenge
+
+  auto_policy        = true
+  perm_create_domain = false
+  perm_delete_domain = false
+  perm_manage_tokens = false
+
+  lifecycle {
+    ignore_changes = [token]
+  }
+}
+
+resource "desec_token_policy" "acme_challenge" {
+  for_each = desec_token.acme_challenge
+
+  token_id   = each.value.id
+  perm_write = true
+  domain     = each.value.name
+  type       = "TXT"
 }
