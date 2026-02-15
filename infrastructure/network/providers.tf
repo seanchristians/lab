@@ -12,9 +12,9 @@ terraform {
       source  = "marcfrederick/porkbun"
       version = "1.3.1"
     }
-    gcore = {
-      source  = "G-Core/gcore"
-      version = "0.32.8"
+    desec = {
+      source  = "Valodim/desec"
+      version = "0.6.1"
     }
   }
 }
@@ -37,4 +37,4 @@ provider "porkbun" {
   max_retries = 5
 }
 
-provider "gcore" {}
+provider "desec" {}

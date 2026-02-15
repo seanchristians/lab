@@ -5,6 +5,7 @@ provider "registry.terraform.io/hashicorp/aws" {
   version     = "6.30.0"
   constraints = "6.30.0"
   hashes = [
+    "h1:FNkicntiPhllPhKf8uBJTCQVY/cqN/sXa/LwE4Q0ML8=",
     "h1:weYTFOITWwcJ7d3/FWWElAYhWcDfyUI19WTct4fdOmg=",
     "zh:08fdcbb84b63739b758fd2f657303f495859ae15f2d6c3dbd642520cadb5f063",
     "zh:1e69ff49906541cd511bdabcd4b2996a731b1642ba26b834cdac5432e8d5c557",
@@ -28,6 +29,7 @@ provider "registry.terraform.io/hashicorp/local" {
   version = "2.6.2"
   hashes = [
     "h1:EEkxo+Mkdd1/KSn0edT8zqCRFIM9pajRK4L9k61xFY4=",
+    "h1:XaUyyJIDfkkQQ16UopuefD25sfQA6gc653nFGNP6wG0=",
     "zh:018382c416d271bf89be6fba6550b4fae42e31a4d26a421b3c92f1d589b1b086",
     "zh:107fd03879eb10d26dcaf5a68d98e4ca7d2488e43c01868e27698d248c1f42a2",
     "zh:4854946830189100e6a36b8facf028244a7a54baf6e9f5a1a68d11669d8ee597",
@@ -47,6 +49,7 @@ provider "registry.terraform.io/marcfrederick/porkbun" {
   version     = "1.3.1"
   constraints = "1.3.1"
   hashes = [
+    "h1:TZUIn82Jy1NcvuJbkAUTqJe5ZTturKavp8DNCJc5Dvo=",
     "h1:rsw9Mnj7Scp3FQpgu+NtTKoXJQ5j3TCyJmtc7NCBmK0=",
     "zh:00be5fe6b337e52b2df94d0c0dbcd1f128178fce2ecfd8395335a2de87454d6f",
     "zh:074e1356c81dd109e7af7236f04e8a457e85947932594aced13b6ecb46088eba",
@@ -71,6 +74,7 @@ provider "registry.terraform.io/tailscale/tailscale" {
   constraints = "0.26.0"
   hashes = [
     "h1:57dhA1q1fqZwxDxby09+pm6WTJDWzofsL1L0C/yEWBc=",
+    "h1:e4PSH3jOhqRqIx6RJ4/ifl0kdKS3kMzi36x7EuOHDr4=",
     "zh:14172653272a2760ba9f4a8a49633c9bf415ffc3a26b34c07c86cb20ed030510",
     "zh:3713a43987205be7690b8c2371d505b136f7d99aaed88a22286ee998ec0d9ef7",
     "zh:3cd923efbdca69ea3bca200487b4589f6c0a5bc485643c733c60bf4704cbeb4c",
@@ -85,5 +89,25 @@ provider "registry.terraform.io/tailscale/tailscale" {
     "zh:cac6fe240ce5edd1e8da5488bcd1193cc8a12c9e5b4aaf5426bb9977a17468fa",
     "zh:e088304f19f9544fec4205ac2abec620dd17a15875b7199ef88e8c64047f5620",
     "zh:fdba7e605d52c847c4dac6a86bc0d0ec52c37358d36a3a9c195d6cd2430d30b8",
+  ]
+}
+
+provider "registry.terraform.io/valodim/desec" {
+  version     = "0.6.1"
+  constraints = "0.6.1"
+  hashes = [
+    "h1:Z5vrNq5sgjatBKdDhbFgu1N0RrdJML9Qf/oKAn9dq+o=",
+    "h1:cXLLxqkdJoiW+p/aDEBH6KK+laPM+RtWyYxd8IZBBN8=",
+    "zh:08fb06d0654d638ada1e2be948ff1070ff73314d65416a8c50775f6faa3c4730",
+    "zh:141baab7ef9c63dae9fa8edadfae19fcede4bde0132d576d26010dfddeac3fa3",
+    "zh:2f41c0ef69de1d75efb567bb54b132ce238dd0cca9f42fd71a67db44b0927d5a",
+    "zh:305d5137b7003701792a92242dd6010ad61db4fe69d94c9e00a1ae37332a0543",
+    "zh:70c86277d8929e6af2400fead92f5998f9b1dabddf7e57c85d9c5ccd29fcfe92",
+    "zh:79163bb3b16df4ebafc2128a2d65daf1f5d85d0d3831577e243094cb34e4fa67",
+    "zh:8dc0b89e311ca1c7a3c0621b265274b1590fbc0839a66677e0232a61c3ffb78e",
+    "zh:bc57f2f11a0f8e29387ba852474fe48f2a739d86dcd8f2aad545881e9d763912",
+    "zh:c0a3cab6728d52fdf5e3147c9033d838f4cd5873aae2b16a12c7027d825737f1",
+    "zh:dac69febd0e4b7a0aa78ab926a10f8c550f3d85fe180c255912308d2a484b3af",
+    "zh:ff517fd13df0a539c1e41615daea66fa56ac0e46250bf20a423a36e459cf13be",
   ]
 }
