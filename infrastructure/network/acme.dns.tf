@@ -1,7 +1,7 @@
 locals {
-  gcore_nameservers = [
-    "ns1.gcorelabs.net",
-    "ns2.gcdn.services"
+  desec_nameservers = [
+    "ns1.desec.io",
+    "ns2.desec.org"
   ]
 
   acme_challenge_domains = [
@@ -11,23 +11,20 @@ locals {
 
 resource "porkbun_nameservers" "acme_challenge" {
   domain      = data.porkbun_domain.acme_challenge.domain
-  nameservers = local.gcore_nameservers
+  nameservers = local.desec_nameservers
 }
 
-resource "gcore_dns_zone" "acme_challenge" {
+resource "desec_domain" "acme_challenge" {
   for_each = toset(local.acme_challenge_domains)
 
-  name   = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
-  dnssec = true
-
-  depends_on = [porkbun_nameservers.acme_challenge]
+  name = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
 }
 
 resource "porkbun_dns_record" "acme_challenge" {
   for_each = toset(local.acme_challenge_domains)
 
-  domain    = data.porkbun_domain.acme_challenge.domain
+  domain    = data.porkbun_domain.network.domain
   subdomain = "_acme-challenge.${each.key}"
   type      = "CNAME"
-  content   = gcore_dns_zone.acme_challenge[each.key].name
+  content   = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
 }
