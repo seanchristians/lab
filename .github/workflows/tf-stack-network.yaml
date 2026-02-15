@@ -21,7 +21,7 @@ permissions:
 env:
   PORKBUN_API_KEY: ${{ secrets.PORKBUN_API_KEY }}
   PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_API_KEY }}
-  GCORE_PERMANENT_TOKEN: ${{ secrets.GCORE_PERMANENT_TOKEN }}
+  DESEC_API_TOKEN: ${{ secrets.DESEC_API_TOKEN }}
 
 jobs:
   terraform:
