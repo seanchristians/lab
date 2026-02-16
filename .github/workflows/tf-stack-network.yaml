@@ -28,9 +28,10 @@ jobs:
     name: ${{ github.ref_name == github.event.repository.default_branch && 'apply' || 'plan' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Tailscale setup
+      - name: Authenticate with Tailscale API
         env:
           CLIENT_ID: ${{ vars.TAILSCALE_CLIENT_ID }}
           AUDIENCE: ${{ format('api.tailscale.com/{0}', vars.TAILSCALE_CLIENT_ID) }}
@@ -45,6 +46,17 @@ jobs:
           echo "TAILSCALE_OAUTH_CLIENT_ID=$CLIENT_ID" >> $GITHUB_ENV
           echo "TAILSCALE_IDENTITY_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
-      - uses: seanchristians/lab/actions/terraform@main
+      - name: Join Tailnet
+        if: github.ref_name == github.event.repository.default_branch
+        uses: tailscale/github-action@53acf823325fe9ca47f4cdaa951f90b4b0de5bb9 # v4.1.1
+        with:
+          oauth-client-id: ${{ vars.TAILSCALE_CLIENT_ID }}
+          audience: ${{ format('api.tailscale.com/{0}', vars.TAILSCALE_CLIENT_ID) }}
+          tags: tag:ci
+          version: latest
+          ping: veronica.scchq.net
+
+      - name: Terraform
+        uses: seanchristians/lab/actions/terraform@main
         with:
           stack: infrastructure/network
