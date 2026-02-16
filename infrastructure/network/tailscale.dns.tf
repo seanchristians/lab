@@ -9,7 +9,7 @@ locals {
         ip      = address
         is_ipv4 = can(cidrnetmask("${address}/32"))
         name    = join(".", slice(split(".", device.name), 0, length(split(".", device.name)) - 3))
-      } if length(device.tags) > 0
+      } if length(device.tags) > 0 && !contains(device.tags, "ci")
     ]
   ])
 }
