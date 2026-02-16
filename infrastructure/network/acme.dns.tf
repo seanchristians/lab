@@ -43,7 +43,7 @@ resource "desec_token_policy" "acme_challenge" {
 
   token_id   = each.value.id
   perm_write = true
-  domain     = each.value.name
+  domain     = desec_domain.acme_challenge[each.key].name
   type       = "TXT"
 }
 
