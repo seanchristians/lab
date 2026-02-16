@@ -8,7 +8,7 @@ resource "desec_token" "veronica" {
   connection {
     type            = "ssh"
     user            = "acme"
-    host            = desec_domain.acme_challenge["veronica"].domain
+    host            = desec_domain.acme_challenge["veronica"].name
     target_platform = "unix"
   }
 
