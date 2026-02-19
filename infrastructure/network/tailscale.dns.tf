@@ -2,14 +2,26 @@ resource "tailscale_dns_preferences" "default" {
   magic_dns = false
 }
 
+data "tailscale_devices" "tagged_devices" {
+  filter {
+    name   = "isEphemeral"
+    values = ["false"]
+  }
+
+  filter {
+    name   = "tags"
+    values = ["tags:*"]
+  }
+}
+
 locals {
   tailnet_tagged_ips = flatten([
-    for device in data.tailscale_devices.tailnet.devices : [
+    for device in data.tailscale_devices.tagged_devices.devices : [
       for address in device.addresses : {
         ip      = address
         is_ipv4 = can(cidrnetmask("${address}/32"))
         name    = join(".", slice(split(".", device.name), 0, length(split(".", device.name)) - 3))
-      } if length(device.tags) > 0 && !contains(device.tags, "ci")
+      }
     ]
   ])
 }

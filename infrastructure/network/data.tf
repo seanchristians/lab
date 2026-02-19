@@ -7,8 +7,6 @@ data "aws_subnet" "default" {
   default_for_az = true
 }
 
-data "tailscale_devices" "tailnet" {}
-
 data "porkbun_domain" "network" {
   domain = "scchq.net"
 }
