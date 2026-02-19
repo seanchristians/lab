@@ -1,35 +1,25 @@
-resource "restapi_object" "desec_token_veronica" {
-  path                    = "/auth/tokens/"
-  ignore_server_additions = true
+module "desec_token_veronica" {
+  source = "./acme_token"
 
-  data = jsonencode({
-    name               = "veronica"
-    perm_create_domain = false
-    perm_delete_domain = false
-    perm_manage_tokens = false
-  })
+  subdomain   = "veronica"
+  domain      = data.porkbun_domain.network.domain
+  acme_domain = data.porkbun_domain.acme_challenge.domain
+
+  sentinel = "09DAB4EB-2625-4BBA-AC6F-19CD06626581"
 }
 
-resource "restapi_object" "desec_token_default_policy_veronica" {
-  path                    = "/auth/tokens/${restapi_object.desec_token_veronica.id}/policies/rrsets/"
-  ignore_server_additions = true
+resource "terraform_data" "desec_token_veronica" {
+  triggers_replace = module.desec_token_veronica.last_updated
 
-  data = jsonencode({
-    domain  = null
-    subname = null
-    type    = null
-  })
-}
+  connection {
+    type            = "ssh"
+    user            = "acme"
+    host            = module.desec_token_veronica.fqdn
+    target_platform = "unix"
+  }
 
-resource "restapi_object" "desec_token_policy_veronica" {
-  path                    = "/auth/tokens/${restapi_object.desec_token_veronica.id}/policies/rrsets/"
-  ignore_server_additions = true
-
-
-  data = jsonencode({
-    domain     = restapi_object.desec_domain_acme_challenge.api_data.name
-    subname    = "veronica"
-    type       = "TXT"
-    perm_write = true
-  })
+  provisioner "file" {
+    content     = module.desec_token_veronica.token
+    destination = "/etc/acme/auth/desec.token"
+  }
 }
