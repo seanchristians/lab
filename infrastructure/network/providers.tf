@@ -12,9 +12,9 @@ terraform {
       source  = "marcfrederick/porkbun"
       version = "1.3.1"
     }
-    desec = {
-      source  = "Valodim/desec"
-      version = "0.6.1"
+    restapi = {
+      source  = "Mastercard/restapi"
+      version = "3.0.0-rc2"
     }
   }
 }
@@ -37,4 +37,6 @@ provider "porkbun" {
   max_retries = 5
 }
 
-provider "desec" {}
+provider "restapi" {
+  bearer_token = var.desec_token
+}
