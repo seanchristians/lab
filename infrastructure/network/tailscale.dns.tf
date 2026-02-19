@@ -2,18 +2,6 @@ resource "tailscale_dns_preferences" "default" {
   magic_dns = false
 }
 
-data "tailscale_devices" "tagged_devices" {
-  filter {
-    name   = "isEphemeral"
-    values = ["false"]
-  }
-
-  filter {
-    name   = "tags"
-    values = ["tags:*"]
-  }
-}
-
 locals {
   tailnet_tagged_ips = flatten([
     for device in data.tailscale_devices.tagged_devices.devices : [
@@ -24,6 +12,20 @@ locals {
       }
     ]
   ])
+
+  tailnet_tags = keys(jsondecode(data.local_file.tailnet_policy).tagOwners)
+}
+
+data "tailscale_devices" "tagged_devices" {
+  filter {
+    name   = "isEphemeral"
+    values = ["false"]
+  }
+
+  filter {
+    name   = "tags"
+    values = local.tailnet_tags
+  }
 }
 
 resource "porkbun_dns_record" "tailnet" {
