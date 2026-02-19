@@ -3,8 +3,6 @@ resource "restapi_object" "desec_token_veronica" {
   query_string            = "/"
   ignore_server_additions = true
 
-  debug = true
-
   data = jsonencode({
     name               = "veronica"
     perm_create_domain = false
