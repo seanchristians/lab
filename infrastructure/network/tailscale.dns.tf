@@ -16,8 +16,8 @@ locals {
   tailnet_tags = keys(jsondecode(data.local_file.tailnet_policy.content).tagOwners)
 }
 
-output "tailnet_tags" {
-  value = jsonencode(local.tailnet_tags)
+output "tailnet_devices" {
+  value = jsonencode(data.tailscale_devices.tagged_devices.devices)
 }
 
 data "tailscale_devices" "tagged_devices" {
