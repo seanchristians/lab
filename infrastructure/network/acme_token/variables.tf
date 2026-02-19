@@ -15,3 +15,13 @@ variable "acme_domain" {
   description = "Alias domain where ACME challenges will be answered with the DNS-01 method."
   nullable    = false
 }
+
+variable "sentinel" {
+  type        = string
+  description = "Sentinel value that triggers replacing the token"
+  default     = true
+}
+
+resource "terraform_data" "sentinel" {
+  triggers_replace = var.sentinel
+}

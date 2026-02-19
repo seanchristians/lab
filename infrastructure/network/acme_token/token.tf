@@ -8,6 +8,10 @@ resource "restapi_object" "desec_token" {
     perm_delete_domain = false
     perm_manage_tokens = false
   })
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.sentinel]
+  }
 }
 
 resource "restapi_object" "desec_token_default_policy" {
