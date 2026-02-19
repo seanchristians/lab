@@ -26,12 +26,6 @@ resource "restapi_object" "desec_domain_acme_challenge" {
   })
 }
 
-# resource "desec_domain" "acme_challenge" {
-#   for_each = toset(local.acme_challenge_domains)
-
-#   name = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
-# }
-
 resource "porkbun_dns_record" "acme_challenge" {
   for_each = restapi_object.desec_domain_acme_challenge
 
