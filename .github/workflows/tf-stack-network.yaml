@@ -58,7 +58,7 @@ jobs:
 
       - name: Terraform
         env:
-          TF_LOG: TRACE
+          TF_LOG: DEBUG
         uses: seanchristians/lab/actions/terraform@main
         with:
           stack: infrastructure/network
