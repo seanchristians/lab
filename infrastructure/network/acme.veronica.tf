@@ -7,10 +7,7 @@ module "desec_token_veronica" {
 }
 
 resource "terraform_data" "desec_token_veronica" {
-  triggers_replace = [
-    module.desec_token_veronica.token,
-    "86DB5C34-6761-4ECD-9A91-FE8DC7A16EB2"
-  ]
+  triggers_replace = "86DB5C34-6761-4ECD-9A91-FE8DC7A16EB2"
 
   connection {
     type            = "ssh"
