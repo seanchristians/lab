@@ -24,7 +24,8 @@ resource "porkbun_dns_record" "acme_challenge" {
 }
 
 resource "restapi_object" "desec_domain_acme_challenge" {
-  path                    = "/domains/"
+  path                    = "/domains"
+  query_string            = "/"
   ignore_server_additions = true
   id_attribute            = "name"
 
