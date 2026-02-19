@@ -2,6 +2,15 @@ resource "tailscale_dns_preferences" "default" {
   magic_dns = false
 }
 
+resource "porkbun_dns_record" "tailnet" {
+  for_each = tomap({ for ipObj in local.tailnet_tagged_ips : ipObj.ip => ipObj })
+
+  domain    = data.porkbun_domain.network.domain
+  subdomain = each.value.name
+  type      = each.value.is_ipv4 ? "A" : "AAAA"
+  content   = each.key
+}
+
 locals {
   tailnet_tags           = keys(jsondecode(data.local_file.tailnet_policy.content).tagOwners)
   tailnet_tagged_devices = flatten([for devices in data.tailscale_devices.tagged_device : devices.devices])
@@ -19,6 +28,7 @@ locals {
 
 data "tailscale_devices" "tagged_device" {
   for_each = toset(local.tailnet_tags)
+
   filter {
     name   = "isEphemeral"
     values = ["false"]
@@ -28,13 +38,4 @@ data "tailscale_devices" "tagged_device" {
     name   = "tags"
     values = [each.key]
   }
-}
-
-resource "porkbun_dns_record" "tailnet" {
-  for_each = tomap({ for device in local.tailnet_tagged_ips : device.ip => device })
-
-  domain    = data.porkbun_domain.network.domain
-  subdomain = each.value.name
-  type      = each.value.is_ipv4 ? "A" : "AAAA"
-  content   = each.key
 }
