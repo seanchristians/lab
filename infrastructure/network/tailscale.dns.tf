@@ -16,6 +16,10 @@ locals {
   tailnet_tags = keys(jsondecode(data.local_file.tailnet_policy.content).tagOwners)
 }
 
+output "tailnet_tags" {
+  value = jsonencode(local.tailnet_tags)
+}
+
 data "tailscale_devices" "tagged_devices" {
   filter {
     name   = "isEphemeral"
