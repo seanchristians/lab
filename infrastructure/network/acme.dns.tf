@@ -15,7 +15,6 @@ resource "porkbun_nameservers" "acme_challenge" {
 }
 
 resource "restapi_object" "desec_domain_acme_challenge" {
-  provider                = restapi.desec
   path                    = "/domains"
   ignore_server_additions = true
   id_attribute            = "name"
@@ -25,6 +24,14 @@ resource "restapi_object" "desec_domain_acme_challenge" {
   data = jsonencode({
     name = data.porkbun_domain.acme_challenge.domain
   })
+}
+
+output "desec_domain_api_response" {
+  value = restapi_object.desec_domain_acme_challenge.api_response
+}
+
+output "desec_domain_api_create_response" {
+  value = restapi_object.desec_domain_acme_challenge.create_response
 }
 
 resource "porkbun_dns_record" "acme_challenge" {

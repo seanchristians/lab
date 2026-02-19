@@ -1,5 +1,4 @@
 resource "restapi_object" "desec_token_veronica" {
-  provider                = restapi.desec
   path                    = "/auth/tokens"
   ignore_server_additions = true
 
@@ -11,27 +10,13 @@ resource "restapi_object" "desec_token_veronica" {
   })
 }
 
-resource "restapi_object" "desec_token_default_policy_veronica" {
-  provider                = restapi.desec
-  path                    = "/auth/tokens/${restapi_object.desec_token_veronica.id}/policies/rrsets"
-  ignore_server_additions = true
-
-
-  data = jsonencode({
-    domain     = null
-    subname    = null
-    type       = null
-    perm_write = false
-  })
-}
-
 resource "restapi_object" "desec_token_policy_veronica" {
-  provider                = restapi.desec
   path                    = "/auth/tokens/${restapi_object.desec_token_veronica.id}/policies/rrsets"
   ignore_server_additions = true
 
+
   data = jsonencode({
-    domain     = data.porkbun_domain.acme_challenge.domain
+    domain     = restapi_object.desec_domain_acme_challenge.api_data.name
     subname    = "veronica"
     type       = "TXT"
     perm_write = true
