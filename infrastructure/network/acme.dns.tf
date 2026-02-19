@@ -14,18 +14,6 @@ resource "porkbun_nameservers" "acme_challenge" {
   nameservers = local.desec_nameservers
 }
 
-# resource "restapi_object" "desec_domain_acme_challenge" {
-#   path                    = "/domains"
-#   ignore_server_additions = true
-#   id_attribute            = "name"
-
-#   debug = true
-
-#   data = jsonencode({
-#     name = data.porkbun_domain.acme_challenge.domain
-#   })
-# }
-
 resource "porkbun_dns_record" "acme_challenge" {
   for_each = toset(local.acme_challenge_domains)
 
@@ -35,26 +23,17 @@ resource "porkbun_dns_record" "acme_challenge" {
   content   = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
 }
 
-data "http" "desec_domain_acme_challenge" {
-  url    = "https://desec.io/api/v1/domains/"
-  method = "POST"
+resource "restapi_object" "desec_domain_acme_challenge" {
+  path                    = "/domains/"
+  ignore_server_additions = true
+  id_attribute            = "name"
 
-  request_body = jsonencode({
+  data = jsonencode({
     name = data.porkbun_domain.acme_challenge.domain
   })
-
-  request_headers = {
-    Authorization = "Token ${var.desec_token}"
-    Content-Type  = "application/json"
-  }
-
-  retry {
-    attempts     = 5
-    max_delay_ms = 30
-    min_delay_ms = 1
-  }
 }
 
-output "desec_domain_api_response" {
-  value = data.http.desec_domain_acme_challenge.response_body
+import {
+  to = restapi_object.desec_domain_acme_challenge
+  id = "/domains/${data.porkbun_domain.acme_challenge.domain}"
 }
