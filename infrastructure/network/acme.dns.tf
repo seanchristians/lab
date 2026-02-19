@@ -33,8 +33,3 @@ resource "restapi_object" "desec_domain_acme_challenge" {
     name = data.porkbun_domain.acme_challenge.domain
   })
 }
-
-import {
-  to = restapi_object.desec_domain_acme_challenge
-  id = "/domains/${data.porkbun_domain.acme_challenge.domain}"
-}
