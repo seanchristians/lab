@@ -14,25 +14,17 @@ resource "porkbun_nameservers" "acme_challenge" {
   nameservers = local.desec_nameservers
 }
 
-resource "restapi_object" "desec_domain_acme_challenge" {
-  path                    = "/domains"
-  ignore_server_additions = true
-  id_attribute            = "name"
+# resource "restapi_object" "desec_domain_acme_challenge" {
+#   path                    = "/domains"
+#   ignore_server_additions = true
+#   id_attribute            = "name"
 
-  debug = true
+#   debug = true
 
-  data = jsonencode({
-    name = data.porkbun_domain.acme_challenge.domain
-  })
-}
-
-output "desec_domain_api_response" {
-  value = restapi_object.desec_domain_acme_challenge.api_response
-}
-
-output "desec_domain_api_create_response" {
-  value = restapi_object.desec_domain_acme_challenge.create_response
-}
+#   data = jsonencode({
+#     name = data.porkbun_domain.acme_challenge.domain
+#   })
+# }
 
 resource "porkbun_dns_record" "acme_challenge" {
   for_each = toset(local.acme_challenge_domains)
@@ -41,4 +33,28 @@ resource "porkbun_dns_record" "acme_challenge" {
   subdomain = "_acme-challenge.${each.key}"
   type      = "CNAME"
   content   = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
+}
+
+data "http" "desec_domain_acme_challenge" {
+  url    = "https://desec.io/api/v1/domains"
+  method = "POST"
+
+  request_body = jsonencode({
+    name = data.porkbun_domain.acme_challenge.domain
+  })
+
+  request_headers = {
+    Authorization = "Token ${var.desec_token}"
+    Content-Type  = "application/json"
+  }
+
+  retry {
+    attempts     = 5
+    max_delay_ms = 30
+    min_delay_ms = 1
+  }
+}
+
+output "desec_domain_api_response" {
+  value = data.http.desec_domain_acme_challenge.response_body
 }
