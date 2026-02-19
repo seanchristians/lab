@@ -3,8 +3,11 @@ resource "tailscale_dns_preferences" "default" {
 }
 
 locals {
+  tailnet_tags           = keys(jsondecode(data.local_file.tailnet_policy.content).tagOwners)
+  tailnet_tagged_devices = flatten([for devices in data.tailscale_devices.tagged_device : devices.devices])
+
   tailnet_tagged_ips = flatten([
-    for device in data.tailscale_devices.tagged_devices.devices : [
+    for device in local.tailnet_tagged_devices : [
       for address in device.addresses : {
         ip      = address
         is_ipv4 = can(cidrnetmask("${address}/32"))
@@ -12,15 +15,10 @@ locals {
       }
     ]
   ])
-
-  tailnet_tags = keys(jsondecode(data.local_file.tailnet_policy.content).tagOwners)
 }
 
-output "tailnet_devices" {
-  value = jsonencode(data.tailscale_devices.tagged_devices.devices)
-}
-
-data "tailscale_devices" "tagged_devices" {
+data "tailscale_devices" "tagged_device" {
+  for_each = toset(local.tailnet_tags)
   filter {
     name   = "isEphemeral"
     values = ["false"]
@@ -28,12 +26,7 @@ data "tailscale_devices" "tagged_devices" {
 
   filter {
     name   = "tags"
-    values = ["tag:home"]
-  }
-
-  filter {
-    name   = "tags"
-    values = ["tag:infrastructure"]
+    values = [each.key]
   }
 }
 
