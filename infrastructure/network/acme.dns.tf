@@ -26,6 +26,14 @@ resource "restapi_object" "desec_domain_acme_challenge" {
   })
 }
 
+output "desec_domain_api_response" {
+  value = restapi_object.desec_domain_acme_challenge.api_response
+}
+
+output "desec_domain_api_create_response" {
+  value = restapi_object.desec_domain_acme_challenge.create_response
+}
+
 resource "porkbun_dns_record" "acme_challenge" {
   for_each = toset(local.acme_challenge_domains)
 
