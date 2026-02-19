@@ -21,7 +21,6 @@ permissions:
 env:
   PORKBUN_API_KEY: ${{ secrets.PORKBUN_API_KEY }}
   PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_API_KEY }}
-  DESEC_API_TOKEN: ${{ secrets.DESEC_API_TOKEN }}
   TF_VAR_desec_token: ${{ secrets.DESEC_API_TOKEN }}
 
 jobs:

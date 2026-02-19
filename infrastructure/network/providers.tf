@@ -16,10 +16,6 @@ terraform {
       source  = "Mastercard/restapi"
       version = "3.0.0-rc2"
     }
-    desec = {
-      source  = "Valodim/desec"
-      version = "0.6.1"
-    }
   }
 }
 
@@ -54,5 +50,3 @@ provider "restapi" {
     max_retries = 5
   }
 }
-
-provider "desec" {}

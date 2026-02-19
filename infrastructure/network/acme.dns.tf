@@ -15,28 +15,23 @@ resource "porkbun_nameservers" "acme_challenge" {
 }
 
 resource "restapi_object" "desec_domain_acme_challenge" {
-  provider     = restapi.desec
-  path         = "/domains"
-  id_attribute = "name"
+  provider                = restapi.desec
+  path                    = "/domains"
+  ignore_server_additions = true
+  id_attribute            = "name"
 
-  for_each = toset(local.acme_challenge_domains)
+  debug = true
 
   data = jsonencode({
-    name = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
+    name = data.porkbun_domain.acme_challenge.domain
   })
 }
 
-# resource "desec_domain" "acme_challenge" {
-#   for_each = toset(local.acme_challenge_domains)
-
-#   name = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
-# }
-
 resource "porkbun_dns_record" "acme_challenge" {
-  for_each = restapi_object.desec_domain_acme_challenge
+  for_each = toset(local.acme_challenge_domains)
 
   domain    = data.porkbun_domain.network.domain
   subdomain = "_acme-challenge.${each.key}"
   type      = "CNAME"
-  content   = each.value.id
+  content   = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
 }
