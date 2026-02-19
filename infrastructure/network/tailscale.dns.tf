@@ -28,7 +28,7 @@ data "tailscale_devices" "tagged_devices" {
 
   filter {
     name   = "tags"
-    values = "tag:home"
+    values = ["tag:home"]
   }
 }
 
