@@ -12,6 +12,10 @@ terraform {
       source  = "marcfrederick/porkbun"
       version = "1.3.1"
     }
+    restapi = {
+      source  = "Mastercard/restapi"
+      version = "3.0.0-rc2"
+    }
     desec = {
       source  = "Valodim/desec"
       version = "0.6.1"
@@ -35,6 +39,20 @@ provider "aws" {
 
 provider "porkbun" {
   max_retries = 5
+}
+
+provider "restapi" {
+  alias = "desec"
+
+  headers = {
+    Authorization = "Token ${var.desec_token}"
+  }
+  id_attribute          = "id"
+  uri                   = "https://desec.io/api/v1"
+  create_returns_object = true
+  retries {
+    max_retries = 5
+  }
 }
 
 provider "desec" {}
