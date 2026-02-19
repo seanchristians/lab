@@ -28,7 +28,7 @@ data "tailscale_devices" "tagged_devices" {
 
   filter {
     name   = "tags"
-    values = local.tailnet_tags
+    values = "tag:home"
   }
 }
 
