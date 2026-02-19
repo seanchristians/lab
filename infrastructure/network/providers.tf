@@ -47,6 +47,7 @@ provider "restapi" {
   headers = {
     Authorization = "Token ${var.desec_token}"
   }
+  id_attribute          = "id"
   uri                   = "https://desec.io/api/v1"
   create_returns_object = true
   retries {
