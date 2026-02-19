@@ -38,11 +38,11 @@ provider "porkbun" {
 }
 
 provider "restapi" {
-  alias = "desec"
-
   headers = {
-    Authorization = "Token ${var.desec_token}"
+    "Authorization" = "Token ${var.desec_token}"
+    "Content-Type"  = "application/json"
   }
+
   id_attribute          = "id"
   uri                   = "https://desec.io/api/v1"
   create_returns_object = true

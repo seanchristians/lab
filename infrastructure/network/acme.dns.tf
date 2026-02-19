@@ -15,7 +15,6 @@ resource "porkbun_nameservers" "acme_challenge" {
 }
 
 resource "restapi_object" "desec_domain_acme_challenge" {
-  provider                = restapi.desec
   path                    = "/domains"
   ignore_server_additions = true
   id_attribute            = "name"
