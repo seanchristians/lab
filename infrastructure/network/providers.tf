@@ -43,6 +43,8 @@ provider "restapi" {
     "Content-Type"  = "application/json"
   }
 
+  debug = true
+
   id_attribute          = "id"
   uri                   = "https://desec.io/api/v1"
   create_returns_object = true

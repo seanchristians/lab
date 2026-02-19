@@ -24,7 +24,7 @@ resource "porkbun_dns_record" "acme_challenge" {
 }
 
 resource "restapi_object" "desec_domain_acme_challenge" {
-  path                    = "/domains"
+  path                    = "/domains/"
   query_string            = "/"
   ignore_server_additions = true
   id_attribute            = "name"
@@ -32,9 +32,4 @@ resource "restapi_object" "desec_domain_acme_challenge" {
   data = jsonencode({
     name = data.porkbun_domain.acme_challenge.domain
   })
-}
-
-import {
-  to = restapi_object.desec_domain_acme_challenge
-  id = "/domains/${data.porkbun_domain.acme_challenge.domain}"
 }
