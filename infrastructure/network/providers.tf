@@ -51,3 +51,5 @@ provider "restapi" {
     max_retries = 5
   }
 }
+
+provider "desec" {}
