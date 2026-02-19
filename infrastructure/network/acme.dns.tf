@@ -36,7 +36,7 @@ resource "porkbun_dns_record" "acme_challenge" {
 }
 
 data "http" "desec_domain_acme_challenge" {
-  url    = "https://desec.io/api/v1/domains"
+  url    = "https://desec.io/api/v1/domains/"
   method = "POST"
 
   request_body = jsonencode({
