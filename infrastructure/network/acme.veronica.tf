@@ -1,9 +1,6 @@
 resource "restapi_object" "desec_token_veronica" {
   path                    = "/auth/tokens/"
-  query_string            = "/"
   ignore_server_additions = true
-
-  debug = true
 
   data = jsonencode({
     name               = "veronica"
@@ -13,9 +10,19 @@ resource "restapi_object" "desec_token_veronica" {
   })
 }
 
+resource "restapi_object" "desec_token_default_policy_veronica" {
+  path                    = "/auth/tokens/${restapi_object.desec_token_veronica.id}/policies/rrsets/"
+  ignore_server_additions = true
+
+  data = jsonencode({
+    domain  = null
+    subname = null
+    type    = null
+  })
+}
+
 resource "restapi_object" "desec_token_policy_veronica" {
   path                    = "/auth/tokens/${restapi_object.desec_token_veronica.id}/policies/rrsets/"
-  query_string            = "/"
   ignore_server_additions = true
 
 
