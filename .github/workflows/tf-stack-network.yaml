@@ -57,8 +57,6 @@ jobs:
           ping: veronica.scchq.net
 
       - name: Terraform
-        env:
-          TF_LOG: DEBUG
         uses: seanchristians/lab/actions/terraform@main
         with:
           stack: infrastructure/network
