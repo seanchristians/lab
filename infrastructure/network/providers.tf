@@ -44,7 +44,9 @@ provider "porkbun" {
 provider "restapi" {
   alias = "desec"
 
-  bearer_token          = var.desec_token
+  headers = {
+    Authorization = "Token ${var.desec_token}"
+  }
   uri                   = "https://desec.io/api/v1"
   create_returns_object = true
   retries {
