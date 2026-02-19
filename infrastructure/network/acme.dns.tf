@@ -33,5 +33,5 @@ resource "porkbun_dns_record" "acme_challenge" {
   domain    = data.porkbun_domain.network.domain
   subdomain = "_acme-challenge.${each.key}"
   type      = "CNAME"
-  content   = each.value.id
+  content   = "${each.key}.${data.porkbun_domain.acme_challenge.domain}"
 }
