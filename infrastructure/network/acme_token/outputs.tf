@@ -1,5 +1,5 @@
 output "token" {
-  value       = restapi_object.desec_token.create_response.token
+  value       = restapi_object.desec_token.api_data.token
   description = "deSEC.io API token"
   ephemeral   = true
 }
