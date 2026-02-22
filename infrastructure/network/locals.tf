@@ -1,0 +1,11 @@
+data "porkbun_domains" "all" {}
+
+locals {
+  porkbun_active_domain = {
+    for domain in data.porkbun_domains.domains : domain.domain => domain
+    if domain.status == "ACTIVE"
+  }
+
+  network_domain        = local.porkbun_active_domain["scchq.net"].domain
+  acme_challenge_domain = local.porkbun_active_domain["sean.directory"].domain
+}
