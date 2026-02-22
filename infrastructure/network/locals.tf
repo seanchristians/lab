@@ -2,7 +2,7 @@ data "porkbun_domains" "all" {}
 
 locals {
   porkbun_active_domain = {
-    for domain in data.porkbun_domains.domains : domain.domain => domain
+    for domain in data.porkbun_domains.all : domain.domain => domain
     if domain.status == "ACTIVE"
   }
 
