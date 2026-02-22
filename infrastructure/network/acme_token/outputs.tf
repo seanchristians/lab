@@ -1,5 +1,5 @@
 output "token" {
-  value       = restapi_object.desec_token.api_data.token
+  value       = lookup(restapi_object.desec_token.api_data, "token", "")
   description = "deSEC.io API token"
   ephemeral   = true
 }
