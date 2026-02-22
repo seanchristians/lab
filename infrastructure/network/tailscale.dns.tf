@@ -6,7 +6,7 @@ resource "porkbun_dns_record" "tailnet" {
   for_each = local.tailnet_ips
 
   domain    = local.network_domain
-  subdomain = each.value.name
+  subdomain = regex("^(.+)\\.[^.]+\\.ts\\.net$", each.value.name)[0]
   type      = can(cidrnetmask("${each.key}/32")) ? "A" : "AAAA"
   content   = each.key
 }
