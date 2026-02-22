@@ -6,7 +6,7 @@ locals {
 }
 
 resource "porkbun_nameservers" "acme_challenge" {
-  domain      = local.network_domain
+  domain      = local.acme_challenge_domain
   nameservers = local.desec_nameservers
 }
 
