@@ -6,7 +6,7 @@ locals {
 }
 
 resource "porkbun_nameservers" "acme_challenge" {
-  domain      = data.porkbun_domain.acme_challenge.domain
+  domain      = local.acme_challenge_domain
   nameservers = local.desec_nameservers
 }
 
@@ -16,6 +16,6 @@ resource "restapi_object" "desec_domain_acme_challenge" {
   id_attribute            = "name"
 
   data = jsonencode({
-    name = data.porkbun_domain.acme_challenge.domain
+    name = local.acme_challenge_domain
   })
 }

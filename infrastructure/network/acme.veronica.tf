@@ -2,8 +2,8 @@ module "desec_token_veronica" {
   source = "./acme_token"
 
   subdomain   = "veronica"
-  domain      = data.porkbun_domain.network.domain
-  acme_domain = data.porkbun_domain.acme_challenge.domain
+  domain      = local.network_domain
+  acme_domain = local.acme_challenge_domain
 
   sentinel = "09DAB4EB-2625-4BBA-AC6F-19CD06626581"
 }
