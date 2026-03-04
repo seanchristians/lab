@@ -26,8 +26,15 @@ runs:
       env:
         STACK: ${{ inputs.stack }}
       run: |
+        echo "TF_PLUGIN_CACHE_DIR=$STACK/.terraform.d/plugin-cache" >> $GITHUB_ENV
         echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
         echo "STACK=$STACK" >> $GITHUB_ENV
+
+    - name: Cache Terraform plugins
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      with:
+        path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+        key: ${{ runner.os }}-terraform-${{ hashFiles(format("{0}/.terraform.lock.hcl", inputs.stack)) }}
 
     - name: Terraform backend
       shell: bash
