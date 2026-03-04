@@ -4,7 +4,7 @@ data "dns_ns_record_set" "desec" {
 
 resource "porkbun_nameservers" "acme_challenge" {
   domain      = local.acme_challenge_domain
-  nameservers = trimsuffix(data.dns_ns_record_set.desec.nameservers[*], ".")
+  nameservers = [for record in data.dns_ns_record_set.desec.nameservers : trimsuffix(record, ".")]
 }
 
 resource "restapi_object" "desec_domain_acme_challenge" {
