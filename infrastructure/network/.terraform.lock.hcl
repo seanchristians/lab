@@ -6,6 +6,7 @@ provider "registry.terraform.io/hashicorp/aws" {
   constraints = "6.34.0"
   hashes = [
     "h1:ZGSMOPC+Du0cKJ2kV1Ni8Rnz7ezsIu+jYFEknpye5CM=",
+    "h1:tG2N7S54admlDbTjy5/T8QzGivR0WUcBOEahlZRnxUw=",
     "h1:wXPejniDcbqRtL2zzaeZsmjLe7NekeYD5QjlIzUOylI=",
     "zh:1e49dc96bf50633583e3cbe23bb357642e7e9afe135f54e061e26af6310e50d2",
     "zh:45651bb4dad681f17782d99d9324de182a7bb9fbe9dd22f120fdb7fe42969cc9",
@@ -29,7 +30,8 @@ provider "registry.terraform.io/hashicorp/dns" {
   version     = "3.5.0"
   constraints = "3.5.0"
   hashes = [
-    "h1:l+PFNwnIKdM/Zjwn10RJ4yuj6xNoyL9efmsIRKc40k0=",
+    "h1:jle+JDWzLhkPMgNTGKpNo+Aj9fDMFnD7FJInV/nL6RI=",
+    "h1:ndHmS9QAYoOxnZ0Oe8ICHnEoCsmCMCt+gG7sxsayvZk=",
     "zh:1b13839d263eedae417d4252191c586eb710e65dfeab65702d65fe3be4a271a4",
     "zh:370a2a2e2823f137268cfed745f050b7bfd9eeb95783699b7ec3cf92bdf5889a",
     "zh:4b32c1dc7cb0d47b605ac3f0a131e692e113ab3e160c4eb4a4575b9b746173fd",
@@ -49,6 +51,7 @@ provider "registry.terraform.io/hashicorp/local" {
   version = "2.7.0"
   hashes = [
     "h1:2RYa3j7m/0WmET2fqotY4CHxE1Hpk0fgn47/126l+Og=",
+    "h1:SY06ZmR7rY7QMGoVEkeFrERVitBp2GKl/ATz9tbjXlk=",
     "h1:sSwlfp2etjCaE9hIF7bJBDjRIhDCVFglEOVyiCI7vgs=",
     "zh:261fec71bca13e0a7812dc0d8ae9af2b4326b24d9b2e9beab3d2400fab5c5f9a",
     "zh:308da3b5376a9ede815042deec5af1050ec96a5a5410a2206ae847d82070a23e",
@@ -69,6 +72,7 @@ provider "registry.terraform.io/marcfrederick/porkbun" {
   version     = "1.3.1"
   constraints = "1.3.1"
   hashes = [
+    "h1:/gJt/QWK9bOr/uMClzBbX7JDDQZJYBE4yzvDuOsZxYg=",
     "h1:TZUIn82Jy1NcvuJbkAUTqJe5ZTturKavp8DNCJc5Dvo=",
     "h1:rsw9Mnj7Scp3FQpgu+NtTKoXJQ5j3TCyJmtc7NCBmK0=",
     "zh:00be5fe6b337e52b2df94d0c0dbcd1f128178fce2ecfd8395335a2de87454d6f",
@@ -94,6 +98,7 @@ provider "registry.terraform.io/mastercard/restapi" {
   constraints = "3.0.0-rc2"
   hashes = [
     "h1:2CkmSXtMOuBhr4qkNawcGjBgY2IR6fJlZJpu3Beio78=",
+    "h1:2xtdzkEKcDTv6trtL4vzSDpwq09sfoBInSf4B6JSil0=",
     "h1:X39/qxhLf8c07mI9hhvAZTzYGd6sUBuuqpjB//3KPA0=",
     "zh:1c3e89cf19118fc07d7b04257251fc9897e722c16e0a0df7b07fcd261f8c12e7",
     "zh:21f8075686452e6e3f63cc508713671afda911c163fb325398d1d894d6e91e2b",
@@ -117,6 +122,7 @@ provider "registry.terraform.io/tailscale/tailscale" {
   version     = "0.28.0"
   constraints = "0.28.0"
   hashes = [
+    "h1:0akSSpOvxWmfdMYMT6uElf2znvYP4ErZxuhbTInz9ts=",
     "h1:Cquej+BY4u2GJ90N1l7CCwP4aukIYHUvnlgQIkpLFbU=",
     "h1:ePEPKHOdFsiRunCD9IWTkFZlRBr2pKzohrNUgbCVY2Q=",
     "zh:26dc44b865b055069fbada06d8fcf0d44c32a365823219db1c122458c377a2f0",
