@@ -16,6 +16,10 @@ terraform {
       source  = "Mastercard/restapi"
       version = "3.0.0-rc2"
     }
+    dns = {
+      source  = "hashicorp/dns"
+      version = "3.5.0"
+    }
   }
 }
 
@@ -50,3 +54,5 @@ provider "restapi" {
     max_retries = 5
   }
 }
+
+provider "dns" {}
