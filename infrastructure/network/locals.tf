@@ -11,5 +11,5 @@ locals {
 }
 
 data "external" "module_path_in_git_repo" {
-  program = ["/bin/bash", "git", "rev-parse", "--show-prefix"]
+  program = ["/bin/bash", "-c", "git rev-parse --show-prefix"]
 }
