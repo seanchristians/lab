@@ -11,5 +11,5 @@ locals {
 }
 
 data "external" "module_path_in_git_repo" {
-  program = ["/bin/bash", "-c", "git rev-parse --show-prefix | awk '{$1=$1;print}' | jq -Rs '{content: .}'"]
+  program = ["/bin/bash", "-c", "echo -n $(git rev-parse --show-prefix) | jq -Rs '{content: .}'"]
 }
