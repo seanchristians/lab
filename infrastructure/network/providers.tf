@@ -20,6 +20,10 @@ terraform {
       source  = "hashicorp/dns"
       version = "3.5.0"
     }
+    external = {
+      source  = "hashicorp/external"
+      version = "2.3.5"
+    }
   }
 }
 
@@ -56,3 +60,5 @@ provider "restapi" {
 }
 
 provider "dns" {}
+
+provider "external" {}

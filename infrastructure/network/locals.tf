@@ -9,3 +9,7 @@ locals {
   network_domain        = local.porkbun_active_domain["scchq.net"].domain
   acme_challenge_domain = local.porkbun_active_domain["sean.directory"].domain
 }
+
+data "external" "module_path_in_git_repo" {
+  program = ["/bin/bash", "-c", "echo -n $(git rev-parse --show-prefix) | jq -Rs '{content: .}'"]
+}
