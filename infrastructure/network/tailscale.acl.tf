@@ -1,5 +1,5 @@
 data "local_file" "tailnet_policy" {
-  filename = "./tailnet_policy.json"
+  filename = "tailnet_policy.json"
 }
 
 resource "tailscale_acl" "tailnet" {
