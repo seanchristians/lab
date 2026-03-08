@@ -1,4 +1,4 @@
-name: Terraform Stack Network
+name: Terraform Module Network
 on:
   pull_request:
     paths:
@@ -59,4 +59,4 @@ jobs:
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
         with:
-          stack: infrastructure/network
+          module: infrastructure/network
