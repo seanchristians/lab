@@ -6,8 +6,14 @@ inputs:
   module:
     description: Path to Terraform code.
     required: true
-  backend_s3_bucket:
+  tf_backend_s3_bucket:
     description: AWS S3 bucket name where the Terraform state file is stored.
+    required: true
+  aws_region:
+    description: AWS region for authentication.
+    required: true
+  aws_role:
+    description: AWS IAM role to authenticate to.
     required: true
 
 runs:
@@ -43,17 +49,17 @@ runs:
     - name: Authenticate with AWS
       uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
       with:
-        aws-region: ca-central-1
-        role-to-assume: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+        aws-region: ${{ inputs.aws_region }}
+        role-to-assume: ${{ inputs.aws_role }}
 
     - name: Terraform Init
       shell: bash
       env:
         TERRAFORM_MODULE: ${{ inputs.module }}
-        AWS_S3_BUCKET: ${{ inputs.backend_s3_bucket }}
+        AWS_S3_BUCKET: ${{ inputs.tf_backend_s3_bucket }}
       run: |
-        AWS_REGION=$(aws s3api get-bucket-location --bucket "$AWS_S3_BUCKET" --output text)
-        terraform init -lockfile=readonly -from-module="$TERRAFORM_MODULE" -backend-config="bucket=${AWS_S3_BUCKET}" -backend-config="region=${AWS_REGION}"
+        BUCKET_AWS_REGION=$(aws s3api get-bucket-location --bucket "$AWS_S3_BUCKET" --output text)
+        terraform init -lockfile=readonly -from-module="$TERRAFORM_MODULE" -backend-config="bucket=${AWS_S3_BUCKET}" -backend-config="region=${BUCKET_AWS_REGION}"
 
     - name: Terraform Validate
       if: steps.mode.outputs.mode == 'plan'
