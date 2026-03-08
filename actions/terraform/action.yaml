@@ -6,6 +6,9 @@ inputs:
   module:
     description: Path to Terraform code.
     required: true
+  backend_s3_bucket:
+    description: AWS S3 bucket name where the Terraform state file is stored.
+    required: true
 
 runs:
   using: composite
@@ -39,22 +42,6 @@ runs:
         restore-keys: |
           ${{ runner.os }}-terraform-plugins-
 
-    - name: Terraform backend
-      shell: bash
-      env:
-        TERRAFORM_MODULE: ${{ inputs.module }}
-      run: |
-        cat > backend.tf << HCP
-        terraform {
-          backend "s3" {
-            bucket       = "seanchristians-lab-terraform-state"
-            key          = "${TERRAFORM_MODULE}/terraform.tfstate"
-            region       = "ca-central-1"
-            use_lockfile = true
-          }
-        }
-        HCP
-
     - name: Authenticate with AWS
       uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
       with:
@@ -65,8 +52,10 @@ runs:
       shell: bash
       env:
         TERRAFORM_MODULE: ${{ inputs.module }}
+        AWS_S3_BUCKET: ${{ inputs.backend_s3_bucket }}
       run: |
-        terraform init -lockfile=readonly -from-module="$TERRAFORM_MODULE"
+        AWS_REGION=$(aws s3api get-bucket-location --bucket "$AWS_S3_BUCKET" --output text)
+        terraform init -lockfile=readonly -from-module="$TERRAFORM_MODULE" -backend-config="bucket=${AWS_S3_BUCKET}" -backend-config="region=${AWS_REGION}"
 
     - name: Terraform Validate
       if: steps.mode.outputs.mode == 'plan'
