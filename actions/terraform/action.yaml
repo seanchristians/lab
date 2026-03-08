@@ -28,11 +28,9 @@ runs:
       shell: bash
       run: |
         mkdir -p ".terraform.d/plugin-cache"
-        cat >> $GITHUB_ENV <<- ENV
-          TF_PLUGIN_CACHE_DIR=.terraform.d/plugin-cache
-          TF_IN_AUTOMATION=true
-          TF_INPUT=false
-        ENV
+        echo "TF_PLUGIN_CACHE_DIR=.terraform.d/plugin-cache" >> $GITHUB_ENV
+        echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
+        echo "TF_INPUT=false" >> $GITHUB_ENV
 
     - name: Cache Terraform plugins
       uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
