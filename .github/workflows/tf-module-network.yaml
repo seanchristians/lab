@@ -57,6 +57,6 @@ jobs:
           ping: veronica.scchq.net
 
       - name: Terraform
-        uses: seanchristians/lab/actions/terraform@main
+        uses: seanchristians/lab/actions/terraform@improve-terraform-ci-output
         with:
           module: infrastructure/network
