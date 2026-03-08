@@ -3,7 +3,7 @@ author: Sean Christians
 description: Manage deployments with Terraform
 
 inputs:
-  stack:
+  module:
     description: Path to Terraform code.
     required: true
 
@@ -23,13 +23,12 @@ runs:
 
     - name: Terraform environment
       shell: bash
-      env:
-        STACK: ${{ inputs.stack }}
       run: |
-        mkdir -p "$HOME/.terraform.d/plugin-cache"
-        echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >> $GITHUB_ENV
-        echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
-        echo "STACK=$STACK" >> $GITHUB_ENV
+        mkdir -p ".terraform.d/plugin-cache"
+        cat >> $GITHUB_ENV << ENV
+        TF_PLUGIN_CACHE_DIR=.terraform.d/plugin-cache
+        TF_IN_AUTOMATION=true
+        ENV
 
     - name: Cache Terraform plugins
       uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
@@ -41,13 +40,14 @@ runs:
 
     - name: Terraform backend
       shell: bash
-      working-directory: ${{ inputs.stack }}
+      env:
+        TERRAFORM_MODULE: ${{ inputs.module }}
       run: |
         cat > backend.tf << HCP
         terraform {
           backend "s3" {
             bucket       = "seanchristians-lab-terraform-state"
-            key          = "$STACK/terraform.tfstate"
+            key          = "${TERRAFORM_MODULE}/terraform.tfstate"
             region       = "ca-central-1"
             use_lockfile = true
           }
@@ -62,35 +62,33 @@ runs:
 
     - name: Terraform Init
       shell: bash
-      working-directory: ${{ inputs.stack }}
+      env:
+        TERRAFORM_MODULE: ${{ inputs.module }}
       run: |
         terraform init -lockfile=readonly -from-module="$TERRAFORM_MODULE"
 
     - name: Terraform Validate
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
-      working-directory: ${{ inputs.stack }}
       run: |
         terraform validate
 
     - name: Terraform Plan
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
-      working-directory: ${{ inputs.stack }}
       run: |
-        terraform plan -input=false -no-color -compact-warnings -out="~/tfplan"
+        terraform plan -input=false -no-color -compact-warnings -out=tfplan
 
     - name: Show plan in summary
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
       run: |
         echo "```" >> $GITHUB_STEP_SUMMARY
-        terraform show ~/tfplan >> $GITHUB_STEP_SUMMARY
+        terraform show tfplan >> $GITHUB_STEP_SUMMARY
         echo "```" >> $GITHUB_STEP_SUMMARY
 
     - name: Terraform Apply
       if: steps.mode.outputs.mode == 'apply'
       shell: bash
-      working-directory: ${{ inputs.stack }}
       run: |
         terraform apply -input=false -auto-approve
