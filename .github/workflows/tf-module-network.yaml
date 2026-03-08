@@ -60,6 +60,6 @@ jobs:
         uses: seanchristians/lab/actions/terraform@improve-terraform-ci-output
         with:
           module: infrastructure/network
-          backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
-          backend_aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
-          backend_aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
+          tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
+          aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
+          aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
