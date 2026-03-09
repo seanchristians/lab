@@ -7,4 +7,6 @@ resource "tailscale_tailnet_settings" "primary" {
   devices_key_duration_days = 30
 
   users_approval_on = true
+
+  https_enabled = true
 }
