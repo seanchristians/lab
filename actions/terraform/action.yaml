@@ -88,7 +88,7 @@ runs:
       shell: bash
       run: |
         echo '```' >> $GITHUB_STEP_SUMMARY
-        terraform show "$HOME/tfplan" >> $GITHUB_STEP_SUMMARY
+        tf show "$HOME/tfplan" >> $GITHUB_STEP_SUMMARY
         echo '```' >> $GITHUB_STEP_SUMMARY
 
     - name: Terraform Apply
