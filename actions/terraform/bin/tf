@@ -1,5 +1,4 @@
-#!/usr/bin/env bash --noprofile --norc
-set -eo pipefail
+#!/usr/bin/env -S bash --noprofile --norc -eo pipefail
 
 if [ -z "$TERRAFORM_MODULE" ]; then
     TERRAFORM_MODULE="."
