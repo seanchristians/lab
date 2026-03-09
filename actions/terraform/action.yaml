@@ -22,7 +22,7 @@ runs:
     - name: Install Terraform
       uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
 
-    - name: Terraform wrapper
+    - name: Terraform wrapper and environment
       shell: bash
       env:
         ACTION_BIN_PATH: ${{ github.action_path }}/bin
@@ -30,6 +30,10 @@ runs:
       run: |
         echo "TERRAFORM_MODULE=${TERRAFORM_MODULE}" >> $GITHUB_ENV
         echo "$ACTION_BIN_PATH" >> $GITHUB_PATH
+        mkdir -p "$HOME/.terraform.d/plugin-cache"
+        echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >> $GITHUB_ENV
+        echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
+        echo "TF_INPUT=false" >> $GITHUB_ENV
 
     - name: Select Terraform provisioning stage
       id: mode
@@ -38,14 +42,6 @@ runs:
         MODE: ${{ github.ref_name == github.event.repository.default_branch && 'apply' || 'plan' }}
       run: |
         echo "mode=$MODE" >> $GITHUB_OUTPUT
-
-    - name: Terraform environment
-      shell: bash
-      run: |
-        mkdir -p "$HOME/.terraform.d/plugin-cache"
-        echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >> $GITHUB_ENV
-        echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
-        echo "TF_INPUT=false" >> $GITHUB_ENV
 
     - name: Cache Terraform plugins
       uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
