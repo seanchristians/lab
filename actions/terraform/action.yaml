@@ -27,9 +27,11 @@ runs:
       env:
         TOOL_CACHE: ${{ runner.tool_cache }}
         TF_WRAPPER_FP: ${{ github.action_path }}/tf
+        TERRAFORM_MODULE: ${{ inputs.module }}
       run: |
         chmod +x "$TF_WRAPPER_FP"
         cp "$TF_WRAPPER_FP" "$TOOL_CACHE"
+        echo "TERRAFORM_MODULE=${TERRAFORM_MODULE}" >> $GITHUB_ENV
 
     - name: Select Terraform provisioning stage
       id: mode
@@ -64,7 +66,6 @@ runs:
     - name: Terraform Init
       shell: bash
       env:
-        TERRAFORM_MODULE: ${{ inputs.module }}
         AWS_S3_BUCKET: ${{ inputs.tf_backend_s3_bucket }}
       run: |
         BUCKET_AWS_REGION=$(aws s3api get-bucket-location --bucket "$AWS_S3_BUCKET" --output text)
