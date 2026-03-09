@@ -1,0 +1,9 @@
+#!/usr/bin/env -S bash --noprofile --norc -eo pipefail
+
+# This script wraps the terraform executable to set global CLI options
+
+if [ -z "$TERRAFORM_MODULE" ]; then
+    TERRAFORM_MODULE="."
+fi
+
+terraform -chdir="$TERRAFORM_MODULE" $@

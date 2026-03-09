@@ -1,4 +1,4 @@
-name: Terraform Stack Network
+name: Terraform Module Network
 on:
   pull_request:
     paths:
@@ -59,4 +59,7 @@ jobs:
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
         with:
-          stack: infrastructure/network
+          module: infrastructure/network
+          tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
+          aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
+          aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}

@@ -3,8 +3,17 @@ author: Sean Christians
 description: Manage deployments with Terraform
 
 inputs:
-  stack:
+  module:
     description: Path to Terraform code.
+    required: true
+  tf_backend_s3_bucket:
+    description: AWS S3 bucket name where the Terraform state file is stored.
+    required: true
+  aws_region:
+    description: AWS region for authentication.
+    required: true
+  aws_role:
+    description: AWS IAM role to authenticate to.
     required: true
 
 runs:
@@ -12,6 +21,15 @@ runs:
   steps:
     - name: Install Terraform
       uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+
+    - name: Terraform wrapper
+      shell: bash
+      env:
+        ACTION_BIN_PATH: ${{ github.action_path }}/bin
+        TERRAFORM_MODULE: ${{ inputs.module }}
+      run: |
+        echo "TERRAFORM_MODULE=${TERRAFORM_MODULE}" >> $GITHUB_ENV
+        echo "$ACTION_BIN_PATH" >> $GITHUB_PATH
 
     - name: Select Terraform provisioning stage
       id: mode
@@ -23,66 +41,58 @@ runs:
 
     - name: Terraform environment
       shell: bash
-      env:
-        STACK: ${{ inputs.stack }}
       run: |
         mkdir -p "$HOME/.terraform.d/plugin-cache"
         echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >> $GITHUB_ENV
         echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
-        echo "STACK=$STACK" >> $GITHUB_ENV
+        echo "TF_INPUT=false" >> $GITHUB_ENV
 
     - name: Cache Terraform plugins
       uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
       with:
         path: ${{ env.TF_PLUGIN_CACHE_DIR }}
-        key: ${{ runner.os }}-terraform-plugins-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.stack)) }}
+        key: ${{ runner.os }}-terraform-plugins-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.module)) }}
         restore-keys: |
           ${{ runner.os }}-terraform-plugins-
-
-    - name: Terraform backend
-      shell: bash
-      working-directory: ${{ inputs.stack }}
-      run: |
-        cat > backend.tf << HCP
-        terraform {
-          backend "s3" {
-            bucket       = "seanchristians-lab-terraform-state"
-            key          = "$STACK/terraform.tfstate"
-            region       = "ca-central-1"
-            use_lockfile = true
-          }
-        }
-        HCP
 
     - name: Authenticate with AWS
       uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
       with:
-        aws-region: ca-central-1
-        role-to-assume: arn:aws:iam::352505431850:role/GitHubActionsTerraformRole
+        aws-region: ${{ inputs.aws_region }}
+        role-to-assume: ${{ inputs.aws_role }}
 
     - name: Terraform Init
       shell: bash
-      working-directory: ${{ inputs.stack }}
+      env:
+        AWS_S3_BUCKET: ${{ inputs.tf_backend_s3_bucket }}
       run: |
-        terraform init -lockfile=readonly
+        BUCKET_AWS_REGION=$(aws s3api get-bucket-location --bucket "$AWS_S3_BUCKET" --output text)
+        tf init -lockfile=readonly \
+          -backend-config="bucket=${AWS_S3_BUCKET}" \
+          -backend-config="region=${BUCKET_AWS_REGION}"
 
     - name: Terraform Validate
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
-      working-directory: ${{ inputs.stack }}
       run: |
-        terraform validate
+        tf validate
 
     - name: Terraform Plan
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
-      working-directory: ${{ inputs.stack }}
       run: |
-        terraform plan -input=false -no-color -compact-warnings >> $GITHUB_STEP_SUMMARY
+        tf plan -no-color -compact-warnings -out="$HOME/tfplan"
+
+    - name: Show plan in summary
+      if: steps.mode.outputs.mode == 'plan'
+      shell: bash
+      run: |
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        tf show -no-color "$HOME/tfplan" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
 
     - name: Terraform Apply
       if: steps.mode.outputs.mode == 'apply'
       shell: bash
-      working-directory: ${{ inputs.stack }}
       run: |
-        terraform apply -input=false -auto-approve
+        tf apply -auto-approve
