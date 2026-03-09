@@ -1,0 +1,7 @@
+#!/bin/bash --noprofile --norc -eo pipefail
+
+if [ -z "$TERRAFORM_MODULE" ]; then
+    TERRAFORM_MODULE="."
+fi
+
+terraform -chdir="$TERRAFORM_MODULE" $@

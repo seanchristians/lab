@@ -25,10 +25,11 @@ runs:
     - name: Terraform wrapper
       shell: bash
       env:
-        TERRAFORM_MODULE: ${{ inputs.module }}
+        TOOL_CACHE: ${{ runner.tool_cache }}
+        TF_WRAPPER_FP: ${{ github.action_path }}/tf
       run: |
-        echo "alias tf='terraform -chdir=\"${TERRAFORM_MODULE}\"'" >> ~/.profile
-        echo "BASH_ENV='~/.profile'" >> $GITHUB_ENV
+        chmod +x "$TF_WRAPPER_FP"
+        cp "$TF_WRAPPER_FP" "$TOOL_CACHE"
 
     - name: Select Terraform provisioning stage
       id: mode
