@@ -57,7 +57,7 @@ jobs:
           ping: veronica.scchq.net
 
       - name: Terraform
-        uses: seanchristians/lab/actions/terraform@improve-terraform-ci-output
+        uses: seanchristians/lab/actions/terraform@main
         with:
           module: infrastructure/network
           tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
