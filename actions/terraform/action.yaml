@@ -21,19 +21,15 @@ runs:
   steps:
     - name: Install Terraform
       uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
-      with:
-        terraform_wrapper: false
 
     - name: Terraform wrapper
       shell: bash
       env:
-        TOOL_CACHE: ${{ runner.tool_cache }}
-        TF_WRAPPER_FP: ${{ github.action_path }}/tf
+        ACTION_BIN_PATH: ${{ github.action_path }}/bin
         TERRAFORM_MODULE: ${{ inputs.module }}
       run: |
-        chmod +x "$TF_WRAPPER_FP"
-        cp "$TF_WRAPPER_FP" "$TOOL_CACHE"
         echo "TERRAFORM_MODULE=${TERRAFORM_MODULE}" >> $GITHUB_ENV
+        echo "$ACTION_BIN_PATH" >> $GITHUB_PATH
 
     - name: Select Terraform provisioning stage
       id: mode
