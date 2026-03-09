@@ -66,10 +66,8 @@ runs:
       env:
         AWS_S3_BUCKET: ${{ inputs.tf_backend_s3_bucket }}
       run: |
-        BUCKET_AWS_REGION=$(aws s3api get-bucket-location --bucket "$AWS_S3_BUCKET" --output text)
         tf init -lockfile=readonly \
           -backend-config="bucket=${AWS_S3_BUCKET}" \
-          -backend-config="region=${BUCKET_AWS_REGION}"
 
     - name: Terraform Validate
       if: steps.mode.outputs.mode == 'plan'
