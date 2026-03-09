@@ -4,8 +4,9 @@ resource "tailscale_dns_configuration" "default" {
 
   dynamic "nameservers" {
     for_each = [flatten(values(local.preferred_public_dns_servers))]
+    iterator = "server_ip"
     content {
-      address = each.key
+      address = server_ip.value
     }
   }
 }
