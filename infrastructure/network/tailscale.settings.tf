@@ -8,7 +8,7 @@ resource "tailscale_tailnet_settings" "default" {
 
   users_approval_on = true
 
-  https_enabled = true
+  https_enabled = tailscale_dns_configuration.default.magic_dns
 }
 
 moved {
