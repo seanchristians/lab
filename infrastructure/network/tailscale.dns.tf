@@ -1,5 +1,5 @@
 resource "tailscale_dns_preferences" "default" {
-  magic_dns = false
+  magic_dns = true
 }
 
 resource "porkbun_dns_record" "tailnet" {
