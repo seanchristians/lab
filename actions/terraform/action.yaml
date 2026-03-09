@@ -22,6 +22,14 @@ runs:
     - name: Install Terraform
       uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
 
+    - name: Terraform wrapper
+      shell: bash
+      env:
+        TERRAFORM_MODULE: ${{ inputs.module }}
+      run: |
+        echo "alias tf='terraform -chdir=\"${TERRAFORM_MODULE}\"'" >> ~/.profile
+        echo "BASH_ENV='~/.profile'" >> $GITHUB_ENV
+
     - name: Select Terraform provisioning stage
       id: mode
       shell: bash
@@ -59,30 +67,32 @@ runs:
         AWS_S3_BUCKET: ${{ inputs.tf_backend_s3_bucket }}
       run: |
         BUCKET_AWS_REGION=$(aws s3api get-bucket-location --bucket "$AWS_S3_BUCKET" --output text)
-        terraform init -lockfile=readonly -from-module="$TERRAFORM_MODULE" -backend-config="bucket=${AWS_S3_BUCKET}" -backend-config="region=${BUCKET_AWS_REGION}"
+        tf init -lockfile=readonly \
+          -backend-config="bucket=${AWS_S3_BUCKET}" \
+          -backend-config="region=${BUCKET_AWS_REGION}"
 
     - name: Terraform Validate
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
       run: |
-        terraform validate
+        tf validate
 
     - name: Terraform Plan
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
       run: |
-        terraform plan -no-color -compact-warnings -out=tfplan
+        tf plan -no-color -compact-warnings -out=tfplan
 
     - name: Show plan in summary
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
       run: |
         echo "```" >> $GITHUB_STEP_SUMMARY
-        terraform show tfplan >> $GITHUB_STEP_SUMMARY
+        tf show tfplan >> $GITHUB_STEP_SUMMARY
         echo "```" >> $GITHUB_STEP_SUMMARY
 
     - name: Terraform Apply
       if: steps.mode.outputs.mode == 'apply'
       shell: bash
       run: |
-        terraform apply -auto-approve
+        tf apply -auto-approve
