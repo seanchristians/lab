@@ -8,4 +8,8 @@ resource "tailscale_dns_configuration" "default" {
       address = nameservers.value
     }
   }
+
+  lifecycle {
+    ignore_changes = [nameservers]
+  }
 }
