@@ -24,6 +24,10 @@ terraform {
       source  = "hashicorp/external"
       version = "2.3.5"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "2.7.0"
+    }
   }
 }
 
