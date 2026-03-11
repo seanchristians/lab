@@ -10,8 +10,3 @@ resource "tailscale_tailnet_settings" "default" {
 
   https_enabled = tailscale_dns_configuration.default.magic_dns
 }
-
-moved {
-  from = tailscale_tailnet_settings.primary
-  to   = tailscale_tailnet_settings.default
-}
