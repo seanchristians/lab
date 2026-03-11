@@ -62,7 +62,3 @@ provider "restapi" {
     max_retries = 5
   }
 }
-
-provider "dns" {}
-
-provider "external" {}
