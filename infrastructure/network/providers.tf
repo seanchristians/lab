@@ -1,5 +1,17 @@
 terraform {
   required_providers {
+    dns = {
+      source  = "hashicorp/dns"
+      version = "3.5.0"
+    }
+    external = {
+      source  = "hashicorp/external"
+      version = "2.3.5"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "2.7.0"
+    }
     tailscale = {
       source  = "tailscale/tailscale"
       version = "0.28.0"
@@ -15,18 +27,6 @@ terraform {
     restapi = {
       source  = "Mastercard/restapi"
       version = "3.0.0-rc2"
-    }
-    dns = {
-      source  = "hashicorp/dns"
-      version = "3.5.0"
-    }
-    external = {
-      source  = "hashicorp/external"
-      version = "2.3.5"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "2.7.0"
     }
   }
 }
