@@ -115,31 +115,6 @@ provider "registry.terraform.io/marcfrederick/porkbun" {
   ]
 }
 
-provider "registry.terraform.io/mastercard/restapi" {
-  version     = "3.0.0-rc2"
-  constraints = "3.0.0-rc2"
-  hashes = [
-    "h1:2CkmSXtMOuBhr4qkNawcGjBgY2IR6fJlZJpu3Beio78=",
-    "h1:2xtdzkEKcDTv6trtL4vzSDpwq09sfoBInSf4B6JSil0=",
-    "h1:X39/qxhLf8c07mI9hhvAZTzYGd6sUBuuqpjB//3KPA0=",
-    "zh:1c3e89cf19118fc07d7b04257251fc9897e722c16e0a0df7b07fcd261f8c12e7",
-    "zh:21f8075686452e6e3f63cc508713671afda911c163fb325398d1d894d6e91e2b",
-    "zh:34e8368f18017fe9f7d63c7f8b85c746324a3f1ede9ccf2b826c1d5bf9590cfa",
-    "zh:5e61590505a8642012703800e3b2de4bb05d074b1e55327c18e5e863a0af451d",
-    "zh:61fe867f9f113328f2cac1b2a80e0852d93aaff0dc807494bf036785479f7def",
-    "zh:75ac6fbffb42a98ab560fd3417c7b0f173a29c94e7f6a37010dd46a82aeb3eea",
-    "zh:7a943297c587423f9e46aa22f826f8fce1055877a7fa6956d4555e57d3690b71",
-    "zh:7ae6c0ad77a1402ab1e14db684d8b58158907f63f9c8ef0b4df19cc4287a6dbf",
-    "zh:8c09c3f767cadb0eca0f582b7e7f3843e842edae70554dc3fb5601ea8cbb4201",
-    "zh:9049f654c5b8a73ad528f2b88390d82908fdca6ada7884232dd2987b10797a47",
-    "zh:d5fe8d212952376c05c5897e242f6b5b1e1fee3acd686e05a793fdd9f099a1e8",
-    "zh:e324da57de3850170b914411ce38ecddc05561236b58b3245400770cd1fa73ad",
-    "zh:e8dce98329fa400a0c4375e28b825d83cc8795f3fac48e302cbf7a1cb60cdf7d",
-    "zh:e9606f04ac12e6636207653c1b91b713d6a22a73b91a8454fc5463a42d0e1e58",
-    "zh:f00e56cac8a05dd0349bf90e9f039ca80073483cf0103c1b284ba80af1cf897b",
-  ]
-}
-
 provider "registry.terraform.io/tailscale/tailscale" {
   version     = "0.28.0"
   constraints = "0.28.0"
