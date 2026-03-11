@@ -75,7 +75,7 @@ runs:
       if: steps.mode.outputs.mode == 'plan'
       shell: bash
       run: |
-        tf plan -no-color -compact-warnings -out="$HOME/tfplan"
+        tf plan -no-color -out="$HOME/tfplan"
 
     - name: Show plan in summary
       if: steps.mode.outputs.mode == 'plan'
