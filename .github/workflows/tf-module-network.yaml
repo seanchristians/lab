@@ -54,7 +54,7 @@ jobs:
           audience: ${{ format('api.tailscale.com/{0}', vars.TAILSCALE_CLIENT_ID) }}
           tags: tag:ci
           version: latest
-          ping: veronica.scchq.net
+          ping: veronica
 
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
