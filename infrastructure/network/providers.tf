@@ -1,5 +1,9 @@
 terraform {
   required_providers {
+    ansible = {
+      source  = "ansible/ansible"
+      version = "1.4.0"
+    }
     dns = {
       source  = "hashicorp/dns"
       version = "3.5.0"
