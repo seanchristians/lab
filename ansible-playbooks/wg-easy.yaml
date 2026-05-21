@@ -1,0 +1,66 @@
+name: Configure wg-easy with Podman
+hosts: all
+remote_user: root
+tasks:
+  - name: wireguard network systemd unit
+    ansible.builtin.copy:
+      content: |
+        [Network]
+        NetworkName=wg-easy
+        IPv6=true
+      dest: /etc/containers/systemd/wg-easy/wg-easy.network
+      force: false
+
+  - name: wg-easy podman container
+    containers.podman.podman_container:
+      name: wg-easy
+      image: ghcr.io/wg-easy/wg-easy:15
+      volume: /etc/containers/volumes/wg-easy:/etc/wireguard:Z
+      publish:
+        - 51820:51820/udp
+      env:
+        INSECURE: true
+        PORT: 80
+        INIT_ENABLED: true
+        INIT_USERNAME: admin
+        INIT_PASSWORD: password
+        INIT_HOST: vpn.seanchristians.ca
+        INIT_PORT: 51820
+        INIT_DNS: 149.112.121.10,149.112.122.10,2620:10A:80BB::10,2620:10A:80BC::10 # CIRA Canadian Shield
+        INIT_IPV4_CIDR: 172.30.0.0/24
+        INIT_IPV6_CIDR: fd5f::/64
+        INIT_ALLOWED_IPS: 172.30.0.0/24,fd5f::/64
+      cap_add:
+        - NET_ADMIN
+        - SYS_MODULE
+        - NET_RAW
+      sysctl:
+        net.ipv4.ip_forward: 1
+        net.ipv4.conf.all.src_valid_mark: 1
+        net.ipv6.conf.all.disable_ipv6: 0
+        net.ipv6.conf.all.forwarding: 1
+        net.ipv6.conf.default.forwarding: 1
+      network:
+        - wg-easy.network
+      quadlet_dir: /etc/containers/systemd/wg-easy
+      quadlet_options:
+        - "AutoUpdate=registry"
+        - |
+          [Install]
+          WantedBy=default.target
+
+  - name: load wireguard kernel module
+    community.general.modprobe:
+      name: wireguard
+      persistent: present
+
+  - name: load nftables kernel module
+    community.general.modprobe:
+      name: nft_masq
+      persistent: present
+
+  - name: start wg-easy container
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+      name: wg-easy
+      state: started
