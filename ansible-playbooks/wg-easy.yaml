@@ -69,3 +69,9 @@
             [Install]
             WantedBy=default.target
         state: quadlet
+
+    - name: start wg-easy with systemd
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+        name: wg-easy
+        state: started
