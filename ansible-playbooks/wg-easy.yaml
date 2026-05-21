@@ -3,6 +3,16 @@
   hosts: all
   remote_user: root
   tasks:
+    - name: load wireguard kernel module
+      community.general.modprobe:
+        name: wireguard
+        persistent: present
+
+    - name: load nftables kernel module
+      community.general.modprobe:
+        name: nft_masq
+        persistent: present
+
     - name: Create systemd unit folder
       ansible.builtin.file:
         path: /etc/containers/systemd/wg-easy
@@ -21,6 +31,12 @@
           IPv6=true
         dest: /etc/containers/systemd/wg-easy/wg-easy.network
         force: false
+
+    - name: start wg-easy network
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+        name: wg-easy.network
+        state: started
 
     - name: wg-easy podman container
       containers.podman.podman_container:
@@ -59,19 +75,3 @@
           - |
             [Install]
             WantedBy=default.target
-
-    - name: load wireguard kernel module
-      community.general.modprobe:
-        name: wireguard
-        persistent: present
-
-    - name: load nftables kernel module
-      community.general.modprobe:
-        name: nft_masq
-        persistent: present
-
-    - name: start wg-easy container
-      ansible.builtin.systemd_service:
-        daemon_reload: true
-        name: wg-easy
-        state: started
