@@ -4,6 +4,9 @@
   remote_user: root
   tasks:
     - name: wireguard network systemd unit
+      ansible.builtin.file:
+        path: /etc/containers/systemd/wg-easy
+        state: directory
       ansible.builtin.copy:
         content: |
           [Network]
@@ -13,6 +16,9 @@
         force: false
 
     - name: wg-easy podman container
+      ansible.builtin.file:
+        path: /etc/containers/volumes/wg-easy
+        state: directory
       containers.podman.podman_container:
         name: wg-easy
         image: ghcr.io/wg-easy/wg-easy:15
