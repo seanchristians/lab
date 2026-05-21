@@ -23,10 +23,6 @@ locals {
   wireguard_server_hostnames = [
     "squiggle-darkened"
   ]
-
-  tailscale_wireguard_servers = [
-    for device in data.tailscale_devices.all : device if contains(local.wireguard_server_hostnames, device.hostname)
-  ]
 }
 
 data "local_file" "playbook_wg_easy_podman" {
@@ -38,7 +34,10 @@ data "ansible_inventory" "primary" {
     name = "wireguard_servers"
 
     dynamic "host" {
-      for_each = toset([for device in local.tailscale_wireguard_servers : device.name])
+      for_each = toset([
+        for device in data.tailscale_devices.all.devices : device.name
+        if contains(local.wireguard_server_hostnames, device.hostname)
+      ])
       content {
         name = host.value
       }
