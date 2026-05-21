@@ -43,19 +43,20 @@ runs:
       run: |
         echo "mode=$MODE" >> $GITHUB_OUTPUT
 
-    - name: Cache Terraform plugins
-      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-      with:
-        path: ${{ env.TF_PLUGIN_CACHE_DIR }}
-        key: ${{ runner.os }}-terraform-plugins-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.module)) }}
-        restore-keys: |
-          ${{ runner.os }}-terraform-plugins-
-
     - name: Authenticate with AWS
       uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
       with:
         aws-region: ${{ inputs.aws_region }}
         role-to-assume: ${{ inputs.aws_role }}
+
+    - name: Download Terraform plugins from Cache
+      id: cache-tf-plugins-restore
+      uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+      with:
+        path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+        key: ${{ runner.os }}-terraform-plugins-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.module)) }}
+        restore-keys: |
+          ${{ runner.os }}-terraform-plugins-
 
     - name: Terraform Init
       shell: bash
@@ -64,6 +65,13 @@ runs:
       run: |
         tf init -lockfile=readonly \
           -backend-config="bucket=${AWS_S3_BUCKET}" \
+
+    - name: Cache Terraform plugins
+      uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+      if: ${{ ! steps.cache-tf-plugins-restore.outputs.cache-hit }}
+      with:
+        path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+        key: ${{ steps.cache-tf-plugins-restore.outputs.cache-primary-key }}
 
     - name: Terraform Validate
       if: steps.mode.outputs.mode == 'plan'
