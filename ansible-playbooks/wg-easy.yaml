@@ -3,10 +3,17 @@
   hosts: all
   remote_user: root
   tasks:
-    - name: wireguard network systemd unit
+    - name: Create systemd unit folder
       ansible.builtin.file:
         path: /etc/containers/systemd/wg-easy
         state: directory
+
+    - name: Create container volume folder
+      ansible.builtin.file:
+        path: /etc/containers/volumes/wg-easy
+        state: directory
+
+    - name: wireguard network systemd unit
       ansible.builtin.copy:
         content: |
           [Network]
@@ -16,9 +23,6 @@
         force: false
 
     - name: wg-easy podman container
-      ansible.builtin.file:
-        path: /etc/containers/volumes/wg-easy
-        state: directory
       containers.podman.podman_container:
         name: wg-easy
         image: ghcr.io/wg-easy/wg-easy:15
