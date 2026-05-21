@@ -41,6 +41,7 @@
           - 51821:80/tcp
         env:
           INSECURE: true
+          HOST: localhost
           INIT_ENABLED: true
           INIT_USERNAME: admin
           INIT_PASSWORD: password
