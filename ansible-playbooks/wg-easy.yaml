@@ -23,20 +23,13 @@
         path: /etc/containers/volumes/wg-easy
         state: directory
 
-    - name: wireguard network systemd unit
-      ansible.builtin.copy:
-        content: |
-          [Network]
-          NetworkName=wg-easy
-          IPv6=true
-        dest: /etc/containers/systemd/wg-easy/wg-easy.network
-        force: false
-
-    - name: start wg-easy network
-      ansible.builtin.systemd_service:
-        daemon_reload: true
-        name: wg-easy.network
-        state: started
+    - name: wg-easy podman network
+      containers.podman.podman_network:
+        name: wg-easy
+        ipv6: true
+        quadlet_dir: /etc/containers/systemd/wg-easy
+        quadlet_options:
+          - IPv6=true
 
     - name: wg-easy podman container
       containers.podman.podman_container:
