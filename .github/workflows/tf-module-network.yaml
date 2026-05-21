@@ -3,11 +3,13 @@ on:
   pull_request:
     paths:
       - infrastructure/network/**
+      - ansible-playbooks/*
   push:
     branches:
       - main
     paths:
       - infrastructure/network/**
+      - ansible-playbooks/*
   workflow_dispatch:
 
 defaults:
