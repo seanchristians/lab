@@ -1,6 +1,4 @@
-action "ansible_playbook_run" "wg_easy_podman" {
-  config {
-    playbooks   = ["ansible-playbooks/wg-easy.yaml"]
-    inventories = [data.ansible_inventory.minecraft_servers.json]
-  }
+resource "ansible_playbook" "wg_easy_podman" {
+  name     = data.tailscale_device.squiggle-darkened.hostname
+  playbook = "ansible-playbooks/wg-easy.yaml"
 }
