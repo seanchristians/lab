@@ -13,9 +13,14 @@
         name: nft_masq
         persistent: present
 
-    - name: load ip_tables kernel module
+    - name: load iptable_nat kernel module
       community.general.modprobe:
-        name: ip_tables
+        name: iptable_nat
+        persistent: present
+
+    - name: local ip6table_nat kernel module
+      community.general.modprobe:
+        name: ip6table_nat
         persistent: present
 
     - name: Create systemd unit folder
