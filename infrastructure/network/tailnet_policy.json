@@ -12,16 +12,6 @@
 			"ip": ["*"]
 		},
 		{
-			"src": ["autogroup:member"],
-			"dst": ["tag:home"],
-			"ip": ["80", "443"]
-		},
-		{
-			"src": ["autogroup:member"],
-			"dst": ["autogroup:self"],
-			"ip": ["*"]
-		},
-		{
 			"src": ["tag:ci"],
 			"dst": ["autogroup:tagged"],
 			"ip": ["22"]
@@ -46,12 +36,6 @@
 			"src": ["tag:ci"],
 			"dst": ["tag:infrastructure"],
 			"users": ["root", "autogroup:nonroot"]
-		},
-		{
-			"action": "accept",
-			"src": ["autogroup:member"],
-			"dst": ["autogroup:self"],
-			"users": ["autogroup:nonroot"]
 		}
 	],
 
