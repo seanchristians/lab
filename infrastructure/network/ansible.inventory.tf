@@ -4,7 +4,7 @@ data "ansible_inventory" "minecraft_servers" {
 
     host {
       name         = data.tailscale_device.squiggle-darkened.hostname
-      ansible_user = root
+      ansible_user = "root"
     }
   }
 }
