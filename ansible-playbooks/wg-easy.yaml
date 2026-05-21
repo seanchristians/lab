@@ -26,7 +26,6 @@
     - name: wg-easy podman network
       containers.podman.podman_network:
         name: wg-easy
-        ipv6: true
         quadlet_dir: /etc/containers/systemd/wg-easy
         quadlet_options:
           - IPv6=true
