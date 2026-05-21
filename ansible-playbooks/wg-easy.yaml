@@ -29,6 +29,7 @@
         quadlet_dir: /etc/containers/systemd/wg-easy
         quadlet_options:
           - IPv6=true
+        state: quadlet
 
     - name: wg-easy podman container
       containers.podman.podman_container:
@@ -67,3 +68,4 @@
           - |
             [Install]
             WantedBy=default.target
+        state: quadlet
