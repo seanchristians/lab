@@ -1,14 +1,14 @@
 action "ansible_playbook_run" "wg_easy_podman" {
   config {
     playbooks   = [data.local_file.playbook_wg_easy_podman.filename]
-    inventories = [data.ansible_inventory.wireguard_servers.json]
+    inventories = [data.ansible_inventory.primary.json]
   }
 }
 
 resource "terraform_data" "wireguard_server" {
   triggers_replace = [
     data.local_file.playbook_wg_easy_podman,
-    data.ansible_inventory.wireguard_servers
+    data.ansible_inventory.primary
   ]
 
   lifecycle {
