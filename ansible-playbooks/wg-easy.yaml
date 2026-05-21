@@ -3,6 +3,16 @@
   hosts: all
   remote_user: root
   tasks:
+    - name: Create systemd unit folder
+      ansible.builtin.file:
+        path: /etc/containers/systemd/wg-easy
+        state: directory
+
+    - name: Create container volume folder
+      ansible.builtin.file:
+        path: /etc/containers/volumes/wg-easy
+        state: directory
+
     - name: wireguard network systemd unit
       ansible.builtin.file:
         path: /etc/containers/systemd/wg-easy
