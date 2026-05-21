@@ -13,6 +13,11 @@
         name: nft_masq
         persistent: present
 
+    - name: load ip_tables kernel module
+      community.general.modprobe:
+        name: ip_tables
+        persistent: present
+
     - name: Create systemd unit folder
       ansible.builtin.file:
         path: /etc/containers/systemd/wg-easy
