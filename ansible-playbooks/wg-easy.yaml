@@ -3,6 +3,16 @@
   hosts: all
   remote_user: root
   tasks:
+    - name: load wireguard kernel module
+      community.general.modprobe:
+        name: wireguard
+        persistent: present
+
+    - name: load nftables kernel module
+      community.general.modprobe:
+        name: nft_masq
+        persistent: present
+
     - name: Create systemd unit folder
       ansible.builtin.file:
         path: /etc/containers/systemd/wg-easy
@@ -65,13 +75,3 @@
           - |
             [Install]
             WantedBy=default.target
-
-    - name: load wireguard kernel module
-      community.general.modprobe:
-        name: wireguard
-        persistent: present
-
-    - name: load nftables kernel module
-      community.general.modprobe:
-        name: nft_masq
-        persistent: present
