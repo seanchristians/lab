@@ -74,4 +74,4 @@
       ansible.builtin.systemd_service:
         daemon_reload: true
         name: wg-easy
-        state: started
+        state: restarted
