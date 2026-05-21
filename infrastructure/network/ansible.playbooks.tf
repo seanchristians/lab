@@ -29,8 +29,6 @@ locals {
   ]
 }
 
-data "tailscale_devices" "all" {}
-
 data "local_file" "playbook_wg_easy_podman" {
   filename = "ansible-playbooks/wg-easy.yaml"
 }
@@ -47,3 +45,5 @@ data "ansible_inventory" "primary" {
     }
   }
 }
+
+data "tailscale_devices" "all" {}
