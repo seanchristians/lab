@@ -13,6 +13,10 @@ resource "ansible_playbook" "wg_easy_podman" {
 
 resource "terraform_data" "playbook_wg_easy_podman" {
   triggers_replace = data.local_file.playbook_wg_easy_podman.id
+
+  lifecycle {
+    replace_triggered_by = [ansible_host.squiggle_darkened]
+  }
 }
 
 data "local_file" "playbook_wg_easy_podman" {
