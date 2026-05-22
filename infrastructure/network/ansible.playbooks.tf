@@ -1,13 +1,7 @@
-resource "ansible_playbook" "wg_easy_podman" {
-  name       = ansible_host.squiggle_darkened.name
-  playbook   = "ansible-playbooks/wg-easy.yaml"
-  replayable = false
-
-  lifecycle {
-    replace_triggered_by = [
-      terraform_data.playbook_wg_easy_podman,
-      ansible_host.squiggle_darkened
-    ]
+action "ansible_playbook_run" "wg_easy_podman" {
+  config {
+    playbooks       = [local.ansible_playbooks.wg_easy_podman]
+    inventory_files = ["ansible-inventory.yaml"]
   }
 }
 
