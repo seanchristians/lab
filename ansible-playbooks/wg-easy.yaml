@@ -85,3 +85,7 @@
         daemon_reload: true
         name: wg-easy
         state: restarted
+
+    - name: Serve HTTPS endpoint with Tailscale
+      ansible.builtin.shell:
+        cmd: tailscale serve --bg --https 51822 51821
