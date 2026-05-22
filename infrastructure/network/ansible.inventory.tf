@@ -1,6 +1,6 @@
 resource "ansible_group" "wireguard_servers" {
   name     = "wireguard_servers"
-  children = [ansible_host.squiggle_darkened.name]
+  children = [ansible_host.squiggle_darkened.id]
 }
 
 resource "ansible_host" "squiggle_darkened" {

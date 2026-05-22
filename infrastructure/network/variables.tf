@@ -4,8 +4,6 @@ locals {
     cloudflare = ["1.1.1.1", "1.0.0.1", "2606:4700:4700::1111", "2606:4700:4700::1001"]
   }
 
-  tailnet_domain = "tail18a6a8.ts.net"
-
   ansible_playbooks = {
     wg_easy_podman = "ansible-playbooks/wg-easy.yaml"
   }
