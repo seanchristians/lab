@@ -10,15 +10,6 @@ resource "terraform_data" "playbook_wg_easy_podman" {
     data.local_file.playbook_wg_easy_podman.id,
     "ECF964FD-0829-41F1-8F6B-703960297624"
   ]
-
-  lifecycle {
-    replace_triggered_by = [ansible_host.squiggle_darkened]
-
-    action_trigger {
-      actions = [action.ansible_playbook_run.wg_easy_podman]
-      events  = [after_create, after_update]
-    }
-  }
 }
 
 data "local_file" "playbook_wg_easy_podman" {
