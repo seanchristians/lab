@@ -1,8 +1,7 @@
 action "ansible_playbook_run" "wg_easy_podman" {
   config {
-    playbooks       = [local.ansible_playbooks.wg_easy_podman]
-    inventory_files = ["ansible-inventory.yaml"]
-    user            = "root"
+    playbooks = [local.ansible_playbooks.wg_easy_podman]
+    user      = "root"
   }
 }
 

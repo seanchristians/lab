@@ -90,5 +90,7 @@ jobs:
 
       - name: Show ansible inventory
         working-directory: infrastructure/network
+        env:
+          ANSIBLE_INVENTORY: infrastructure/network/ansible-inventory.yaml
         run: |
-          ansible-inventory -i ansible-inventory.yaml --graph --vars wireguard_servers
+          ansible-inventory --graph --vars wireguard_servers
