@@ -53,13 +53,13 @@
           INSECURE: true
           INIT_ENABLED: true
           INIT_USERNAME: admin
-          INIT_PASSWORD: password
+          INIT_PASSWORD: Lg%rd5S1q58B@TPO
           INIT_HOST: vpn.seanchristians.ca
           INIT_PORT: 51820
           INIT_DNS: 149.112.121.10,149.112.122.10,2620:10A:80BB::10,2620:10A:80BC::10 # CIRA Canadian Shield
           INIT_IPV4_CIDR: 172.30.0.0/24
-          INIT_IPV6_CIDR: fd5f::/64
-          # INIT_ALLOWED_IPS: 172.30.0.0/24,fd5f::/64
+          INIT_IPV6_CIDR: fdef:aced::/64
+          INIT_ALLOWED_IPS: 172.30.0.0/24,fdef:aced::/64
         cap_add:
           - NET_ADMIN
           - SYS_MODULE
