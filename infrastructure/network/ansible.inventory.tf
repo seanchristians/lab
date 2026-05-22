@@ -1,14 +1,6 @@
 resource "ansible_group" "wireguard_servers" {
   name     = "wireguard_servers"
   children = [ansible_host.squiggle_darkened.id]
-
-  lifecycle {
-    replace_triggered_by = [terraform_data.playbook_wg_easy_podman]
-    action_trigger {
-      actions = [action.ansible_playbook_run.wg_easy_podman]
-      events  = [after_create, after_update]
-    }
-  }
 }
 
 resource "ansible_host" "squiggle_darkened" {
