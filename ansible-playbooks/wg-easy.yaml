@@ -48,7 +48,7 @@
         volume: /etc/containers/volumes/wg-easy:/etc/wireguard:Z
         publish:
           - 51820:51820/udp
-          - 51821:51821/tcp
+          - "{{ wireguard_admin_ports }}"
         env:
           INSECURE: true
           INIT_ENABLED: "true"
