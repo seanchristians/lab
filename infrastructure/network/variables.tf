@@ -5,6 +5,10 @@ locals {
   }
 
   tailnet_domain = "tail18a6a8.ts.net"
+
+  ansible_playbooks = {
+    wg_easy_podman = "ansible-playbooks/wg-easy.yaml"
+  }
 }
 
 data "external" "module_path_in_git_repo" {
