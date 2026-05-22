@@ -88,9 +88,7 @@ jobs:
           aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
           aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
 
-      # - name: Show ansible inventory
-      #   working-directory: infrastructure/network
-      #   env:
-      #     ANSIBLE_INVENTORY: ansible-inventory.yaml
-      #   run: |
-      #     ansible-inventory --graph --vars wireguard_servers
+      - name: Show ansible inventory
+        working-directory: infrastructure/network
+        run: |
+          ansible-inventory --graph --vars wireguard_servers
