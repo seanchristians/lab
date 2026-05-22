@@ -10,6 +10,11 @@ resource "terraform_data" "playbook_wg_easy_podman" {
 
   lifecycle {
     replace_triggered_by = [ansible_host.squiggle_darkened]
+
+    action_trigger {
+      actions = [action.ansible_playbook_run.wg_easy_podman]
+      events  = [after_create, after_update]
+    }
   }
 }
 
