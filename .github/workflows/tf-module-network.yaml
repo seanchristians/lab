@@ -65,3 +65,9 @@ jobs:
           tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
           aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
           aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
+
+      - name: Show ansible inventory
+        working-directory: infrastructure/network
+        run: |
+          ls -lA
+          ansible-inventory -i ansible-inventory.yaml --graph
