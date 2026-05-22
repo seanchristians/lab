@@ -1,6 +1,6 @@
 ---
 - name: Configure wg-easy with Podman
-  hosts: wireguard_servers
+  hosts: all
   remote_user: root
   tasks:
     - name: load wireguard kernel module
