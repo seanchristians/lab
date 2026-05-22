@@ -90,5 +90,4 @@ jobs:
       - name: Show ansible inventory
         working-directory: infrastructure/network
         run: |
-          ls -lA
           ansible-inventory -i ansible-inventory.yaml --graph
