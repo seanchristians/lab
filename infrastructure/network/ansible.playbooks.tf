@@ -16,5 +16,5 @@ resource "terraform_data" "playbook_wg_easy_podman" {
 }
 
 data "local_file" "playbook_wg_easy_podman" {
-  filename = "ansible-playbooks/wg-easy.yaml"
+  filename = local.ansible_playbooks.wg_easy_podman
 }
