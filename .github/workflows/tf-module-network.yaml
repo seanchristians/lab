@@ -35,6 +35,27 @@ jobs:
       - name: Configure SSH
         run: cp -R .ssh ~/.ssh
 
+      - name: Download Ansible collections from Cache
+        id: cache-ansible-collections-restore
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.ansible/collections/ansible_collections
+          key: ${{ runner.os }}-ansible-collections-${{ hashFiles('infrastructure/network/ansible-requirements.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-ansible-collections-
+
+      - name: Install Ansible collections
+        working-directory: infrastructure/network
+        run: |
+          ansible-galaxy collection install -r ansible-requirements.yaml
+
+      - name: Cache Ansible collections
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        if: ${{ ! steps.cache-ansible-collections-restore.outputs.cache-hit }}
+        with:
+          path: ~/.ansible/collections/ansible_collections
+          key: ${{ steps.cache-ansible-collections-restore.outputs.cache-primary-key }}
+
       - name: Authenticate with Tailscale API
         env:
           CLIENT_ID: ${{ vars.TAILSCALE_CLIENT_ID }}
