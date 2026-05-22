@@ -45,6 +45,7 @@ jobs:
             ${{ runner.os }}-ansible-collections-
 
       - name: Install Ansible collections
+        if: ${{ ! steps.cache-ansible-collections-restore.outputs.cache-hit }}
         working-directory: infrastructure/network
         run: |
           ansible-galaxy collection install -r ansible-requirements.yaml
