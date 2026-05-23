@@ -8,7 +8,7 @@
 	"grants": [
 		{
 			"src": ["autogroup:admin"],
-			"dst": ["autogroup:tagged"],
+			"dst": ["autogroup:tagged", "svc:wg-easy"],
 			"ip": ["*"]
 		},
 		{
