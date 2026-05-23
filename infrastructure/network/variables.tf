@@ -14,4 +14,10 @@ variable "ansible_playbooks" {
     sentinel       = string
     ansible_groups = list(string)
   }))
+  default = {
+    "wg-easy" = {
+      sentinel       = ""
+      ansible_groups = []
+    }
+  }
 }
