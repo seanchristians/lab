@@ -5,7 +5,7 @@ locals {
         ansible_host           = data.tailscale_device.squiggle_darkened.name
         ansible_user           = "root"
         ansible_ssh_extra_args = "-o StrictHostKeyChecking=no"
-        tailscale_auth_key     = tailscale_tailnet_key.sidecar.key
+        tailscale_auth_key     = tailscale_tailnet_key.container.key
       }
     } }
   }
