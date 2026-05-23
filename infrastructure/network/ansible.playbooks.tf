@@ -1,12 +1,11 @@
 resource "terraform_data" "ansible_playbook" {
   for_each = var.ansible_playbooks
 
-  input = flatten([
+  input = [
     each.value.sentinel,
-    data.local_file.ansible_playbook[each.key].id
-    ], [
-    for group in each.value.ansible_groups : local.ansible_inventory[group]
-  ])
+    data.local_file.ansible_playbook[each.key].id,
+    [for group in each.value.ansible_groups : local.ansible_inventory[group]]
+  ]
 
   lifecycle {
     action_trigger {
