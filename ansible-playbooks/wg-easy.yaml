@@ -44,6 +44,8 @@
       containers.podman.podman_pod:
         name: tailscale
         network: tailscale
+        publish:
+          - 51820:51820/udp
         quadlet_options:
           - |
             [Install]
@@ -72,8 +74,6 @@
         name: wg-easy
         image: ghcr.io/wg-easy/wg-easy:15
         volume: /etc/containers/volumes/wg-easy:/etc/wireguard:Z
-        publish:
-          - 51820:51820/udp
         env:
           INSECURE: true
           INIT_ENABLED: "true"
@@ -96,8 +96,6 @@
           net.ipv6.conf.all.forwarding: 1
           net.ipv6.conf.default.forwarding: 1
         pod: tailscale.pod
-        network:
-          - tailscale.network
         quadlet_dir: /etc/containers/systemd/wg-easy
         quadlet_options:
           - "AutoUpdate=registry"
