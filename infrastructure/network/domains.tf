@@ -31,12 +31,12 @@ ephemeral "desec_token" "minecraft_domain" {
 }
 
 resource "desec_token_policy" "minecraft_domain_default" {
-  token_id   = desec_token.minecraft_domain.id
+  token_id   = ephemeral.desec_token.minecraft_domain.id
   perm_write = false
 }
 
 resource "desec_token_policy" "minecraft_domain_a" {
-  token_id   = desec_token.minecraft_domain.id
+  token_id   = ephemeral.desec_token.minecraft_domain.id
   domain     = desec_domain.ddns_proxy.id
   subname    = "minecraft"
   perm_write = true
@@ -46,7 +46,7 @@ resource "desec_token_policy" "minecraft_domain_a" {
 }
 
 resource "desec_token_policy" "minecraft_domain_aaaa" {
-  token_id   = desec_token.minecraft_domain.id
+  token_id   = ephemeral.desec_token.minecraft_domain.id
   domain     = desec_domain.ddns_proxy.id
   subname    = "minecraft"
   perm_write = true
