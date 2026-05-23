@@ -4,4 +4,4 @@
   tasks:
     - name: Install ddclient
       community.general.homebrew:
-        - name: ddclient
+        name: ddclient
