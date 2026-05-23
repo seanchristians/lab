@@ -24,19 +24,28 @@ data "porkbun_domain" "ddns_proxy" {
   domain = "sean.directory"
 }
 
-ephemeral "desec_token" "minecraft_domain" {
-  keep_on_close     = true
+resource "terraform_data" "minecraft_domain_desec_token" {
+  input = desec_token.minecraft_domain.token
+
+  triggers_replace = desec_token.minecraft_domain.id
+
+  lifecycle {
+    ignore_changes = [input]
+  }
+}
+
+resource "desec_token" "minecraft_domain" {
   max_age           = null
   max_unused_period = null
 }
 
 resource "desec_token_policy" "minecraft_domain_default" {
-  token_id   = ephemeral.desec_token.minecraft_domain.id
+  token_id   = desec_token.minecraft_domain.id
   perm_write = false
 }
 
 resource "desec_token_policy" "minecraft_domain_a" {
-  token_id   = ephemeral.desec_token.minecraft_domain.id
+  token_id   = desec_token.minecraft_domain.id
   domain     = desec_domain.ddns_proxy.id
   subname    = "minecraft"
   perm_write = true
@@ -46,7 +55,7 @@ resource "desec_token_policy" "minecraft_domain_a" {
 }
 
 resource "desec_token_policy" "minecraft_domain_aaaa" {
-  token_id   = ephemeral.desec_token.minecraft_domain.id
+  token_id   = desec_token.minecraft_domain.id
   domain     = desec_domain.ddns_proxy.id
   subname    = "minecraft"
   perm_write = true

@@ -19,7 +19,7 @@ locals {
       wireguard_dns          = "149.112.121.10,149.112.122.10,2620:10A:80BB::10,2620:10A:80BC::10" # CIRA Canadian Shield
       wireguard_ipv4_cidr    = "172.30.0.0/24"
       wireguard_ipv6_cidr    = "fdef:aced::/64"
-      desec_token            = ephemeral.desec_token.minecraft_domain.token
+      desec_token            = terraform_data.minecraft_domain_desec_token.output
     }
   }
 }
