@@ -43,7 +43,7 @@
     - name: Tailscale container
       containers.podman.podman_container:
         name: tailscale
-        image: tailscale/tailscale:1.98.3
+        image: tailscale/tailscale:v1.98.3
         env:
           TS_AUTHKEY: "{{ tailscale_auth_key }}"
         cap_add:
