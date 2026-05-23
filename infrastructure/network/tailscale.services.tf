@@ -1,4 +1,4 @@
-resource "tailscale_service" "wg_easy" {
-  name  = "svc:wg-easy"
+resource "tailscale_service" "minecraft" {
+  name  = "svc:minecraft"
   ports = ["do-not-validate"]
 }
