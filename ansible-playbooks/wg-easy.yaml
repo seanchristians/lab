@@ -114,7 +114,7 @@
 
           [Service]
           Type=oneshot
-          ExecStart=podman container exec tailscale tailscale serve --service=svc:{{ tailnet_service }} 51821
+          ExecStart=podman container exec tailscale tailscale serve --service={{ tailnet_service }} 51821
 
           [Install]
           WantedBy=multi-user.target
