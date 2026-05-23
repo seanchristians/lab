@@ -51,5 +51,11 @@
 			"dst": ["tag:infrastructure"],
 			"deny": ["root", "ubuntu", "ec2-user"]
 		}
-	]
+	],
+
+	"autoApprovers": {
+		"services": {
+			"svc:wg-easy": ["tag:infrastructure"]
+		}
+	}
 }
