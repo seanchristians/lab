@@ -9,7 +9,7 @@ resource "terraform_data" "playbook_wg_easy_podman" {
   input = [
     "ECF964FD-0829-41F1-8F6B-703960297624", # Sentinel value to manually trigger action
     data.local_file.playbook_wg_easy_podman.id,
-    local.ansible_inventory.wireguard_servers
+    sha512(local.ansible_inventory.wireguard_servers)
   ]
 
   lifecycle {
