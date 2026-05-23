@@ -1,7 +1,6 @@
 ---
 - name: Configure wg-easy with Podman
   hosts: wireguard_servers
-  remote_user: root
   tasks:
     - name: load wireguard kernel module
       community.general.modprobe:
@@ -79,12 +78,12 @@
           INIT_ENABLED: "true"
           INIT_USERNAME: admin
           INIT_PASSWORD: "Password-1234"
-          INIT_HOST: vpn.seanchristians.ca
+          INIT_HOST: "{{ wireguard_domain }}"
           INIT_PORT: 51820
-          INIT_DNS: 149.112.121.10,149.112.122.10,2620:10A:80BB::10,2620:10A:80BC::10 # CIRA Canadian Shield
-          INIT_IPV4_CIDR: 172.30.0.0/24
-          INIT_IPV6_CIDR: fdef:aced::/64
-          INIT_ALLOWED_IPS: 172.30.0.0/24,fdef:aced::/64
+          INIT_DNS: "{{ wireguard_dns }}"
+          INIT_IPV4_CIDR: "{{ wireguard_ipv4_cidr }}"
+          INIT_IPV6_CIDR: "{{ wireguard_ipv6_cidr }}"
+          INIT_ALLOWED_IPS: "{{ wireguard_ipv4_cidr }},{{ wireguard_ipv6_cidr }}"
         cap_add:
           - NET_ADMIN
           - SYS_MODULE
@@ -114,7 +113,7 @@
 
           [Service]
           Type=oneshot
-          ExecStart=podman container exec tailscale tailscale serve --service=svc:wg-easy --https={{ wg_easy_service_port }} 51821
+          ExecStart=podman container exec tailscale tailscale serve --service={{ tailnet_service }} 51821
 
           [Install]
           WantedBy=multi-user.target

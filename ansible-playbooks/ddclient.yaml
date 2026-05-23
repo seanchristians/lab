@@ -1,0 +1,7 @@
+---
+- name: Configure dynamic DNS with deSEC.io
+  hosts: ddns
+  tasks:
+    - name: Install ddclient
+      community.general.homebrew:
+        - name: ddclient
