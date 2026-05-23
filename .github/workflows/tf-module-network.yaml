@@ -59,7 +59,7 @@ jobs:
           version: 1.98.2
 
       - name: Terraform
-        uses: seanchristians/lab/actions/terraform@main
+        uses: seanchristians/lab/actions/terraform@rotate-api-tokens
         with:
           module: infrastructure/network
           tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
