@@ -6,7 +6,11 @@ locals {
         ansible_user           = "root"
         ansible_ssh_extra_args = "-o StrictHostKeyChecking=no"
         tailscale_auth_key     = tailscale_tailnet_key.container.key
-        wg_easy_service_port   = 51821
+        tailnet_service        = tailscale_service.minecraft.id
+        wireguard_domain       = "minecraft.seanchristians.ca"
+        wireguard_dns          = "149.112.121.10,149.112.122.10,2620:10A:80BB::10,2620:10A:80BC::10" # CIRA Canadian Shield
+        wireguard_ipv4_cidr    = "172.30.0.0/24"
+        wireguard_ipv6_cidr    = "fdef:aced::/64"
       }
     } }
   }
