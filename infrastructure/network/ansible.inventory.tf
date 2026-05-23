@@ -1,4 +1,5 @@
 locals {
+  ansible_inventory_encoded = jsonencode(local.ansible_inventory)
   ansible_inventory = { for group, hosts in local.ansible_groups : group => { "hosts" = {
     for host in hosts : host => local.ansible_hosts[host]
   } } }

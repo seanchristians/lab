@@ -1,25 +1,32 @@
-action "ansible_playbook_run" "wg_easy_podman" {
-  config {
-    playbooks   = [local.ansible_playbooks.wg_easy_podman]
-    inventories = [jsonencode(local.ansible_inventory)]
-  }
-}
+resource "terraform_data" "ansible_playbook" {
+  for_each = var.ansible_playbooks
 
-resource "terraform_data" "playbook_wg_easy_podman" {
-  input = [
-    "ECF964FD-0829-41F1-8F6B-703960297624", # Sentinel value to manually trigger action
-    data.local_file.playbook_wg_easy_podman.id,
-    local.ansible_inventory.wireguard_servers
-  ]
+  input = flatten([
+    each.value.sentinel,
+    data.local_file.ansible_playbook[each.key].id
+    ], [
+    for group in each.value.ansible_groups : local.ansible_inventory[group]
+  ])
 
   lifecycle {
     action_trigger {
-      actions = [action.ansible_playbook_run.wg_easy_podman]
+      actions = [action.ansible_playbook_run.ansible_playbook[each.key]]
       events  = [after_create, after_update]
     }
   }
 }
 
-data "local_file" "playbook_wg_easy_podman" {
-  filename = local.ansible_playbooks.wg_easy_podman
+action "ansible_playbook_run" "ansible_playbook" {
+  for_each = keys(var.ansible_playbooks)
+
+  config {
+    playbooks   = ["ansible-playbooks/${each.value}.yaml"]
+    inventories = [local.ansible_inventory_encoded]
+  }
+}
+
+data "local_file" "ansible_playbook" {
+  for_each = keys(var.ansible_playbooks)
+
+  filename = "ansible-playbooks/${each.value}.yaml"
 }
