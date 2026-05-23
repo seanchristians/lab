@@ -8,16 +8,3 @@ locals {
 data "external" "module_path_in_git_repo" {
   program = ["/bin/bash", "-c", "echo -n $(git rev-parse --show-prefix) | jq -Rs '{content: .}'"]
 }
-
-variable "ansible_playbooks" {
-  type = map(object({
-    sentinel       = string
-    ansible_groups = list(string)
-  }))
-  default = {
-    "wg-easy" = {
-      sentinel       = ""
-      ansible_groups = []
-    }
-  }
-}
