@@ -40,17 +40,22 @@
           - IPv6=true
         state: quadlet
 
+    - name: Tailscale pod
+      containers.podman.podman_pod:
+        name: tailscale
+        network: tailscale
+        state: quadlet
+
     - name: Tailscale container
       containers.podman.podman_container:
         name: tailscale
-        image: tailscale/tailscale:1.98.3
+        image: tailscale/tailscale:v1.98.3
         env:
           TS_AUTHKEY: "{{ tailscale_auth_key }}"
         cap_add:
           - NET_ADMIN
           - NET_RAW
-        network:
-          - tailscale.network
+        pod: tailscale
         quadlet_options:
           - "AutoUpdate=registry"
           - |
@@ -86,6 +91,7 @@
           net.ipv6.conf.all.disable_ipv6: 0
           net.ipv6.conf.all.forwarding: 1
           net.ipv6.conf.default.forwarding: 1
+        pod: tailscale
         network:
           - tailscale.network
         quadlet_dir: /etc/containers/systemd/wg-easy
@@ -110,4 +116,4 @@
     - name: Publish wg-easy admin portal with Tailscale HTTPS
       containers.podman.podman_container_exec:
         name: tailscale
-        command: tailscale serve --service svc:wg-easy 51821
+        command: tailscale serve --service svc:wg-easy --https=51821 51821
