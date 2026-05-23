@@ -5,4 +5,8 @@ resource "tailscale_tailnet_key" "container" {
   recreate_if_invalid = "always"
   reusable            = true
   tags                = ["tag:infrastructure"]
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.api_token_sentinel]
+  }
 }
