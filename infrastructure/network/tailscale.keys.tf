@@ -1,4 +1,5 @@
-resource "tailscale_tailnet_key" "squiggle_darkened" {
+resource "tailscale_tailnet_key" "container" {
+  description         = "For Tailscale sidecar containers"
   ephemeral           = true
   preauthorized       = true
   recreate_if_invalid = "always"
