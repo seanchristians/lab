@@ -1,6 +1,6 @@
 locals {
   ansible_inventory = { for group, hosts in local.ansible_groups : group => {
-    for host in hosts : host => ansible_hosts[host]
+    for host in hosts : host => local.ansible_hosts[host]
   } }
 
   ansible_groups = {
