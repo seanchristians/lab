@@ -106,7 +106,7 @@
 
     - name: service to serve wg-easy admin page to tailnet
       ansible.builtin.copy:
-        dest: /etc/systemd/service/serve-wg-easy.service
+        dest: /etc/systemd/system/serve-wg-easy.service
         content: |
           [Unit]
           Description=Serve the wg-easy admin port in the Tailnet
