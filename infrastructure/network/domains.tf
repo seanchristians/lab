@@ -1,4 +1,4 @@
-resource "porkbun_dns_record" "minecraft_seanchristians_ca" {
+resource "porkbun_dns_record" "minecraft_server" {
   domain    = "seanchristians.ca"
   subdomain = "minecraft"
   type      = "CNAME"
