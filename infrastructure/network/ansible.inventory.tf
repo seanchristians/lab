@@ -1,7 +1,7 @@
 locals {
-  ansible_inventory = { for group, hosts in local.ansible_groups : group => {
+  ansible_inventory = { for group, hosts in local.ansible_groups : group => { "hosts" = {
     for host in hosts : host => local.ansible_hosts[host]
-  } }
+  } } }
 
   ansible_groups = {
     wireguard_servers = ["squiggle-darkened"],
