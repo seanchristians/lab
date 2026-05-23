@@ -106,3 +106,8 @@
       ansible.builtin.systemd_service:
         name: wg-easy
         state: restarted
+
+    - name: Publish wg-easy admin portal with Tailscale HTTPS
+      containers.podman.podman_container_exec:
+        name: tailscale
+        command: tailscale serve --service svc:wg-easy 51821
