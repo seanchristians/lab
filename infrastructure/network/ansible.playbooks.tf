@@ -17,7 +17,7 @@ resource "terraform_data" "ansible_playbook" {
 }
 
 action "ansible_playbook_run" "ansible_playbook" {
-  for_each = keys(var.ansible_playbooks)
+  for_each = toset(keys(var.ansible_playbooks))
 
   config {
     playbooks   = ["ansible-playbooks/${each.value}.yaml"]
@@ -26,7 +26,7 @@ action "ansible_playbook_run" "ansible_playbook" {
 }
 
 data "local_file" "ansible_playbook" {
-  for_each = keys(var.ansible_playbooks)
+  for_each = toset(keys(var.ansible_playbooks))
 
   filename = "ansible-playbooks/${each.value}.yaml"
 }
