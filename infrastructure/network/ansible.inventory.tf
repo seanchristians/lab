@@ -1,8 +1,8 @@
 locals {
   ansible_inventory_encoded = jsonencode(local.ansible_inventory)
-  ansible_inventory = { for group, hosts in local.ansible_groups : group => { "hosts" = {
+  ansible_inventory = sensitive({ for group, hosts in local.ansible_groups : group => { "hosts" = {
     for host in hosts : host => local.ansible_hosts[host]
-  } } }
+  } } })
 
   ansible_groups = {
     wireguard_servers = ["squiggle-darkened"],

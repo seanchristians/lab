@@ -37,6 +37,10 @@ resource "terraform_data" "minecraft_domain_desec_token" {
 resource "desec_token" "minecraft_domain" {
   max_age           = null
   max_unused_period = null
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.api_token_sentinel]
+  }
 }
 
 resource "desec_token_policy" "minecraft_domain_default" {
