@@ -10,8 +10,12 @@ resource "porkbun_nameservers" "ddns_proxy" {
   nameservers = data.desec_rrset.ddns_proxy_nameservers.rdata
 }
 
+resource "desec_domain" "ddns_proxy" {
+  name = data.porkbun_domain.ddns_proxy.domain
+}
+
 data "desec_rrset" "ddns_proxy_nameservers" {
-  domain  = data.porkbun_domain.ddns_proxy.domain
+  domain  = desec_domain.ddns_proxy.id
   subname = "@"
   type    = "NS"
 }
