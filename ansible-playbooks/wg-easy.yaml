@@ -110,11 +110,11 @@
           [Unit]
           Description=Serve the wg-easy admin port in the Tailnet
           After=tailscale
-          
+
           [Service]
           Type=oneshot
-          ExecStart=podman container exec tailscale tailscale serve --service=svc:wg-easy --https=51821 51821
-          
+          ExecStart=podman container exec tailscale tailscale serve --service=svc:wg-easy --https={{ wg_easy_service_port }} 51821
+
           [Install]
           WantedBy=multi-user.target
 
