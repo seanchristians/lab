@@ -44,6 +44,10 @@
       containers.podman.podman_pod:
         name: tailscale
         network: tailscale
+        quadlet_options:
+          - |
+            [Install]
+            WantedBy=default.target
         state: quadlet
 
     - name: Tailscale container
@@ -55,7 +59,7 @@
         cap_add:
           - NET_ADMIN
           - NET_RAW
-        pod: tailscale
+        pod: tailscale.pod
         quadlet_options:
           - "AutoUpdate=registry"
           - |
@@ -91,7 +95,7 @@
           net.ipv6.conf.all.disable_ipv6: 0
           net.ipv6.conf.all.forwarding: 1
           net.ipv6.conf.default.forwarding: 1
-        pod: tailscale
+        pod: tailscale.pod
         network:
           - tailscale.network
         quadlet_dir: /etc/containers/systemd/wg-easy
