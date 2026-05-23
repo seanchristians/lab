@@ -25,7 +25,10 @@ data "porkbun_domain" "ddns_proxy" {
 }
 
 resource "terraform_data" "minecraft_domain_desec_token" {
-  input = desec_token.minecraft_domain.token
+  store {
+    input     = desec_token.minecraft_domain.token
+    sensitive = true
+  }
 
   triggers_replace = desec_token.minecraft_domain.id
 
