@@ -18,11 +18,14 @@ action "ansible_playbook_run" "ddclient" {
 }
 
 resource "terraform_data" "wg_easy_ansible_playbook" {
-  input = [
-    "319A3378-3724-4661-B33A-15D3EC29B57E",
-    data.local_file.wg_easy_ansible_playbook.id,
-    local.ansible_inventory["wireguard_servers"]
-  ]
+  store {
+    input = [
+      "319A3378-3724-4661-B33A-15D3EC29B57E",
+      data.local_file.wg_easy_ansible_playbook.id,
+      local.ansible_inventory["wireguard_servers"]
+    ]
+    sensitive = true
+  }
 
   lifecycle {
     action_trigger {
