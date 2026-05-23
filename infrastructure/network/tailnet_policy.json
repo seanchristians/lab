@@ -8,7 +8,7 @@
 	"grants": [
 		{
 			"src": ["autogroup:admin"],
-			"dst": ["autogroup:tagged"],
+			"dst": ["autogroup:tagged", "svc:wg-easy"],
 			"ip": ["*"]
 		},
 		{
@@ -51,5 +51,11 @@
 			"dst": ["tag:infrastructure"],
 			"deny": ["root", "ubuntu", "ec2-user"]
 		}
-	]
+	],
+
+	"autoApprovers": {
+		"services": {
+			"svc:wg-easy": ["tag:infrastructure"]
+		}
+	}
 }
