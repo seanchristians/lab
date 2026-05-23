@@ -6,6 +6,7 @@ locals {
         ansible_user           = "root"
         ansible_ssh_extra_args = "-o StrictHostKeyChecking=no"
         tailscale_auth_key     = tailscale_tailnet_key.container.key
+        wg-easy_service_port   = 51821
       }
     } }
   }
