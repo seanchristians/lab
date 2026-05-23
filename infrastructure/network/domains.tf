@@ -23,3 +23,34 @@ data "desec_rrset" "ddns_proxy_nameservers" {
 data "porkbun_domain" "ddns_proxy" {
   domain = "sean.directory"
 }
+
+ephemeral "desec_token" "minecraft_domain" {
+  keep_on_close     = true
+  max_age           = null
+  max_unused_period = null
+}
+
+resource "desec_token_policy" "minecraft_domain_default" {
+  token_id   = desec_token.minecraft_domain.id
+  perm_write = false
+}
+
+resource "desec_token_policy" "minecraft_domain_a" {
+  token_id   = desec_token.minecraft_domain.id
+  domain     = desec_domain.ddns_proxy.id
+  subname    = "minecraft"
+  perm_write = true
+  type       = "A"
+
+  depends_on = [desec_token_policy.minecraft_domain_default]
+}
+
+resource "desec_token_policy" "minecraft_domain_aaaa" {
+  token_id   = desec_token.minecraft_domain.id
+  domain     = desec_domain.ddns_proxy.id
+  subname    = "minecraft"
+  perm_write = true
+  type       = "AAAA"
+
+  depends_on = [desec_token_policy.minecraft_domain_default]
+}
