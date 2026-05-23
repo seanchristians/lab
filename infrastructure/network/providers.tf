@@ -28,6 +28,10 @@ terraform {
       source  = "marcfrederick/porkbun"
       version = "1.3.3"
     }
+    desec = {
+      source  = "timofurrer/desec"
+      version = "0.6.2"
+    }
   }
 }
 
@@ -48,3 +52,5 @@ provider "aws" {
 provider "porkbun" {
   max_retries = 5
 }
+
+provider "desec" {}
