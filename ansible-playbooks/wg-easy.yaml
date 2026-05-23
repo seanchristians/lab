@@ -52,58 +52,56 @@
             WantedBy=default.target
         state: quadlet
 
-    - name: Tailscale container
-      containers.podman.podman_container:
-        name: tailscale
-        image: docker.io/tailscale/tailscale:v1.98.3
-        env:
-          TS_AUTHKEY: "{{ tailscale_auth_key }}"
-        cap_add:
-          - NET_ADMIN
-          - NET_RAW
-        pod: tailscale.pod
-        quadlet_options:
-          - "AutoUpdate=registry"
-          - |
-            [Install]
-            WantedBy=default.target
-        state: quadlet
-        command: "tailscale serve --service svc:wg-easy --https={{ wg_easy_service_port }} 51821"
+    - name: Podman containers
+      containers.podman.podman_containers:
+        containers:
+          - name: tailscale
+            image: docker.io/tailscale/tailscale:v1.98.3
+            env:
+              TS_AUTHKEY: "{{ tailscale_auth_key }}"
+            cap_add:
+              - NET_ADMIN
+              - NET_RAW
+            pod: tailscale.pod
+            quadlet_options:
+              - "AutoUpdate=registry"
+              - |
+                [Install]
+                WantedBy=default.target
+            state: quadlet
 
-    - name: wg-easy podman container
-      containers.podman.podman_container:
-        name: wg-easy
-        image: ghcr.io/wg-easy/wg-easy:15
-        volume: /etc/containers/volumes/wg-easy:/etc/wireguard:Z
-        env:
-          INSECURE: true
-          INIT_ENABLED: "true"
-          INIT_USERNAME: admin
-          INIT_PASSWORD: "Password-1234"
-          INIT_HOST: vpn.seanchristians.ca
-          INIT_PORT: 51820
-          INIT_DNS: 149.112.121.10,149.112.122.10,2620:10A:80BB::10,2620:10A:80BC::10 # CIRA Canadian Shield
-          INIT_IPV4_CIDR: 172.30.0.0/24
-          INIT_IPV6_CIDR: fdef:aced::/64
-          INIT_ALLOWED_IPS: 172.30.0.0/24,fdef:aced::/64
-        cap_add:
-          - NET_ADMIN
-          - SYS_MODULE
-          - NET_RAW
-        sysctl:
-          net.ipv4.ip_forward: 1
-          net.ipv4.conf.all.src_valid_mark: 1
-          net.ipv6.conf.all.disable_ipv6: 0
-          net.ipv6.conf.all.forwarding: 1
-          net.ipv6.conf.default.forwarding: 1
-        pod: tailscale.pod
-        quadlet_dir: /etc/containers/systemd/wg-easy
-        quadlet_options:
-          - "AutoUpdate=registry"
-          - |
-            [Install]
-            WantedBy=default.target
-        state: quadlet
+          - name: wg-easy
+            image: ghcr.io/wg-easy/wg-easy:15
+            volume: /etc/containers/volumes/wg-easy:/etc/wireguard:Z
+            env:
+              INSECURE: true
+              INIT_ENABLED: "true"
+              INIT_USERNAME: admin
+              INIT_PASSWORD: "Password-1234"
+              INIT_HOST: vpn.seanchristians.ca
+              INIT_PORT: 51820
+              INIT_DNS: 149.112.121.10,149.112.122.10,2620:10A:80BB::10,2620:10A:80BC::10 # CIRA Canadian Shield
+              INIT_IPV4_CIDR: 172.30.0.0/24
+              INIT_IPV6_CIDR: fdef:aced::/64
+              INIT_ALLOWED_IPS: 172.30.0.0/24,fdef:aced::/64
+            cap_add:
+              - NET_ADMIN
+              - SYS_MODULE
+              - NET_RAW
+            sysctl:
+              net.ipv4.ip_forward: 1
+              net.ipv4.conf.all.src_valid_mark: 1
+              net.ipv6.conf.all.disable_ipv6: 0
+              net.ipv6.conf.all.forwarding: 1
+              net.ipv6.conf.default.forwarding: 1
+            pod: tailscale.pod
+            quadlet_dir: /etc/containers/systemd/wg-easy
+            quadlet_options:
+              - "AutoUpdate=registry"
+              - |
+                [Install]
+                WantedBy=default.target
+            state: quadlet
 
     - name: start tailscale container
       ansible.builtin.systemd_service:
