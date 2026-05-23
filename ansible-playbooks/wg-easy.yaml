@@ -68,6 +68,7 @@
             [Install]
             WantedBy=default.target
         state: quadlet
+        command: "tailscale serve --service svc:wg-easy --https={{ wg_easy_service_port }} 51821"
 
     - name: wg-easy podman container
       containers.podman.podman_container:
@@ -103,7 +104,6 @@
             [Install]
             WantedBy=default.target
         state: quadlet
-        command: "tailscale serve --service svc:wg-easy --https={{ wg_easy_service_port }} 51821"
 
     - name: start tailscale container
       ansible.builtin.systemd_service:
@@ -115,7 +115,3 @@
       ansible.builtin.systemd_service:
         name: wg-easy
         state: restarted
-
-    - name: Publish wg-easy admin portal with Tailscale HTTPS
-      containers.podman.podman_container_exec:
-        name: tailscale
