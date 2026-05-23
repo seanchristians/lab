@@ -19,7 +19,7 @@ action "ansible_playbook_run" "ddclient" {
 
 resource "terraform_data" "wg_easy_ansible_playbook" {
   input = [
-    "ECF964FD-0829-41F1-8F6B-703960297624",
+    "319A3378-3724-4661-B33A-15D3EC29B57E",
     data.local_file.wg_easy_ansible_playbook.id,
     local.ansible_inventory["wireguard_servers"]
   ]
@@ -34,7 +34,7 @@ resource "terraform_data" "wg_easy_ansible_playbook" {
 
 resource "terraform_data" "ddclient_ansible_playbook" {
   input = [
-    "CB246CFE-5E01-4FE8-AF3C-00887CF291C2",
+    "319A3378-3724-4661-B33A-15D3EC29B57E",
     data.local_file.ddclient_ansible_playbook.id,
     local.ansible_inventory["ddns"]
   ]
