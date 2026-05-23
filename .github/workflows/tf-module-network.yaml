@@ -59,9 +59,10 @@ jobs:
           version: 1.98.2
 
       - name: Terraform
-        uses: seanchristians/lab/actions/terraform@rotate-api-tokens
+        uses: seanchristians/lab/actions/terraform@main
         with:
           module: infrastructure/network
           tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
           aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
           aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
+          terraform_version: "v1.16.0-alpha20260513" # Required for 'store' blocks in terraform_data resources
