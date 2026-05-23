@@ -7,7 +7,7 @@ resource "porkbun_dns_record" "minecraft_server" {
 
 resource "porkbun_nameservers" "ddns_proxy" {
   domain      = data.porkbun_domain.ddns_proxy.domain
-  nameservers = data.desec_rrset.ddns_proxy_nameservers.rdata
+  nameservers = [for ns in data.desec_rrset.ddns_proxy_nameservers.rdata : trimsuffix(ns, ".")]
 }
 
 resource "desec_domain" "ddns_proxy" {
