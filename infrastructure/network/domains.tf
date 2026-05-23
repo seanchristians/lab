@@ -7,13 +7,15 @@ resource "porkbun_dns_record" "minecraft_server" {
 
 resource "porkbun_nameservers" "ddns_proxy" {
   domain      = data.porkbun_domain.ddns_proxy.domain
-  nameservers = data.dns_ns_record_set.desec_io.nameservers
+  nameservers = data.desec_rrset.ddns_proxy_nameservers.rdata
+}
+
+data "desec_rrset" "ddns_proxy_nameservers" {
+  domain  = data.porkbun_domain.ddns_proxy.domain
+  subname = "@"
+  type    = "NS"
 }
 
 data "porkbun_domain" "ddns_proxy" {
   domain = "sean.directory"
-}
-
-data "dns_ns_record_set" "desec_io" {
-  host = "desec.io"
 }
