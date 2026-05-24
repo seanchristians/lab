@@ -55,7 +55,7 @@
 
 	"autoApprovers": {
 		"services": {
-			"svc:wg-easy": ["tag:infrastructure"]
+			"svc:minecraft": ["tag:infrastructure"]
 		}
 	}
 }
