@@ -20,7 +20,7 @@ action "ansible_playbook_run" "ddclient" {
 resource "terraform_data" "wg_easy_ansible_playbook" {
   store {
     input = [
-      "319A3378-3724-4661-B33A-15D3EC29B57E",
+      "B2086939-7E82-446A-BAF9-98FCF7F193D3",
       data.local_file.wg_easy_ansible_playbook.id,
       local.ansible_inventory["wireguard_servers"]
     ]
