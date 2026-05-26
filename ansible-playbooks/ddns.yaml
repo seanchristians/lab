@@ -12,6 +12,8 @@
         dest: /opt/ddns/ddns.sh
         mode: 0500
         content: |
+          #!/bin/bash
+
           /usr/sbin/curl --ipv4 "https://update.dedyn.io?hostname={{ wireguard_domain }}&ipv6=preserve" \
           --header "Authorization: Token {{ desec_token }}"
 
