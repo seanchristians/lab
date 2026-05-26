@@ -36,11 +36,14 @@ resource "terraform_data" "wg_easy_ansible_playbook" {
 }
 
 resource "terraform_data" "ddns_ansible_playbook" {
-  input = [
-    "319A3378-3724-4661-B33A-15D3EC29B57E",
-    data.local_file.ddns_ansible_playbook.id,
-    local.ansible_inventory["ddns"]
-  ]
+  store {
+    input = [
+      "319A3378-3724-4661-B33A-15D3EC29B57E",
+      data.local_file.ddns_ansible_playbook.id,
+      local.ansible_inventory["ddns"]
+    ]
+    sensitive = true
+  }
 
   lifecycle {
     action_trigger {
