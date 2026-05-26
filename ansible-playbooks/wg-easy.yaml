@@ -32,37 +32,13 @@
         path: /etc/containers/volumes/wg-easy
         state: directory
 
-    - name: Tailscale podman network
-      containers.podman.podman_network:
-        name: tailscale
-        quadlet_options:
-          - IPv6=true
-        state: quadlet
-
-    - name: Tailscale pod
+    - name: Minecraft pod
       containers.podman.podman_pod:
-        name: tailscale
-        network: tailscale.network
+        name: minecraft
         publish:
           - 51820:51820/udp
+          - 51821:51821/tcp
         quadlet_options:
-          - |
-            [Install]
-            WantedBy=default.target
-        state: quadlet
-
-    - name: Tailscale Podman container
-      containers.podman.podman_container:
-        name: tailscale
-        image: docker.io/tailscale/tailscale:v1.98.3
-        env:
-          TS_AUTHKEY: "{{ tailscale_auth_key }}"
-        cap_add:
-          - NET_ADMIN
-          - NET_RAW
-        pod: tailscale.pod
-        quadlet_options:
-          - "AutoUpdate=registry"
           - |
             [Install]
             WantedBy=default.target
@@ -75,6 +51,7 @@
         volume: /etc/containers/volumes/wg-easy:/etc/wireguard:Z
         env:
           INSECURE: true
+          HOST: localhost
           INIT_ENABLED: "true"
           INIT_USERNAME: admin
           INIT_PASSWORD: "Password-1234"
@@ -94,7 +71,7 @@
           net.ipv6.conf.all.disable_ipv6: 0
           net.ipv6.conf.all.forwarding: 1
           net.ipv6.conf.default.forwarding: 1
-        pod: tailscale.pod
+        pod: minecraft.pod
         quadlet_dir: /etc/containers/systemd/wg-easy
         quadlet_options:
           - "AutoUpdate=registry"
@@ -109,21 +86,15 @@
         content: |
           [Unit]
           Description=Serve the wg-easy admin port in the Tailnet
-          After=tailscale.service
-          Requires=tailscale.service
+          After=wg-easy.service
+          Requires=wg-easy.service
 
           [Service]
           Type=oneshot
-          ExecStart=podman container exec tailscale tailscale serve --service={{ tailnet_service }} 51821
+          ExecStart=tailscale serve --bg 51821
 
           [Install]
           WantedBy=multi-user.target
-
-    - name: start tailscale container
-      ansible.builtin.systemd_service:
-        daemon_reload: true
-        name: tailscale
-        state: started
 
     - name: start wg-easy with systemd
       ansible.builtin.systemd_service:
