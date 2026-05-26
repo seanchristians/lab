@@ -1,0 +1,36 @@
+---
+- name: Set up a Minecraft server
+  hosts: minecraft_servers
+  tasks:
+    - name: Minecraft container
+      containers.podman.podman_container:
+        name: minecraft
+        image: docker.io/itzg/minecraft-server:latest
+        volume: /etc/containers/volumes/minecraft:/data:Z
+        state: quadlet
+        pod: wireguard.pod
+        quadlet_options:
+          - "AutoUpdate=registry"
+          - |
+            [Install]
+            WantedBy=default.target
+        env:
+          VERSION: 26.1.2
+          EULA: "true"
+          TYPE: FABRIC
+          MODRINTH_PROJECTS: |
+            fabric-api
+            geyser
+            floodgate
+            lithium
+            ferrite-core
+            modernfix
+          MEMORY: 10G
+          DIFFICULTY: normal
+          ENABLE_COMMAND_BLOCK: true
+
+    - name: Start Minecraft container
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+        name: minecraft
+        state: restarted
