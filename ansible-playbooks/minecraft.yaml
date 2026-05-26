@@ -33,4 +33,4 @@
       ansible.builtin.systemd_service:
         daemon_reload: true
         name: minecraft
-        state: restarted
+        state: started
