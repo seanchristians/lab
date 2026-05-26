@@ -6,15 +6,15 @@ resource "porkbun_dns_record" "minecraft_server" {
 }
 
 resource "porkbun_nameservers" "ddns_proxy" {
-  domain      = data.porkbun_domain.ddns_proxy.domain
-  nameservers = [for ns in data.desec_rrset.ddns_proxy_nameservers.rdata : trimsuffix(ns, ".")]
+  domain      = data.porkbun_domain.dns_proxy.domain
+  nameservers = [for ns in data.desec_rrset.dns_proxy_nameservers.rdata : trimsuffix(ns, ".")]
 }
 
 resource "desec_domain" "ddns_proxy" {
-  name = data.porkbun_domain.ddns_proxy.domain
+  name = data.porkbun_domain.dns_proxy.domain
 }
 
-data "desec_rrset" "ddns_proxy_nameservers" {
+data "desec_rrset" "dns_proxy_nameservers" {
   domain  = desec_domain.ddns_proxy.id
   subname = "@"
   type    = "NS"
