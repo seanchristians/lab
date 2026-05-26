@@ -86,6 +86,6 @@ data "local_file" "ddns_ansible_playbook" {
   filename = "ansible-playbooks/ddns.yaml"
 }
 
-data "local_file" "ddns_ansible_playbook" {
+data "local_file" "minecraft_ansible_playbook" {
   filename = "ansible-playbooks/minecraft.yaml"
 }
