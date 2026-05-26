@@ -24,8 +24,8 @@
           /usr/sbin/curl -G -sSL --fail --retry 5 --retry-all-errors \
           -H "Authorization: Token {{ desec_token }}" \
           --data-urlencode "hostname={{ desec_domain }}" \
-          --data-urlencode "ipv4=$DEVICE_IPV4" \
-          --data-urlencode "ipv6=$DEVICE_IPV6" \
+          --data-urlencode "myipv4=$DEVICE_IPV4" \
+          --data-urlencode "myipv6=$DEVICE_IPV6" \
           "https://update.dedyn.io"
 
           /usr/sbin/rm "$TAILSCALE_DATA"
