@@ -12,7 +12,7 @@
         dest: /opt/ddns/ddns.sh
         mode: 0500
         content: |
-          #!/bin/bash
+          #!/bin/bash -e
 
           /usr/sbin/curl --ipv4 "https://update.dedyn.io?hostname={{ desec_domain }}&ipv6=preserve" \
           --header "Authorization: Token {{ desec_token }}"
