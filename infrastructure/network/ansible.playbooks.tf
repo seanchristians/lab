@@ -60,3 +60,10 @@ data "local_file" "wg_easy_ansible_playbook" {
 data "local_file" "ddns_ansible_playbook" {
   filename = "ansible-playbooks/ddns.yaml"
 }
+
+module "ansible_playbook_minecraft" {
+  source = "./ansible-playbooks"
+
+  ansible_inventory = local.ansible_inventory
+  playbook          = "minecraft.yaml"
+}

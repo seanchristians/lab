@@ -6,7 +6,8 @@ locals {
 
   ansible_groups = {
     wireguard_servers = ["squiggle-darkened"],
-    ddns              = ["squiggle-darkened"]
+    ddns              = ["squiggle-darkened"],
+    minecraft_servers = ["squiggle-darkened"]
   }
 
   ansible_hosts = {
