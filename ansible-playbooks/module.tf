@@ -15,6 +15,7 @@ variable "sentinel" {
   description = "Trigger playbook re-run"
   sensitive   = false
   nullable    = true
+  default     = null
 }
 
 locals {
