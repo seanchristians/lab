@@ -23,7 +23,8 @@
           VERSION: 26.1.2
           EULA: "true"
           TYPE: FABRIC
-          MODRINTH_PROJECTS: fabric-api,geyser,floodgate,lithium,ferrite-core,modernfix
+          MODRINTH_PROJECTS: fabric-api,floodgate,lithium,ferrite-core
+          MODS: https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/fabric
           MEMORY: 10G
           DIFFICULTY: normal
           ENABLE_COMMAND_BLOCK: true
@@ -32,4 +33,4 @@
       ansible.builtin.systemd_service:
         daemon_reload: true
         name: minecraft
-        state: restarted
+        state: started
