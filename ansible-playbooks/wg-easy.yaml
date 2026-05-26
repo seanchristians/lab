@@ -32,9 +32,9 @@
         path: /etc/containers/volumes/wg-easy
         state: directory
 
-    - name: Minecraft pod
+    - name: Wireguard pod
       containers.podman.podman_pod:
-        name: minecraft
+        name: wireguard
         publish:
           - 51820:51820/udp
         quadlet_options:
@@ -70,7 +70,7 @@
           net.ipv6.conf.all.disable_ipv6: 0
           net.ipv6.conf.all.forwarding: 1
           net.ipv6.conf.default.forwarding: 1
-        pod: minecraft.pod
+        pod: wireguard.pod
         quadlet_dir: /etc/containers/systemd/wg-easy
         quadlet_options:
           - "AutoUpdate=registry"
@@ -88,7 +88,7 @@
         cap_add:
           - NET_ADMIN
           - NET_RAW
-        pod: minecraft.pod
+        pod: wireguard.pod
         quadlet_options:
           - "AutoUpdate=registry"
           - |
