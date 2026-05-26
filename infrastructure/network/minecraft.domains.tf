@@ -1,6 +1,17 @@
-resource "porkbun_dns_record" "minecraft_server_vpn" {
+locals {
+  minecraft_server_vpn_subdomain = "minecraft"
+}
+
+resource "porkbun_dns_record" "minecraft_server_a" {
   domain    = local.domain_canada
-  subdomain = "mc-vpn"
-  type      = "CNAME"
-  content   = "mc-vpn.${data.porkbun_domain.dns_proxy.domain}"
+  subdomain = "minecraft"
+  type      = "A"
+  content   = "172.30.0.1"
+}
+
+resource "porkbun_dns_record" "minecraft_server_aaaa" {
+  domain    = local.domain_canada
+  subdomain = "minecraft"
+  type      = "AAAA"
+  content   = "fdef:aced::1"
 }

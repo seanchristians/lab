@@ -30,7 +30,7 @@ resource "desec_token_policy" "minecraft_server_vpn_default" {
 resource "desec_token_policy" "minecraft_server_vpn_a" {
   token_id   = desec_token.minecraft_server_vpn.id
   domain     = desec_domain.dns_proxy.id
-  subname    = porkbun_dns_record.minecraft_server_vpn.subdomain
+  subname    = local.minecraft_server_vpn_subdomain
   perm_write = true
   type       = "A"
 
@@ -40,7 +40,7 @@ resource "desec_token_policy" "minecraft_server_vpn_a" {
 resource "desec_token_policy" "minecraft_server_vpn_aaaa" {
   token_id   = desec_token.minecraft_server_vpn.id
   domain     = desec_domain.dns_proxy.id
-  subname    = porkbun_dns_record.minecraft_server_vpn.subdomain
+  subname    = local.minecraft_server_vpn_subdomain
   perm_write = true
   type       = "AAAA"
 
