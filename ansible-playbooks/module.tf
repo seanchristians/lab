@@ -39,7 +39,7 @@ data "local_file" "playbook" {
 
 action "ansible_playbook_run" "playbook" {
   config {
-    playbooks   = [local.playbook_fp]
+    playbooks   = [var.playbook]
     inventories = [jsonencode(var.ansible_inventory)]
   }
 }
