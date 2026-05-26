@@ -23,13 +23,7 @@
           VERSION: 26.1.2
           EULA: "true"
           TYPE: FABRIC
-          MODRINTH_PROJECTS: |
-            fabric-api
-            geyser
-            floodgate
-            lithium
-            ferrite-core
-            modernfix
+          MODRINTH_PROJECTS: fabric-api,geyser,floodgate,lithium,ferrite-core,modernfix
           MEMORY: 10G
           DIFFICULTY: normal
           ENABLE_COMMAND_BLOCK: true
