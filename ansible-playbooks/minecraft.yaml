@@ -2,6 +2,11 @@
 - name: Set up a Minecraft server
   hosts: minecraft_servers
   tasks:
+    - name: Create Minecraft data volume
+      ansible.builtin.file:
+        path: /etc/containers/volumes/minecraft
+        state: directory
+
     - name: Minecraft container
       containers.podman.podman_container:
         name: minecraft
