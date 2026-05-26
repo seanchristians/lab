@@ -88,7 +88,7 @@
         cap_add:
           - NET_ADMIN
           - NET_RAW
-        pod: tailscale.pod
+        pod: minecraft.pod
         quadlet_options:
           - "AutoUpdate=registry"
           - |
@@ -114,6 +114,7 @@
 
     - name: start wg-easy with systemd
       ansible.builtin.systemd_service:
+        daemon_reload: true
         name: wg-easy
         state: restarted
 
