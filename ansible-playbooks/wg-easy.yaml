@@ -80,18 +80,35 @@
             WantedBy=default.target
         state: quadlet
 
+    - name: Tailscale sidecar
+      containers.podman.podman_container:
+        name: tailscale
+        image: docker.io/tailscale/tailscale:v1.98.3
+        env:
+          TS_AUTHKEY: "{{ tailscale_auth_key }}"
+        cap_add:
+          - NET_ADMIN
+          - NET_RAW
+        pod: tailscale.pod
+        quadlet_options:
+          - "AutoUpdate=registry"
+          - |
+            [Install]
+            WantedBy=default.target
+        state: quadlet
+
     - name: service to serve wg-easy admin page to tailnet
       ansible.builtin.copy:
         dest: /etc/systemd/system/serve-wg-easy.service
         content: |
           [Unit]
           Description=Serve the wg-easy admin port in the Tailnet
-          After=wg-easy.service
-          Requires=wg-easy.service
+          After=tailscale.service
+          Requires=tailscale.service
 
           [Service]
           Type=oneshot
-          ExecStart=tailscale serve --bg 51821
+          ExecStart=podman container exec tailscale tailscale serve --service={{ tailnet_service }} 51821
 
           [Install]
           WantedBy=multi-user.target
