@@ -1,0 +1,56 @@
+---
+- name: Configure dynamic DNS with deSEC.io
+  hosts: ddns
+  tasks:
+    - name: Create folder for ddns scripts
+      ansible.builtin.file:
+        path: /opt/ddns
+        state: directory
+
+    - name: Install ddns.sh
+      ansible.builtin.copy:
+        dest: /opt/ddns/ddns.sh
+        mode: 0500
+        content: |
+          /usr/sbin/curl --ipv4 "https://update.dedyn.io?hostname={{ wireguard_domain }}&ipv6=preserve" \
+          --header "Authorization: Token {{ desec_token }}"
+
+          /usr/sbin/curl "https://update6.dedyn.io?hostname={{ wireguard_domain }}&ipv4=preserve" \
+          --header "Authorization: Token {{ desec_token }}"
+
+    - name: Systemd service to update DNS
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/ddns.service
+        content: |
+          [Unit]
+          Description=Update DNS record for this server
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          Type=oneshot
+          ExecStart=/opt/ddns/ddns.sh
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Systemd timer to run ddns.service
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/ddns.timer
+        content: |
+          [Unit]
+          Description=Updates DNS every hour
+
+          [Timer]
+          OnUnitActiveSec=1h
+          Persistent=true
+          Unit=ddns.service
+
+          [Install]
+          WantedBy=timers.target
+
+    - name: Enable systemd services
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+        name: ddns.timer
+        state: restarted
