@@ -75,6 +75,7 @@
         volume: /etc/containers/volumes/wg-easy:/etc/wireguard:Z
         env:
           INSECURE: true
+          HOST: localhost
           INIT_ENABLED: "true"
           INIT_USERNAME: admin
           INIT_PASSWORD: "Password-1234"
