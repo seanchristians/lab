@@ -65,7 +65,7 @@ resource "terraform_data" "minecraft_ansible_playbook" {
     input = [
       "319A3378-3724-4661-B33A-15D3EC29B57E",
       data.local_file.minecraft_ansible_playbook.id,
-      local.ansible_inventory["minecraft"]
+      local.ansible_inventory["minecraft_servers"]
     ]
     sensitive = true
   }
