@@ -20,6 +20,8 @@ locals {
       wireguard_ipv6_cidr    = "fdef:aced::/64"
       desec_domain           = porkbun_dns_record.minecraft_server.content
       desec_token            = terraform_data.minecraft_domain_desec_token.store.sensitive_output
+      tailscale_auth_key     = tailscale_tailnet_key.container.key
+      tailnet_service        = tailscale_service.minecraft.id
     }
   }
 }
