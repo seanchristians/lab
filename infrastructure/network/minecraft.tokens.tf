@@ -18,6 +18,8 @@ resource "desec_token" "minecraft_server_vpn" {
   lifecycle {
     replace_triggered_by = [terraform_data.api_token_sentinel]
   }
+
+  depends_on = [desec_domain.dns_proxy]
 }
 
 resource "desec_token_policy" "minecraft_server_vpn_default" {
