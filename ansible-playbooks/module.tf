@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    ansible = {
+      source  = "ansible/ansible"
+      version = "1.4.0"
+    }
+  }
+}
+
 variable "ansible_inventory" {
   description = "Ansible inventory"
   sensitive   = true
