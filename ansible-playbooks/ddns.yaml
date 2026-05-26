@@ -18,6 +18,8 @@
           "https://update.dedyn.io?hostname={{ desec_domain }}&ipv6=preserve" \
           --header "Authorization: Token {{ desec_token }}"
 
+          /usr/sbin/sleep 5s
+
           /usr/sbin/curl -sSL --fail --retry 5 --retry-all-errors --ipv6 \
           "https://update6.dedyn.io?hostname={{ desec_domain }}&ipv4=preserve" \
           --header "Authorization: Token {{ desec_token }}"
