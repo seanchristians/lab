@@ -14,10 +14,10 @@
         content: |
           #!/bin/bash
 
-          /usr/sbin/curl --ipv4 "https://update.dedyn.io?hostname={{ wireguard_domain }}&ipv6=preserve" \
+          /usr/sbin/curl --ipv4 "https://update.dedyn.io?hostname={{ desec_domain }}&ipv6=preserve" \
           --header "Authorization: Token {{ desec_token }}"
 
-          /usr/sbin/curl "https://update6.dedyn.io?hostname={{ wireguard_domain }}&ipv4=preserve" \
+          /usr/sbin/curl "https://update6.dedyn.io?hostname={{ desec_domain }}&ipv4=preserve" \
           --header "Authorization: Token {{ desec_token }}"
 
     - name: Systemd service to update DNS
