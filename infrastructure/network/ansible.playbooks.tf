@@ -10,9 +10,9 @@ action "ansible_playbook_run" "wg_easy" {
   }
 }
 
-action "ansible_playbook_run" "ddclient" {
+action "ansible_playbook_run" "ddns" {
   config {
-    playbooks   = ["ansible-playbooks/ddclient.yaml"]
+    playbooks   = ["ansible-playbooks/ddns.yaml"]
     inventories = [local.ansible_inventory_encoded]
   }
 }
@@ -35,25 +35,25 @@ resource "terraform_data" "wg_easy_ansible_playbook" {
   }
 }
 
-# resource "terraform_data" "ddclient_ansible_playbook" {
-#   input = [
-#     "319A3378-3724-4661-B33A-15D3EC29B57E",
-#     data.local_file.ddclient_ansible_playbook.id,
-#     local.ansible_inventory["ddns"]
-#   ]
+resource "terraform_data" "ddns_ansible_playbook" {
+  input = [
+    "319A3378-3724-4661-B33A-15D3EC29B57E",
+    data.local_file.ddns_ansible_playbook.id,
+    local.ansible_inventory["ddns"]
+  ]
 
-#   lifecycle {
-#     action_trigger {
-#       actions = [action.ansible_playbook_run.ddclient]
-#       events  = [after_create, after_update]
-#     }
-#   }
-# }
+  lifecycle {
+    action_trigger {
+      actions = [action.ansible_playbook_run.ddns]
+      events  = [after_create, after_update]
+    }
+  }
+}
 
 data "local_file" "wg_easy_ansible_playbook" {
   filename = "ansible-playbooks/wg-easy.yaml"
 }
 
-data "local_file" "ddclient_ansible_playbook" {
-  filename = "ansible-playbooks/ddclient.yaml"
+data "local_file" "ddns_ansible_playbook" {
+  filename = "ansible-playbooks/ddns.yaml"
 }
