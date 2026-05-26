@@ -42,7 +42,7 @@
     - name: Tailscale pod
       containers.podman.podman_pod:
         name: tailscale
-        network: tailscale
+        network: tailscale.network
         publish:
           - 51820:51820/udp
         quadlet_options:
