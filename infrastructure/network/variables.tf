@@ -6,6 +6,8 @@ locals {
 
   domain_canada    = "seanchristians.ca"
   dns_proxy_domain = "sean.directory"
+
+  cloudflare_account_id = data.cloudflare_accounts.all.result[0].id
 }
 
 data "external" "module_path_in_git_repo" {
@@ -17,3 +19,5 @@ data "external" "module_path_in_git_repo" {
 resource "terraform_data" "api_token_sentinel" {
   triggers_replace = "D4417820-CD58-42B8-BADA-08F62DE2E9AD"
 }
+
+data "cloudflare_accounts" "all" {}
