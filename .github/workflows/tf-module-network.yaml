@@ -69,4 +69,6 @@ jobs:
           terraform_version: "v1.16.0-alpha20260513" # Required for 'store' blocks in terraform_data resources
 
       - name: Show ansible inventory
+        env:
+          ANSIBLE_INVENTORY: inventory.yaml
         run: ansible-inventory --graph --vars
