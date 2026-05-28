@@ -6,7 +6,7 @@ resource "ansible_group" "ddns" {
   name = "ddns"
 
   variables = {
-    desec_domain = desec_domain.dns_proxy.domain
+    desec_domain = desec_domain.dns_proxy.name
   }
 }
 
