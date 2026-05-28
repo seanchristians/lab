@@ -1,16 +1,15 @@
 ---
 - name: Configure dynamic DNS with deSEC.io
   hosts: ddns
-  become: yes
   tasks:
     - name: Create folder for ddns scripts
       ansible.builtin.file:
-        path: /opt/ddns
+        path: "{{ ansible_env.HOME }}/ddns"
         state: directory
 
     - name: Install ddns.sh
       ansible.builtin.copy:
-        dest: /opt/ddns/ddns.sh
+        dest: "{{ ansible_env.HOME }}/ddns/ddns.sh"
         mode: 0500
         content: |
           #!/bin/bash -e
@@ -33,7 +32,7 @@
 
     - name: Systemd service to update DNS
       ansible.builtin.copy:
-        dest: /etc/systemd/system/ddns.service
+        dest: "{{ ansible_env.HOME }}/.config/systemd/user/ddns.service"
         content: |
           [Unit]
           Description=Update DNS record for this server
@@ -42,14 +41,14 @@
 
           [Service]
           Type=oneshot
-          ExecStart=/opt/ddns/ddns.sh
+          ExecStart={{ ansible_env.HOME }}/ddns/ddns.sh
 
           [Install]
           WantedBy=multi-user.target
 
     - name: Systemd timer to run ddns.service
       ansible.builtin.copy:
-        dest: /etc/systemd/system/ddns.timer
+        dest: "{{ ansible_env.HOME }}/.config/systemd/user/ddns.timer"
         content: |
           [Unit]
           Description=Updates DNS every hour
