@@ -34,6 +34,10 @@ terraform {
       source  = "timofurrer/desec"
       version = "0.6.2"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "5.19.1"
+    }
   }
 }
 
@@ -56,3 +60,5 @@ provider "porkbun" {
 }
 
 provider "desec" {}
+
+provider "cloudflare" {}
