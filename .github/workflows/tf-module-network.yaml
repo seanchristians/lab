@@ -79,10 +79,6 @@ jobs:
       - name: Run Ansible Playbooks
         working-directory: infrastructure/network
         env:
-          CHECK_MODE: ${{ github.ref_name == github.event.repository.default_branch }}
+          CHECK_MODE: ${{ github.ref_name == github.event.repository.default_branch && "--check" || "" }}
         run: |
-          if $CHECK_MODE; then
-            ansible-playbook --check ansible-playbooks/*.yaml
-          else
-            ansible-playbook ansible-playbooks/*.yaml
-          fi
+          ansible-playbook "$CHECK_MODE" ansible-playbooks/*.yaml
