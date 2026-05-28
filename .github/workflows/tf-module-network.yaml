@@ -76,6 +76,13 @@ jobs:
           aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
           terraform_version: "v1.16.0-alpha20260513" # Required for 'store' blocks in terraform_data resources
 
-      - name: Show ansible inventory
+      - name: Run Ansible Playbooks
         working-directory: infrastructure/network
-        run: ansible-inventory -vvvv --graph --vars
+        env:
+          CHECK_MODE: ${{ github.ref_name == github.event.repository.default_branch }}
+        run: |
+          if $CHECK_MODE; then
+            ansible-playbook --check ansible-playbooks/*.yaml
+          else
+            ansible-playbook ansible-playbooks/*.yaml
+          fi
