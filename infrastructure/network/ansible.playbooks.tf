@@ -61,7 +61,7 @@ action "ansible_playbook_run" "minecraft" {
 
 resource "terraform_data" "minecraft_ansible_playbook" {
   input = [
-    "B2086939-7E82-446A-BAF9-98FCF7F193D3",
+    "D64EADF9-EFFC-495B-8D8B-ECB775A823CB",
     data.local_file.minecraft_ansible_playbook.id
   ]
 
