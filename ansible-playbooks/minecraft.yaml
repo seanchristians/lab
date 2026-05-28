@@ -4,14 +4,14 @@
   tasks:
     - name: Create Minecraft data volume
       ansible.builtin.file:
-        path: /etc/containers/volumes/minecraft
+        path: ~/minecraft
         state: directory
 
     - name: Minecraft container
       containers.podman.podman_container:
         name: minecraft
         image: docker.io/itzg/minecraft-server:latest
-        volume: /etc/containers/volumes/minecraft:/data:Z
+        volume: ~/minecraft:/data:Z
         state: quadlet
         pod: wireguard.pod
         quadlet_options:
