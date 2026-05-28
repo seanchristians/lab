@@ -1,7 +1,3 @@
-data "tailscale_device" "squiggle_darkened" {
-  hostname = "squiggle-darkened"
-}
-
 resource "ansible_group" "minecraft_servers" {
   name     = "minecraft_servers"
   children = [ansible_host.squiggle_darkened.id]
