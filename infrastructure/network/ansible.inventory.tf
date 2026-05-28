@@ -23,6 +23,6 @@ resource "ansible_host" "squiggle_darkened" {
     ansible_user           = "core"
     ansible_ssh_extra_args = "-o StrictHostKeyChecking=no"
     subdomain              = local.minecraft_server_vpn_subdomain
-    desec_token            = terraform_data.minecraft_vpn_domain_desec_token.sensitive_output
+    desec_token            = terraform_data.minecraft_vpn_domain_desec_token.store.sensitive_output
   }
 }
