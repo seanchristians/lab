@@ -7,12 +7,22 @@
         path: ~/minecraft
         state: directory
 
+    - name: Podman network
+      containers.podman.podman_network:
+        name: minecraft
+        state: quadlet
+        quadlet_options:
+          - IPv6=true
+        opt:
+          isolate: true
+
     - name: Minecraft container
       containers.podman.podman_container:
         name: minecraft
         image: docker.io/itzg/minecraft-server:latest
         volume: ~/minecraft:/data:Z
         state: quadlet
+        network: minecraft.network
         quadlet_options:
           - |
             [Install]
