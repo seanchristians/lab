@@ -20,7 +20,7 @@
       containers.podman.podman_container:
         name: minecraft
         image: docker.io/itzg/minecraft-server:latest
-        volume: ~/minecraft:/data:Z
+        volume: ./minecraft:/data:Z
         state: quadlet
         network: minecraft.network
         quadlet_options:
