@@ -55,6 +55,15 @@ jobs:
           tags: tag:ci
           version: 1.98.2
 
+      - name: Terraform
+        uses: seanchristians/lab/actions/terraform@main
+        with:
+          module: infrastructure/network
+          tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
+          aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
+          aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
+          terraform_version: "v1.16.0-alpha20260513" # Required for 'store' blocks in terraform_data resources
+
       - name: Cache Ansible collections
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
@@ -66,15 +75,6 @@ jobs:
       - name: Install Ansible collections
         working-directory: infrastructure/network
         run: ansible-galaxy collection install -r requirements.yaml
-
-      - name: Terraform
-        uses: seanchristians/lab/actions/terraform@main
-        with:
-          module: infrastructure/network
-          tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
-          aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
-          aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
-          terraform_version: "v1.16.0-alpha20260513" # Required for 'store' blocks in terraform_data resources
 
       - name: Run Ansible Playbooks
         working-directory: infrastructure/network
