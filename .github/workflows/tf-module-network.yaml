@@ -70,6 +70,4 @@ jobs:
 
       - name: Show ansible inventory
         working-directory: infrastructure/network
-        # env:
-        #   ANSIBLE_INVENTORY: inventory.yaml
-        run: ansible-inventory --graph --vars
+        run: ansible-inventory -vvvv --graph --vars
