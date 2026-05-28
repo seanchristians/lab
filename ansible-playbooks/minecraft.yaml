@@ -4,18 +4,26 @@
   tasks:
     - name: Create Minecraft data volume
       ansible.builtin.file:
-        path: /etc/containers/volumes/minecraft
+        path: ~/minecraft
         state: directory
+
+    - name: Podman network
+      containers.podman.podman_network:
+        name: minecraft
+        state: quadlet
+        quadlet_options:
+          - IPv6=true
+        opt:
+          isolate: true
 
     - name: Minecraft container
       containers.podman.podman_container:
         name: minecraft
         image: docker.io/itzg/minecraft-server:latest
-        volume: /etc/containers/volumes/minecraft:/data:Z
+        volume: ~/minecraft:/data:Z
         state: quadlet
-        pod: wireguard.pod
+        network: minecraft.network
         quadlet_options:
-          - "AutoUpdate=registry"
           - |
             [Install]
             WantedBy=default.target
@@ -28,9 +36,13 @@
           MEMORY: 10G
           DIFFICULTY: normal
           ENABLE_COMMAND_BLOCK: true
+      register: minecraft
+      notify: Start Minecraft container
 
+  handlers:
     - name: Start Minecraft container
       ansible.builtin.systemd_service:
         daemon_reload: true
-        name: minecraft
-        state: started
+        name: "{{ minecraft.container.Name }}"
+        state: restarted
+      become: yes
