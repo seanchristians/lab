@@ -19,8 +19,7 @@ action "ansible_playbook_run" "ddns" {
 
 action "ansible_playbook_run" "minecraft" {
   config {
-    playbooks   = ["ansible-playbooks/minecraft.yaml"]
-    inventories = [local.ansible_inventory_encoded]
+    playbooks = ["ansible-playbooks/minecraft.yaml"]
   }
 }
 
@@ -61,14 +60,7 @@ action "ansible_playbook_run" "minecraft" {
 # }
 
 resource "terraform_data" "minecraft_ansible_playbook" {
-  store {
-    input = [
-      "319A3378-3724-4661-B33A-15D3EC29B57E",
-      data.local_file.minecraft_ansible_playbook.id,
-      local.ansible_inventory["minecraft_servers"]
-    ]
-    sensitive = true
-  }
+  input = data.local_file.minecraft_ansible_playbook.id
 
   lifecycle {
     action_trigger {

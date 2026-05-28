@@ -34,6 +34,13 @@ data "tailscale_device" "squiggle_darkened" {
 resource "ansible_group" "minecraft_servers" {
   name     = "minecraft_servers"
   children = [ansible_host.squiggle_darkened.id]
+
+  lifecycle {
+    action_trigger {
+      actions = [action.ansible_playbook_run.minecraft]
+      events  = [after_create, after_update]
+    }
+  }
 }
 
 resource "ansible_host" "squiggle_darkened" {
