@@ -15,7 +15,6 @@
         state: quadlet
         pod: wireguard.pod
         quadlet_options:
-          - "AutoUpdate=registry"
           - |
             [Install]
             WantedBy=default.target
