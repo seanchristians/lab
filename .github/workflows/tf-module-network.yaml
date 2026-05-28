@@ -67,3 +67,8 @@ jobs:
           aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
           aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
           terraform_version: "v1.16.0-alpha20260513" # Required for 'store' blocks in terraform_data resources
+
+      - name: Show Ansible inventory
+        working-directory: infrastructure/network
+        run: |
+          ansible-inventory --graph --vars
