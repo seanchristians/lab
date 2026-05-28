@@ -1,6 +1,7 @@
 ---
 - name: Configure dynamic DNS with deSEC.io
   hosts: ddns
+  become: yes
   tasks:
     - name: Create folder for ddns scripts
       ansible.builtin.file:
