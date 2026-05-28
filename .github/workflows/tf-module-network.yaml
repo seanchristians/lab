@@ -55,6 +55,10 @@ jobs:
           tags: tag:ci
           version: 1.98.2
 
+      - name: Install Ansible collections
+        working-directory: infrastructure/network
+        run: ansible-galaxy collection install cloud.terraform
+
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
         with:
