@@ -81,4 +81,4 @@ jobs:
         env:
           CHECK_MODE: ${{ github.ref_name == github.event.repository.default_branch && '--check' || '' }}
         run: |
-          ansible-playbook "$CHECK_MODE" ansible-playbooks/*.yaml
+          find ansible-playbooks -name "*.yaml" -exec ansible-playbook "$CHECK_MODE" {} \;
