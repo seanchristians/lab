@@ -13,7 +13,6 @@
         image: docker.io/itzg/minecraft-server:latest
         volume: ~/minecraft:/data:Z
         state: quadlet
-        pod: wireguard.pod
         quadlet_options:
           - |
             [Install]
