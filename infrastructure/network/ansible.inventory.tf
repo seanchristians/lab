@@ -13,7 +13,7 @@ locals {
   ansible_hosts = {
     "squiggle-darkened" = {
       ansible_host           = data.tailscale_device.squiggle_darkened.name
-      ansible_user           = "root"
+      ansible_user           = "core"
       ansible_ssh_extra_args = "-o StrictHostKeyChecking=no"
       wireguard_domain       = "${local.minecraft_server_vpn_subdomain}.${desec_domain.dns_proxy.name}"
       wireguard_dns          = "149.112.121.10,149.112.122.10,2620:10A:80BB::10,2620:10A:80BC::10" # CIRA Canadian Shield
