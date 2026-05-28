@@ -59,6 +59,14 @@ jobs:
         working-directory: infrastructure/network
         run: ansible-galaxy collection install cloud.terraform
 
+      - name: Cache Ansible collections
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.ansible/collections
+          key: ${{ runner.os }}-ansible-collections-${{ hashFiles(~/.ansible/collections/**/*) }}
+          restore-keys: |
+            ${{ runner.os }}-ansible-collections-
+
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
         with:
