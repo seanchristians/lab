@@ -36,3 +36,4 @@
         daemon_reload: true
         name: minecraft
         state: restarted
+      become: yes
