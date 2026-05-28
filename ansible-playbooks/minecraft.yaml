@@ -36,13 +36,12 @@
           MEMORY: 10G
           DIFFICULTY: normal
           ENABLE_COMMAND_BLOCK: true
-      register: minecraft
       notify: Start Minecraft container
 
   handlers:
     - name: Start Minecraft container
       ansible.builtin.systemd_service:
         daemon_reload: true
-        name: "{{ minecraft.container.Name }}"
+        name: minecraft
         state: restarted
       become: yes

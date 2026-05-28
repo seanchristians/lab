@@ -55,18 +55,6 @@ jobs:
           tags: tag:ci
           version: 1.98.2
 
-      - name: Cache Ansible collections
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.ansible/collections
-          key: ${{ runner.os }}-ansible-collections-${{ hashFiles('~/.ansible/collections/**/*') }}
-          restore-keys: |
-            ${{ runner.os }}-ansible-collections-
-
-      - name: Install Ansible collections
-        working-directory: infrastructure/network
-        run: ansible-galaxy collection install cloud.terraform
-
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
         with:
@@ -75,6 +63,18 @@ jobs:
           aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
           aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
           terraform_version: "v1.16.0-alpha20260513" # Required for 'store' blocks in terraform_data resources
+
+      - name: Cache Ansible collections
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.ansible/collections
+          key: ${{ runner.os }}-ansible-collections-${{ hashFiles(infrastructure/network/requirements.yaml) }}
+          restore-keys: |
+            ${{ runner.os }}-ansible-collections-
+
+      - name: Install Ansible collections
+        working-directory: infrastructure/network
+        run: ansible-galaxy collection install -r requirements.yaml
 
       - name: Run Ansible Playbooks
         working-directory: infrastructure/network
