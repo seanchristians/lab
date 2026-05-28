@@ -1,10 +1,11 @@
 ---
 - name: Set up a Minecraft server
   hosts: minecraft_servers
+  become: true
   tasks:
     - name: Create Minecraft data volume
       ansible.builtin.file:
-        path: ~/minecraft
+        path: /etc/containers/volumes/minecraft
         state: directory
 
     - name: Podman network
@@ -20,7 +21,7 @@
       containers.podman.podman_container:
         name: minecraft
         image: docker.io/itzg/minecraft-server:latest
-        volume: "%h/minecraft:/data:Z"
+        volume: /etc/containers/volumes/minecraft:/data:Z
         state: quadlet
         network: minecraft.network
         publish:
@@ -47,4 +48,3 @@
         daemon_reload: true
         name: minecraft
         state: restarted
-        scope: user
