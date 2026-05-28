@@ -60,13 +60,18 @@ action "ansible_playbook_run" "minecraft" {
 # }
 
 resource "terraform_data" "minecraft_ansible_playbook" {
-  input = data.local_file.minecraft_ansible_playbook.id
+  input = [
+    "B2086939-7E82-446A-BAF9-98FCF7F193D3",
+    data.local_file.minecraft_ansible_playbook.id
+  ]
 
   lifecycle {
     action_trigger {
       actions = [action.ansible_playbook_run.minecraft]
       events  = [after_create, after_update]
     }
+
+    replace_triggered_by = [ansible_group.minecraft_servers]
   }
 }
 
