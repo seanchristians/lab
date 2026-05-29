@@ -35,7 +35,7 @@
           VERSION: 26.1.2
           EULA: "true"
           TYPE: FABRIC
-          MODRINTH_PROJECTS: fabric-api,floodgate,lithium,ferrite-core
+          MODRINTH_PROJECTS: fabric-api,floodgate,lithium,ferrite-core,veinminer
           MODS: https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/fabric
           MEMORY: 10G
           DIFFICULTY: normal
