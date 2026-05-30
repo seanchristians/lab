@@ -52,7 +52,7 @@
           BROADCAST_CONSOLE_TO_OPS: true
           BROADCAST_RCON_TO_OPS: true
           SPAWN_PROTECTION: 0
-          VANILLATWEAKS_SHARECODE: UEHYo3
+          VANILLATWEAKS_SHARECODE: UEHYo3,8APkq2
       notify: Start Minecraft container
 
   handlers:
