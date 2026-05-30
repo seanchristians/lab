@@ -67,9 +67,24 @@
         stop_timeout: 150
       notify: Start Minecraft container
 
+    - name: Playit.gg sidecar
+      containers.podman.podman_container:
+        name: playit-minecraft
+        image: ghcr.io/playit-cloud/playit-agent:0.17
+        state: quadlet
+        env:
+          SECRET_KEY: "{{ PLAYIT_GG_AGENT_KEY }}"
+      notify: Start Playit.gg agent
+
   handlers:
     - name: Start Minecraft container
       ansible.builtin.systemd_service:
         daemon_reload: true
         name: minecraft
         state: restarted
+
+    - name: Start Playit.gg agent
+      ansible.builting.systemd_service:
+        daemon_reload: true
+        name: playit-minecraft
+        state: started
