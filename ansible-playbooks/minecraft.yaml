@@ -71,6 +71,7 @@
       containers.podman.podman_container:
         name: playit-minecraft
         image: ghcr.io/playit-cloud/playit-agent:0.17
+        pod: minecraft.pod
         state: quadlet
         env:
           SECRET_KEY: "{{ PLAYIT_GG_AGENT_KEY }}"
@@ -87,4 +88,4 @@
       ansible.builtin.systemd_service:
         daemon_reload: true
         name: playit-minecraft
-        state: started
+        state: restarted
