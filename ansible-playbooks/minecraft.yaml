@@ -17,6 +17,16 @@
         opt:
           isolate: true
 
+    - name: Minecraft pod
+      containers.podman.podman_pod:
+        name: minecraft
+        network: minecraft.network
+        quadlet_options:
+          - |
+            [Install]
+            WantedBy=default.target
+        state: quadlet
+
     - name: Minecraft container
       vars:
         mods:
@@ -33,7 +43,7 @@
         image: docker.io/itzg/minecraft-server:latest
         volume: /etc/containers/volumes/minecraft:/data:Z
         state: quadlet
-        network: minecraft.network
+        pod: minecraft.pod
         publish:
           - 25565:25565/tcp
           - 19132:19132/udp
