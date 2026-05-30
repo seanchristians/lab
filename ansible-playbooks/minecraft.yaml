@@ -64,6 +64,8 @@
           SPAWN_PROTECTION: 0
           VANILLATWEAKS_SHARECODE: UEHYo3,8APkq2
           STOP_SERVER_ANNOUNCE_DELAY: 120
+          ENABLE_WHITELIST: true
+          ENABLE_QUERY: true
         stop_timeout: 150
       notify: Start Minecraft container
 
