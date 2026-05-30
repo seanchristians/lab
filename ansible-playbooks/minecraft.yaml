@@ -49,6 +49,10 @@
           MEMORY: 10G
           DIFFICULTY: normal
           ENABLE_COMMAND_BLOCK: true
+          BROADCAST_CONSOLE_TO_OPS: true
+          BROADCAST_RCON_TO_OPS: true
+          SPAWN_PROTECTION: 0
+          VANILLATWEAKS_SHARECODE: UEHYo3
       notify: Start Minecraft container
 
   handlers:
