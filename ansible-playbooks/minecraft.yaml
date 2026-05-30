@@ -21,6 +21,9 @@
       containers.podman.podman_pod:
         name: minecraft
         network: minecraft.network
+        publish:
+          - 25565:25565/tcp
+          - 19132:19132/udp
         quadlet_options:
           - |
             [Install]
@@ -44,9 +47,6 @@
         volume: /etc/containers/volumes/minecraft:/data:Z
         state: quadlet
         pod: minecraft.pod
-        publish:
-          - 25565:25565/tcp
-          - 19132:19132/udp
         quadlet_options:
           - |
             [Install]
