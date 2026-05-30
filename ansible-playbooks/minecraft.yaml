@@ -53,6 +53,8 @@
           BROADCAST_RCON_TO_OPS: true
           SPAWN_PROTECTION: 0
           VANILLATWEAKS_SHARECODE: UEHYo3,8APkq2
+          STOP_SERVER_ANNOUNCE_DELAY: 120
+        stop_timeout: 150
       notify: Start Minecraft container
 
   handlers:
