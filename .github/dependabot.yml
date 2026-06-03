@@ -7,6 +7,9 @@ updates:
       interval: monthly
     cooldown:
       default-days: 5
+    groups:
+      providers:
+        group-by: dependency-name
 
   - package-ecosystem: github-actions
     directories:
@@ -16,3 +19,6 @@ updates:
       interval: monthly
     cooldown:
       default-days: 5
+    groups:
+      actions:
+        group-by: dependency-name
