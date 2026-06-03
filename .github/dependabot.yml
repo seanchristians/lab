@@ -5,9 +5,14 @@ updates:
       - infrastructure/**
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 5
+
   - package-ecosystem: github-actions
     directories:
       - /
       - /actions/*
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 5
