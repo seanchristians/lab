@@ -5,9 +5,20 @@ updates:
       - infrastructure/**
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 5
+    groups:
+      providers:
+        group-by: dependency-name
+
   - package-ecosystem: github-actions
     directories:
       - /
       - /actions/*
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 5
+    groups:
+      actions:
+        group-by: dependency-name
