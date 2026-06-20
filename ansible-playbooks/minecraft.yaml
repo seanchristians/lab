@@ -1,78 +1,51 @@
 ---
 - name: Set up a Minecraft server
   hosts: minecraft_servers
-  become: true
   tasks:
     - name: Create Minecraft data volume
+      become_method: containers.podman.podman_unshare
+      become: true
       ansible.builtin.file:
-        path: /etc/containers/volumes/minecraft
+        path: "{{ ansible_env.HOME }}/minecraft"
         state: directory
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
 
-    - name: Podman network
-      containers.podman.podman_network:
-        name: minecraft
-        state: quadlet
-        quadlet_options:
-          - IPv6=true
-        opt:
-          isolate: true
+    - name: Install Modrinth projects lock-file
+      become_method: containers.podman.podman_unshare
+      become: true
+      ansible.builtin.copy:
+        src: ../services/minecraft-server/modrinth.lock.txt
+        dest: "{{ ansible_env.HOME }}/minecraft/modrinth.lock.txt"
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+        mode: 0444
 
-    - name: Minecraft pod
-      containers.podman.podman_pod:
-        name: minecraft
-        network: minecraft.network
-        publish:
-          - 25565:25565/tcp
-          - 19132:19132/udp
-        quadlet_options:
-          - |
-            [Install]
-            WantedBy=default.target
-        state: quadlet
-
-    - name: Minecraft container
-      vars:
-        mods:
-          - P7dR8mSH # fabric-api
-          - wKkoqHrH:beta # Geyser
-          - bWrNNfkb # Floodgate
-          - gvQqBUqZ # Lithium
-          - uXXizFIs # ferrite-core
-          - Ha28R6CL # fabric-language-kotlin
-          - OhduvhIc # Veinminer
-          - datapack:ok5ehON9 # TreeCapitator
-      containers.podman.podman_container:
-        name: minecraft
-        image: docker.io/itzg/minecraft-server:latest
-        volume: /etc/containers/volumes/minecraft:/data:Z
-        state: quadlet
-        pod: minecraft.pod
-        quadlet_options:
-          - |
-            [Install]
-            WantedBy=default.target
-        env:
-          VERSION: 26.1.2
-          EULA: "true"
-          TYPE: FABRIC
-          MODRINTH_PROJECTS: "{{ mods | join(',') }}"
-          MEMORY: 10G
-          DIFFICULTY: normal
-          ENABLE_COMMAND_BLOCK: true
-          BROADCAST_CONSOLE_TO_OPS: true
-          BROADCAST_RCON_TO_OPS: true
-          SPAWN_PROTECTION: 0
-          VANILLATWEAKS_SHARECODE: UEHYo3,8APkq2
-          STOP_SERVER_ANNOUNCE_DELAY: 120
-          ENABLE_WHITELIST: true
-          ENABLE_QUERY: true
-        stop_timeout: 150
-        restart_policy: always
+    - name: Install Minecraft service Quadlets
+      ansible.builtin.copy:
+        src: ../services/minecraft-server/systemd
+        dest: "{{ ansible_env.HOME }}/.config/containers/systemd"
       notify: Start Minecraft container
+
+    - name: Open Minecraft Java server port
+      become: true
+      ansible.posix.firewalld:
+        port: 25565/tcp
+        permanent: true
+        state: enabled
+
+    - name: Open Minecraft Bedrock server port
+      become: true
+      ansible.posix.firewalld:
+        port: 19132/udp
+        permanent: true
+        state: enabled
 
   handlers:
     - name: Start Minecraft container
       ansible.builtin.systemd_service:
         daemon_reload: true
-        name: minecraft
+        scope: user
+        name: minecraft-game
+        enabled: true
         state: restarted
