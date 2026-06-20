@@ -22,3 +22,10 @@ updates:
     groups:
       actions:
         group-by: dependency-name
+
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 5

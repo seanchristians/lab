@@ -1,0 +1,3 @@
+[submodule "modules/modrinth-project-lock"]
+	path = modules/modrinth-project-lock
+	url = git@github.com:seanchristians/modrinth-project-lock.git
