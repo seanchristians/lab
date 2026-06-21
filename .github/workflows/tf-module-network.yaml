@@ -56,20 +56,6 @@ jobs:
           aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
           terraform_version: "v1.16.0-alpha20260513" # Required for 'store' blocks in terraform_data resources
 
-      - name: Cache Ansible collections
-        if: ${{ github.ref_name == github.event.repository.default_branch }}
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.ansible/collections
-          key: ${{ runner.os }}-ansible-collections-${{ hashFiles('infrastructure/network/requirements.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-ansible-collections-
-
-      - name: Install Ansible collections
-        if: ${{ github.ref_name == github.event.repository.default_branch }}
-        working-directory: infrastructure/network
-        run: ansible-galaxy collection install -r requirements.yaml
-
       - name: Connect to Tailnet
         if: ${{ github.ref_name == github.event.repository.default_branch }}
         uses: tailscale/github-action@306e68a486fd2350f2bfc3b19fcd143891a4a2d8 # v4.1.2
