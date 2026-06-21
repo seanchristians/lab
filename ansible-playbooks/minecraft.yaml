@@ -1,78 +1,138 @@
 ---
-- name: Set up a Minecraft server
+- name: Migrate rootful Minecraft server data to rootless
   hosts: minecraft_servers
   become: true
   tasks:
-    - name: Create Minecraft data volume
-      ansible.builtin.file:
-        path: /etc/containers/volumes/minecraft
-        state: directory
+    - name: Shut down Minecraft server
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+      loop:
+        - minecraft.service
+        - minecraft-pod.service
+        - minecraft-network.service
 
-    - name: Podman network
+    - name: Find Minecraft quadlets
+      ansible.builtin.find:
+        paths: /etc/containers/systemd
+        patterns: "minecraft*"
+        recurse: false
+      register: minecraft_quadlets
+
+    - name: Delete quadlets
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ minecraft_quadlets.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Reload systemd
+      ansible.builtin.systemd_service:
+        daemon-reload: true
+
+    - name: Move Minecraft data to rootless
+      ansible.builtin.copy:
+        backup: true
+        src: /etc/containers/volumes/minecraft
+        remote_src: true
+        dest: "{{ ansible_env.HOME }}/minecraft"
+        force: true
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+
+- name: Set up a Minecraft server
+  hosts: minecraft_servers
+  tasks:
+    - name: Create Minecraft data volume
+      become_method: containers.podman.podman_unshare
+      become: true
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/minecraft"
+        state: directory
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+
+    - name: Install Modrinth projects lock-file
+      become_method: containers.podman.podman_unshare
+      become: true
+      ansible.builtin.copy:
+        src: ../services/minecraft-server/modrinth.lock.txt
+        dest: "{{ ansible_env.HOME }}/minecraft/modrinth.lock.txt"
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+        mode: 0444
+
+    - name: Container network
       containers.podman.podman_network:
         name: minecraft
-        state: quadlet
-        quadlet_options:
-          - IPv6=true
         opt:
           isolate: true
+        quadlet_options:
+          - IPv6=true
+        state: quadlet
 
-    - name: Minecraft pod
+    - name: Pod
       containers.podman.podman_pod:
         name: minecraft
         network: minecraft.network
         publish:
-          - 25565:25565/tcp
-          - 19132:19132/udp
+          - 25565:25565/tcp # Java Minecraft
+          - 19132:19132/udp # Bedrock Minecraft
         quadlet_options:
           - |
             [Install]
             WantedBy=default.target
         state: quadlet
 
-    - name: Minecraft container
-      vars:
-        mods:
-          - P7dR8mSH # fabric-api
-          - wKkoqHrH:beta # Geyser
-          - bWrNNfkb # Floodgate
-          - gvQqBUqZ # Lithium
-          - uXXizFIs # ferrite-core
-          - Ha28R6CL # fabric-language-kotlin
-          - OhduvhIc # Veinminer
-          - datapack:ok5ehON9 # TreeCapitator
+    - name: Game
       containers.podman.podman_container:
         name: minecraft
-        image: docker.io/itzg/minecraft-server:latest
-        volume: /etc/containers/volumes/minecraft:/data:Z
-        state: quadlet
+        image: docker.io/itzg/minecraft-server@sha256:1e6af837a25532c8567cd4130d1609391fdc472e9e37aecab9eac0d6f4ed7593 # 2026.6.0-java25-alpine
+        env:
+          VERSION: 26.1.2
+          TYPE: FABRIC
+          EULA: "true"
+          MEMORY: 10G
+          STOP_SERVER_ANNOUNCE_DELAY: 120
+          ENABLE_WHITELIST: true
+          ENABLE_QUERY: true
+          MODRINTH_PROJECTS: "@/data/modrinth.lock.txt"
+          VANILLATWEAKS_SHARECODE: UEHYo3,8APkq2
+          DIFFICULTY: normal
+          SPAWN_PROTECTION: 0
+          ENABLE_COMMAND_BLOCK: true
+          BROADCAST_CONSOLE_TO_OPS: true
+          BROADCAST_RCON_TO_OPS: true
         pod: minecraft.pod
         quadlet_options:
           - |
             [Install]
             WantedBy=default.target
-        env:
-          VERSION: 26.1.2
-          EULA: "true"
-          TYPE: FABRIC
-          MODRINTH_PROJECTS: "{{ mods | join(',') }}"
-          MEMORY: 10G
-          DIFFICULTY: normal
-          ENABLE_COMMAND_BLOCK: true
-          BROADCAST_CONSOLE_TO_OPS: true
-          BROADCAST_RCON_TO_OPS: true
-          SPAWN_PROTECTION: 0
-          VANILLATWEAKS_SHARECODE: UEHYo3,8APkq2
-          STOP_SERVER_ANNOUNCE_DELAY: 120
-          ENABLE_WHITELIST: true
-          ENABLE_QUERY: true
-        stop_timeout: 150
         restart_policy: always
+        state: quadlet
+        stop_timeout: 180
+        attach: stdin
+        tty: true
+        volume: "{{ ansible_env.HOME }}/minecraft:/data:Z"
       notify: Start Minecraft container
+
+    - name: Open Minecraft server ports
+      become: true
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        permanent: true
+        state: enabled
+      loop:
+        - 25565/tcp
+        - 19132/udp
 
   handlers:
     - name: Start Minecraft container
       ansible.builtin.systemd_service:
         daemon_reload: true
+        scope: user
         name: minecraft
+        enabled: true
         state: restarted
