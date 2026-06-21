@@ -18,13 +18,13 @@
         paths: /etc/containers/systemd
         patterns: "minecraft*"
         recurse: false
-      register: quadlets-to-delete
+      register: minecraft_quadlets
 
     - name: Delete quadlets
       ansible.builtin.file:
         path: "{{ item.path }}"
         state: absent
-      loop: "{{ quadlets-to-delete.files }}"
+      loop: "{{ minecraft_quadlets.files }}"
       loop_control:
         label: "{{ item.path }}"
 
