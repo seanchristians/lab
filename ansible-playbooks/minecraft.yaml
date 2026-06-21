@@ -118,19 +118,15 @@
         volume: "{{ ansible_env.HOME }}/minecraft:/data:Z"
       notify: Start Minecraft container
 
-    - name: Open Minecraft Java server port
+    - name: Open Minecraft server ports
       become: true
       ansible.posix.firewalld:
-        port: 25565/tcp
+        port: "{{ item }}"
         permanent: true
         state: enabled
-
-    - name: Open Minecraft Bedrock server port
-      become: true
-      ansible.posix.firewalld:
-        port: 19132/udp
-        permanent: true
-        state: enabled
+      loop:
+        - 25565/tcp
+        - 19132/udp
 
   handlers:
     - name: Start Minecraft container
