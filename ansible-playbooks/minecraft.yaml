@@ -21,10 +21,58 @@
         group: "{{ ansible_env.USER }}"
         mode: 0444
 
-    - name: Install Minecraft service Quadlets
-      ansible.builtin.copy:
-        src: ../services/minecraft-server/systemd
-        dest: "{{ ansible_env.HOME }}/.config/containers/systemd"
+    - name: Container network
+      containers.podman.podman_network:
+        name: minecraft
+        opt:
+          isolate: true
+        quadlet_options:
+          - IPv6=true
+        state: quadlet
+
+    - name: Pod
+      containers.podman.podman_pod:
+        name: minecraft
+        network: minecraft.network
+        publish:
+          - 25565:25565/tcp # Java Minecraft
+          - 19132:19132/udp # Bedrock Minecraft
+        quadlet_options:
+          - |
+            [Install]
+            WantedBy=default.target
+        state: quadlet
+
+    - name: Game
+      containers.podman.podman_container:
+        name: minecraft
+        attach: stdin
+        env:
+          VERSION: 26.1.2
+          TYPE: FABRIC
+          EULA: "true"
+          MEMORY: 10G
+          STOP_SERVER_ANNOUNCE_DELAY: 120
+          ENABLE_WHITELIST: true
+          ENABLE_QUERY: true
+          MODRINTH_PROJECTS: "@/data/modrinth.lock.txt"
+          VANILLATWEAKS_SHARECODE: UEHYo3,8APkq2
+          DIFFICULTY: normal
+          SPAWN_PROTECTION: 0
+          ENABLE_COMMAND_BLOCK: true
+          BROADCAST_CONSOLE_TO_OPS: true
+          BROADCAST_RCON_TO_OPS: true
+        image: docker.io/itzg/minecraft-server@sha256:1e6af837a25532c8567cd4130d1609391fdc472e9e37aecab9eac0d6f4ed7593 # 2026.6.0-java25-alpine
+        pod: minecraft.pod
+        quadlet_options:
+          - |
+            [Install]
+            WantedBy=default.target
+        restart_policy: always
+        state: quadlet
+        stop_timeout: 180
+        tty: true
+        volume: "{{ ansible_env.HOME }}/minecraft:/data:Z"
       notify: Start Minecraft container
 
     - name: Open Minecraft Java server port
@@ -46,6 +94,6 @@
       ansible.builtin.systemd_service:
         daemon_reload: true
         scope: user
-        name: minecraft-game
+        name: minecraft
         enabled: true
         state: restarted

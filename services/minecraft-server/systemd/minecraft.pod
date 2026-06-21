@@ -1,6 +1,0 @@
-[Pod]
-PublishPort=25565:25565/tcp
-PublishPort=19132:19132/udp
-
-[Install]
-WantedBy=default.target
