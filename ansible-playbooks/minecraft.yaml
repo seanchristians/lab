@@ -1,4 +1,47 @@
 ---
+- name: Migrate rootful Minecraft server data to rootless
+  hosts: minecraft_servers
+  become: true
+  tasks:
+    - name: Shut down Minecraft server
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+      loop:
+        - minecraft.service
+        - minecraft-pod.service
+        - minecraft-network.service
+
+    - name: Find Minecraft quadlets
+      ansible.builtin.find:
+        paths: /etc/containers/systemd
+        patterns: "minecraft*"
+        recurse: false
+      register: quadlets-to-delete
+
+    - name: Delete quadlets
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ quadlets-to-delete.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Reload systemd
+      ansible.builtin.systemd_service:
+        daemon-reload: true
+
+    - name: Move Minecraft data to rootless
+      ansible.builtin.copy:
+        backup: true
+        src: /etc/containers/volumes/minecraft
+        remote_src: true
+        dest: "{{ ansible_env.HOME }}/minecraft"
+        force: true
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+
 - name: Set up a Minecraft server
   hosts: minecraft_servers
   tasks:
