@@ -54,3 +54,11 @@ data "tailscale_devices" "minecraft_servers" {
     values = ["tag:minecraft-server"]
   }
 }
+
+removed {
+  from = tailscale_device_tags.minecraft_server
+
+  lifecycle {
+    destroy = false
+  }
+}
