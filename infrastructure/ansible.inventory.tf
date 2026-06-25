@@ -53,4 +53,12 @@ data "tailscale_devices" "minecraft_servers" {
     name   = "tags"
     values = ["tag:minecraft_server"]
   }
+
+  depends_on = [tailscale_device_tags.minecraft_server]
+}
+
+resource "tailscale_device_tags" "minecraft_server" {
+  device_id  = "npZ7vfxZRe11CNTRL"
+  tags       = ["tag:minecraft_server"]
+  depends_on = [tailscale_acl.tailnet]
 }
