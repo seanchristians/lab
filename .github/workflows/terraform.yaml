@@ -4,13 +4,14 @@ on:
     paths:
       - infrastructure/**
       - "!infrastructure/backend/**"
+      - "!infrastructure/playbooks/**"
   push:
     branches:
       - main
     paths:
       - infrastructure/**
       - "!infrastructure/backend/**"
-      - ansible-playbooks/*
+      - "!infrastructure/playbooks/**"
   workflow_dispatch:
 
 defaults:
