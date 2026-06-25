@@ -26,3 +26,19 @@ resource "ansible_host" "squiggle_darkened" {
     desec_token            = terraform_data.minecraft_vpn_domain_desec_token.store.sensitive_output
   }
 }
+
+resource "ansible_playbook" "minecraft_server" {
+  for_each   = { for device in data.tailscale_devices.minecraft_servers.devices : device.id => device }
+  playbook   = "playbooks/minecraft.yaml"
+  name       = each.value.name
+  replayable = false
+
+  extra_vars = try(var.tailnet_servers[each.key], null)
+}
+
+data "tailscale_devices" "minecraft_servers" {
+  filter {
+    name  = "tags"
+    value = ["tag:minecraft_server"]
+  }
+}
