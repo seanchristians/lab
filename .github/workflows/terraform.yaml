@@ -1,13 +1,15 @@
-name: Terraform Module Network
+name: Terraform
 on:
   pull_request:
     paths:
-      - infrastructure/network/**
+      - infrastructure/**
+      - "!infrastructure/backend/**"
   push:
     branches:
       - main
     paths:
-      - infrastructure/network/**
+      - infrastructure/**
+      - "!infrastructure/backend/**"
       - ansible-playbooks/*
   workflow_dispatch:
 
@@ -50,7 +52,7 @@ jobs:
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
         with:
-          module: infrastructure/network
+          module: infrastructure
           tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
           aws_region: ${{ vars.TF_BACKEND_AWS_REGION }}
           aws_role: ${{ vars.TF_BACKEND_AWS_ROLE }}
@@ -66,7 +68,7 @@ jobs:
           version: 1.98.2
 
       - name: Run Ansible Playbooks
-        working-directory: infrastructure/network
+        working-directory: infrastructure
         if: ${{ github.ref_name == github.event.repository.default_branch }}
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
