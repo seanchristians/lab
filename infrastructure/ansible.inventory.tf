@@ -50,7 +50,7 @@ data "local_file" "minecraft_playbook" {
 
 data "tailscale_devices" "minecraft_servers" {
   filter {
-    name  = "tags"
-    value = ["tag:minecraft_server"]
+    name   = "tags"
+    values = ["tag:minecraft_server"]
   }
 }
