@@ -51,7 +51,7 @@ data "local_file" "minecraft_playbook" {
 data "tailscale_devices" "minecraft_servers" {
   filter {
     name   = "tags"
-    values = ["tag:minecraft_server"]
+    values = ["tag:minecraft-server"]
   }
 
   depends_on = [tailscale_device_tags.minecraft_server]
@@ -59,6 +59,6 @@ data "tailscale_devices" "minecraft_servers" {
 
 resource "tailscale_device_tags" "minecraft_server" {
   device_id  = "npZ7vfxZRe11CNTRL"
-  tags       = ["tag:minecraft_server"]
+  tags       = ["tag:minecraft-server"]
   depends_on = [tailscale_acl.tailnet]
 }
