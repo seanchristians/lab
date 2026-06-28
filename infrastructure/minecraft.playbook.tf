@@ -1,25 +1,14 @@
-# resource "ansible_playbook" "minecraft_server" {
-#   for_each   = toset(try(var.ansible_groups["minecraft_servers"], []))
-#   playbook   = "playbooks/minecraft.yaml"
-#   name       = data.tailscale_device.ansible_host[each.key].name
-#   replayable = false
+resource "terraform_data" "ansible_playbook" {
+  for_each = data.local_file.ansible_playbook
 
-#   extra_vars = try(var.ansible_hosts[each.key], null)
-
-#   lifecycle {
-#     replace_triggered_by = [terraform_data.minecraft_playbook]
-#   }
-# }
-
-resource "terraform_data" "minecraft_playbook" {
   triggers_replace = [
-    data.local_file.minecraft_playbook.id,
-    sha512(try(local.ansible_inventory["minecraft_servers"], {}))
+    each.value.id,
+    [for group in local.ansible_playbooks_target_groups[each.key] : base64sha512(jsonencode(local.ansible_inventory[group]))]
   ]
 
   provisioner "local-exec" {
     environment = {
-      PLAYBOOK = data.local_file.minecraft_playbook.filename
+      PLAYBOOK = each.value.filename
     }
     command = "ansible-playbook \"$PLAYBOOK\""
   }
@@ -27,6 +16,20 @@ resource "terraform_data" "minecraft_playbook" {
   depends_on = [ephemeral.local_command.ansible_inventory]
 }
 
-data "local_file" "minecraft_playbook" {
-  filename = "./playbooks/minecraft.yaml"
+data "local_file" "ansible_playbook" {
+  for_each = local.ansible_playbooks
+  filename = each.key
+}
+
+locals {
+  ansible_playbooks = toset(split("\n", data.local_command.ansible_playbooks.stdout))
+
+  ansible_playbooks_target_groups = {
+    for playbook, data in data.local_file.ansible_playbook : playbook => yamldecode(data.content)[*].hosts
+  }
+}
+
+data "local_command" "ansible_playbooks" {
+  command   = "find"
+  arguments = ["playbooks", "-name", "*.yml", "-o", "-name", "*.yaml"]
 }
