@@ -23,7 +23,7 @@ data "tailscale_device" "ansible_host" {
 
 ephemeral "local_command" "ansible_vars_folders" {
   command   = "mkdir"
-  arguments = ["group_vars", "host_vars"]
+  arguments = ["-p", "group_vars", "host_vars"]
 }
 
 ephemeral "local_command" "ansible_group_ddns_vars" {
