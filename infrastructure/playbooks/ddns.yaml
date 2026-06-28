@@ -75,6 +75,7 @@
         daemon_reload: true
         name: ddns.timer
         state: restarted
+        enabled: true
         scope: user
 
     - name: Quickstart DDNS update
