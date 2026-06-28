@@ -16,5 +16,5 @@ locals {
 
 ephemeral "local_command" "ansible_inventory" {
   command = "tee"
-  stdin   = local.ansible_inventory
+  stdin   = yamlencode(local.ansible_inventory)
 }
