@@ -3,7 +3,7 @@ locals {
     "hosts" = { for host, host_data in var.ansible_hosts : host => merge({
       ansible_host = data.tailscale_device.ansible_host[host].name
       }, host_data)
-    if contains(keys(group_data.hosts), host) }
+    if contains(group_data.hosts, host) }
   }) }
 }
 
