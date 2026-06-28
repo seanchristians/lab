@@ -14,7 +14,7 @@ resource "desec_token" "host" {
     connection {
       type = "ssh"
       user = try(var.ansible_hosts[each.key].ansible_user, "root")
-      host = data.tailscale_device[each.key].name
+      host = data.tailscale_device.ansible_host[each.key].name
     }
 
     content     = self.token
