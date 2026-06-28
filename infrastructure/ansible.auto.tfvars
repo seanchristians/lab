@@ -9,6 +9,9 @@ ansible_groups = {
     hosts = [
       "squiggle-darkened"
     ]
+    vars = {
+      desec_domain = "sean.directory"
+    }
   }
 }
 
