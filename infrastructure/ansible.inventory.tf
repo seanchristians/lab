@@ -31,8 +31,6 @@ ephemeral "local_command" "ansible_group_ddns_vars" {
   arguments = ["group_vars/ddns.yaml"]
   stdin = yamlencode({
     desec_domain = local.dns_proxy_domain
-    subdomain    = local.minecraft_server_vpn_subdomain
-    desec_token  = terraform_data.minecraft_vpn_domain_desec_token.store.sensitive_output
   })
 
   depends_on = [ephemeral.local_command.ansible_vars_folders]

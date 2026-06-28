@@ -25,3 +25,8 @@ variable "ansible_groups" {
 variable "ansible_hosts" {
   type = map(map(any))
 }
+
+variable "minecraft_server_device" {
+  type        = string
+  description = "Tailnet device running the main Minecraft server"
+}
