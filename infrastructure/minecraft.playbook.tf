@@ -12,7 +12,10 @@
 # }
 
 resource "terraform_data" "minecraft_playbook" {
-  triggers_replace = data.local_file.minecraft_playbook.id
+  triggers_replace = [
+    data.local_file.minecraft_playbook.id,
+    sha512(try(local.ansible_inventory["minecraft_servers"], {}))
+  ]
 
   provisioner "local-exec" {
     environment = {
