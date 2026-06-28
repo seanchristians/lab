@@ -1,5 +1,5 @@
 resource "ansible_playbook" "minecraft_server" {
-  for_each   = toset(try(var.ansible_groups["minecraft_servers"]), [])
+  for_each   = toset(try(var.ansible_groups["minecraft_servers"], []))
   playbook   = "playbooks/minecraft.yaml"
   name       = data.tailscale_device.ansible_host[each.key].name
   replayable = false
