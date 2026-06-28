@@ -27,9 +27,12 @@
           DEVICE_IPV4=$(jq -r '.GlobalV4' "$TAILSCALE_DATA" | sed 's/:[[:digit:]]\+$//g')
           DEVICE_IPV6=$(jq -r '.GlobalV6' "$TAILSCALE_DATA" | sed 's/:[[:digit:]]\+$//g' | tr -d '[]')
 
+          DESEC_TOKEN=$(cat "$HOME/ddns/desec.token")
+          SUBDOMAIN=$(tailscale status --json --peers=false | jq -r '.Self.HostName')
+
           curl -G -sSL --fail --retry 5 --retry-all-errors \
-          -H "Authorization: Token {{ desec_token }}" \
-          --data-urlencode "hostname={{ subdomain }}.{{ desec_domain }}" \
+          -H "Authorization: Token $DESEC_TOKEN" \
+          --data-urlencode "hostname=$SUBDOMAIN.{{ desec_domain }}" \
           --data-urlencode "myipv4=$DEVICE_IPV4" \
           --data-urlencode "myipv6=$DEVICE_IPV6" \
           "https://update.dedyn.io"
