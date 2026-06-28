@@ -2,8 +2,7 @@
 	"tagOwners": {
 		"tag:home": ["autogroup:admin"],
 		"tag:infrastructure": ["autogroup:admin"],
-		"tag:ci": ["autogroup:admin"],
-		"tag:minecraft-server": ["autogroup:admin"]
+		"tag:ci": ["autogroup:admin"]
 	},
 
 	"grants": [
