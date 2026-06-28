@@ -17,7 +17,7 @@ resource "desec_token" "host" {
   }
 
   provisioner "remote-exec" {
-    inline = ["mkdir", "-p", "ddns"]
+    inline = ["mkdir -p ddns"]
   }
 
   provisioner "file" {
