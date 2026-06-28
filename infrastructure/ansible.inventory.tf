@@ -21,6 +21,6 @@ data "local_file" "minecraft_playbook" {
 }
 
 data "tailscale_device" "ansible_host" {
-  for_each = keys(var.ansible_hosts)
+  for_each = toset(keys(var.ansible_hosts))
   hostname = each.key
 }
