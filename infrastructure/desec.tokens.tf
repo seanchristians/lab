@@ -10,13 +10,13 @@ resource "desec_token" "host" {
 
   depends_on = [desec_domain.dns_proxy]
 
-  provisioner "file" {
-    connection {
-      type = "ssh"
-      user = try(var.ansible_hosts[each.key].ansible_user, "root")
-      host = data.tailscale_device.ansible_host[each.key].name
-    }
+  connection {
+    type = "ssh"
+    user = try(var.ansible_hosts[each.key].ansible_user, "root")
+    host = data.tailscale_device.ansible_host[each.key].name
+  }
 
+  provisioner "file" {
     content     = self.token
     destination = "ddns/desec.token"
   }
