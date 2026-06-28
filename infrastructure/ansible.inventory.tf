@@ -10,8 +10,9 @@ locals {
 }
 
 ephemeral "local_command" "ansible_inventory" {
-  command = "tee"
-  stdin   = yamlencode(local.ansible_inventory)
+  command   = "tee"
+  arguments = ["inventory.yaml"]
+  stdin     = yamlencode(local.ansible_inventory)
 }
 
 data "tailscale_device" "ansible_host" {
