@@ -15,7 +15,7 @@
       become_method: containers.podman.podman_unshare
       become: true
       ansible.builtin.copy:
-        src: ../services/minecraft-server/modrinth.lock.txt
+        src: ../../services/minecraft-server/modrinth.lock.txt
         dest: "{{ ansible_env.HOME }}/minecraft/modrinth.lock.txt"
         owner: "{{ ansible_env.USER }}"
         group: "{{ ansible_env.USER }}"
