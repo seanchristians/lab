@@ -28,12 +28,12 @@ resource "ansible_host" "squiggle_darkened" {
 }
 
 resource "ansible_playbook" "minecraft_server" {
-  for_each   = { for device in data.tailscale_devices.minecraft_servers.devices : device.id => device }
+  for_each   = toset(try(var.ansible_groups["minecraft_servers"]), [])
   playbook   = "playbooks/minecraft.yaml"
-  name       = each.value.name
+  name       = data.tailscale_device.ansible_host[each.key].name
   replayable = false
 
-  extra_vars = try(var.tailnet_servers[each.key], null)
+  extra_vars = try(var.ansible_hosts[each.key], null)
 
   lifecycle {
     replace_triggered_by = [terraform_data.minecraft_playbook]
@@ -48,9 +48,7 @@ data "local_file" "minecraft_playbook" {
   filename = "./playbooks/minecraft.yaml"
 }
 
-data "tailscale_devices" "minecraft_servers" {
-  filter {
-    name   = "tags"
-    values = ["tag:minecraft-server"]
-  }
+data "tailscale_device" "ansible_host" {
+  for_each = keys(var.ansible_hosts)
+  hostname = each.key
 }

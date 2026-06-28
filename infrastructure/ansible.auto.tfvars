@@ -1,11 +1,11 @@
 ansible_groups = {
   minecraft_servers = [
-    "npZ7vfxZRe11CNTRL"
+    "squiggle-darkened"
   ]
 }
 
 ansible_hosts = {
-  npZ7vfxZRe11CNTRL = {
+  "squiggle-darkened" = {
     ansible_user = "core"
   }
 }
