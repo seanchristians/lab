@@ -3,7 +3,7 @@ resource "terraform_data" "ansible_playbook" {
 
   triggers_replace = [
     each.value.id,
-    [for group in local.ansible_playbooks_target_groups[each.key] : base64sha512(jsonencode(local.ansible_inventory[group]))]
+    [for group in local.ansible_playbooks_target_groups[each.key] : base64sha512(jsonencode(try(local.ansible_inventory[group], null)))]
   ]
 
   provisioner "local-exec" {
