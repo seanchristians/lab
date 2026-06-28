@@ -21,3 +21,7 @@ resource "terraform_data" "api_token_sentinel" {
 variable "tailnet_servers" {
   type = map(any)
 }
+
+variable "ansible_groups" {
+  type = map(list(string))
+}
