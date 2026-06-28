@@ -3,6 +3,7 @@ resource "ansible_playbook" "minecraft_server" {
   playbook   = "playbooks/minecraft.yaml"
   name       = data.tailscale_device.ansible_host[each.key].name
   replayable = false
+  verbosity  = 6
 
   extra_vars = try(var.ansible_hosts[each.key], null)
 
