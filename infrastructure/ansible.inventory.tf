@@ -12,6 +12,8 @@ ephemeral "local_command" "ansible_inventory" {
   command   = "tee"
   arguments = ["inventory.yaml"]
   stdin     = yamlencode(local.ansible_inventory)
+
+  depends_on = [ephemeral.local_command.ansible_group_ddns_vars]
 }
 
 data "tailscale_device" "ansible_host" {
