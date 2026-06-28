@@ -3,3 +3,9 @@ ansible_groups = {
     "npZ7vfxZRe11CNTRL"
   ]
 }
+
+ansible_hosts = {
+  npZ7vfxZRe11CNTRL = {
+    ansible_user = "core"
+  }
+}
