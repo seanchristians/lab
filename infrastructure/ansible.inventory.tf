@@ -1,8 +1,3 @@
-data "tailscale_device" "ansible_host" {
-  for_each = toset(keys(var.ansible_hosts))
-  hostname = each.key
-}
-
 locals {
   ansible_inventory = { for group, group_data in var.ansible_groups : group => merge(group_data, {
     "hosts" = { for host, host_data in local.ansible_hosts_with_fqdn : host => host_data
@@ -17,4 +12,9 @@ locals {
 ephemeral "local_command" "ansible_inventory" {
   command = "tee"
   stdin   = yamlencode(local.ansible_inventory)
+}
+
+data "tailscale_device" "ansible_host" {
+  for_each = toset(keys(var.ansible_hosts))
+  hostname = each.key
 }
