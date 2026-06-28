@@ -16,6 +16,10 @@ resource "desec_token" "host" {
     host = data.tailscale_device.ansible_host[each.key].name
   }
 
+  provisioner "remote-exec" {
+    inline = ["mkdir", "-p", "ddns"]
+  }
+
   provisioner "file" {
     content     = self.token
     destination = "ddns/desec.token"
