@@ -18,6 +18,10 @@ resource "terraform_data" "api_token_sentinel" {
   triggers_replace = "D4417820-CD58-42B8-BADA-08F62DE2E9AD"
 }
 
-variable "tailnet_servers" {
-  type = map(any)
+variable "ansible_groups" {
+  type = map(list(string))
+}
+
+variable "ansible_hosts" {
+  type = map(map(any))
 }

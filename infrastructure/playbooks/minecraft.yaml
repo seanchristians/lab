@@ -1,6 +1,6 @@
 ---
 - name: Set up a Minecraft server
-  hosts: minecraft_servers
+  hosts: all
   tasks:
     - name: Create Minecraft data volume
       become_method: containers.podman.podman_unshare
