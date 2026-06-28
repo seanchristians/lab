@@ -17,23 +17,24 @@
         dest: "{{ ansible_env.HOME }}/ddns/ddns.sh"
         mode: 0500
         content: |
-          #!/bin/bash -e
+          #!/usr/bin/env -S bash --noprofile --norc
+          set -euo pipefail
 
-          TAILSCALE_DATA=$(/usr/sbin/mktemp)
+          TAILSCALE_DATA=$(mktemp)
 
-          /usr/sbin/tailscale netcheck --format json 2>/dev/null > "$TAILSCALE_DATA"
+          tailscale netcheck --format json 2>/dev/null > "$TAILSCALE_DATA"
 
-          DEVICE_IPV4=$(/usr/sbin/jq -r '.GlobalV4' "$TAILSCALE_DATA" | /usr/sbin/sed 's/:[[:digit:]]\+$//g')
-          DEVICE_IPV6=$(/usr/sbin/jq -r '.GlobalV6' "$TAILSCALE_DATA" | /usr/sbin/sed 's/:[[:digit:]]\+$//g' | /usr/sbin/tr -d '[]')
+          DEVICE_IPV4=$(jq -r '.GlobalV4' "$TAILSCALE_DATA" | sed 's/:[[:digit:]]\+$//g')
+          DEVICE_IPV6=$(jq -r '.GlobalV6' "$TAILSCALE_DATA" | sed 's/:[[:digit:]]\+$//g' | tr -d '[]')
 
-          /usr/sbin/curl -G -sSL --fail --retry 5 --retry-all-errors \
+          curl -G -sSL --fail --retry 5 --retry-all-errors \
           -H "Authorization: Token {{ desec_token }}" \
           --data-urlencode "hostname={{ subdomain }}.{{ desec_domain }}" \
           --data-urlencode "myipv4=$DEVICE_IPV4" \
           --data-urlencode "myipv6=$DEVICE_IPV6" \
           "https://update.dedyn.io"
 
-          /usr/sbin/rm "$TAILSCALE_DATA"
+          rm "$TAILSCALE_DATA"
       notify: Quickstart DDNS update
 
     - name: Systemd service to update DNS
@@ -67,17 +68,16 @@
 
           [Install]
           WantedBy=timers.target
-      notify: Enable systemd timer
 
-  handlers:
     - name: Enable systemd timer
       ansible.builtin.systemd_service:
         daemon_reload: true
         name: ddns.timer
-        state: restarted
+        state: started
         enabled: true
         scope: user
 
+  handlers:
     - name: Quickstart DDNS update
       ansible.builtin.systemd_service:
         daemon_reload: true
