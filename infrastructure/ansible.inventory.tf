@@ -4,13 +4,14 @@ data "tailscale_device" "ansible_host" {
 }
 
 locals {
-  ansible_inventory = yamlencode({ for group in var.ansible_groups : group => { "hosts" = {
-    for host in var.ansible_groups[group] : host => merge(
-      try(var.ansible_hosts[host], {}), {
-        ansible_host = data.tailscale_device.ansible_host[host].name
-      }
-    )
-  } } })
+  ansible_inventory = { for group, group_data in var.ansible_groups : group => merge(group_data, {
+    "hosts" = { for host, host_data in local.ansible_hosts_with_fqdn : host => host_data
+    if contains(keys(group_data.hosts), host) }
+  }) }
+
+  ansible_hosts_with_fqdn = { for host, data in var.ansible_hosts : host => merge({
+    ansible_host = data.tailscale_device.ansible_host[host].name
+  }, data) }
 }
 
 ephemeral "local_command" "ansible_inventory" {
