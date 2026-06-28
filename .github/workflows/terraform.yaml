@@ -4,14 +4,12 @@ on:
     paths:
       - infrastructure/**
       - "!infrastructure/backend/**"
-      - "!infrastructure/playbooks/**"
   push:
     branches:
       - main
     paths:
       - infrastructure/**
       - "!infrastructure/backend/**"
-      - "!infrastructure/playbooks/**"
   workflow_dispatch:
 
 defaults:
