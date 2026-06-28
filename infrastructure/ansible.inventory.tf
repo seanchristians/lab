@@ -1,23 +1,16 @@
-resource "ansible_playbook" "minecraft_server" {
-  for_each   = toset(try(var.ansible_groups["minecraft_servers"], []))
-  playbook   = "playbooks/minecraft.yaml"
-  name       = data.tailscale_device.ansible_host[each.key].name
-  replayable = false
-  verbosity  = 5
-
-  extra_vars = try(var.ansible_hosts[each.key], null)
-
-  lifecycle {
-    replace_triggered_by = [terraform_data.minecraft_playbook]
-  }
+locals {
+  ansible_inventory = { for group, group_data in var.ansible_groups : group => merge(group_data, {
+    "hosts" = { for host, host_data in var.ansible_hosts : host => merge({
+      ansible_host = data.tailscale_device.ansible_host[host].name
+      }, host_data)
+    if contains(group_data.hosts, host) }
+  }) }
 }
 
-resource "terraform_data" "minecraft_playbook" {
-  triggers_replace = data.local_file.minecraft_playbook.id
-}
-
-data "local_file" "minecraft_playbook" {
-  filename = "./playbooks/minecraft.yaml"
+ephemeral "local_command" "ansible_inventory" {
+  command   = "tee"
+  arguments = ["inventory.yaml"]
+  stdin     = yamlencode(local.ansible_inventory)
 }
 
 data "tailscale_device" "ansible_host" {

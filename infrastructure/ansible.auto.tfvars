@@ -1,7 +1,9 @@
 ansible_groups = {
-  minecraft_servers = [
-    "squiggle-darkened"
-  ]
+  minecraft_servers = {
+    hosts = [
+      "squiggle-darkened"
+    ]
+  }
 }
 
 ansible_hosts = {

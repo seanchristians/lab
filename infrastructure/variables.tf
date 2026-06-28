@@ -19,7 +19,7 @@ resource "terraform_data" "api_token_sentinel" {
 }
 
 variable "ansible_groups" {
-  type = map(list(string))
+  type = map(map(any))
 }
 
 variable "ansible_hosts" {
