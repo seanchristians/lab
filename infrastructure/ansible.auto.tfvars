@@ -4,6 +4,12 @@ ansible_groups = {
       "squiggle-darkened"
     ]
   }
+
+  ddns = {
+    hosts = [
+      "squiggle-darkened"
+    ]
+  }
 }
 
 ansible_hosts = {
