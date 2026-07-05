@@ -28,5 +28,5 @@ variable "ddns_servers" {
   The ddns domain will be mapped to the alias domains with CNAME or ALIAS records, as appropriate.
   DESC
   nullable    = true
-  default     = []
+  default     = {}
 }
