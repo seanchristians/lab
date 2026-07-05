@@ -1,4 +1,4 @@
-ephemeral "local_command" "ansible_playbook_run" {
+data "local_command" "ansible_playbook_run" {
   for_each  = { for playbook, diff in data.local_command.ansible_playbook_diff : playbook => diff if diff.stdout }
   command   = "ansible-playbook"
   arguments = concat([each.key], terraform.applying ? [] : ["--check"])
