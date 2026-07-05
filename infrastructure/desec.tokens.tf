@@ -1,5 +1,5 @@
 resource "desec_token" "host" {
-  for_each = toset(var.ddns_servers)
+  for_each = var.ddns_servers
 
   max_age           = null
   max_unused_period = null
