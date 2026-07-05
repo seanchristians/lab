@@ -18,15 +18,15 @@ resource "terraform_data" "api_token_sentinel" {
   triggers_replace = "D4417820-CD58-42B8-BADA-08F62DE2E9AD"
 }
 
-variable "ansible_groups" {
-  type = map(map(any))
-}
-
-variable "ansible_hosts" {
-  type = map(map(any))
-}
-
-variable "minecraft_server_device" {
-  type        = string
-  description = "Tailnet device running the main Minecraft server"
+variable "ddns_servers" {
+  type = map(object({
+    alias_domains = list(string)
+  }))
+  description = <<-DESC
+  Servers enabled for DDNS. The key must be a name that SSH can resolve and connect to,
+  ie. user@server.example.com or a name set in the SSH config.
+  The ddns domain will be mapped to the alias domains with CNAME or ALIAS records, as appropriate.
+  DESC
+  nullable    = true
+  default     = {}
 }

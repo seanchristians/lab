@@ -1,0 +1,2 @@
+Host \( .ID ) \( .DNSName | rtrimstr($tailnet) )
+    HostName \( .DNSName | rtrimstr(".") )

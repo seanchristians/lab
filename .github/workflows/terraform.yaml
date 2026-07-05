@@ -56,6 +56,13 @@ jobs:
           audience: ${{ format('api.tailscale.com/{0}', vars.TAILSCALE_CLIENT_ID) }}
           tags: tag:ci
 
+      - name: SSH config
+        run: cp -r infrastructure/.ssh/. ~/.ssh/
+
+      - name: SSH config from Tailnet
+        if: ${{ github.ref_name == github.event.repository.default_branch }}
+        uses: seanchristians/lab/actions/ssh-config-tailnet@main
+
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
         with:

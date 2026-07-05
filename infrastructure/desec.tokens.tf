@@ -1,5 +1,5 @@
 resource "desec_token" "host" {
-  for_each = toset(var.ansible_groups.ddns.hosts)
+  for_each = var.ddns_servers
 
   max_age           = null
   max_unused_period = null
@@ -12,12 +12,11 @@ resource "desec_token" "host" {
 
   connection {
     type = "ssh"
-    user = try(var.ansible_hosts[each.key].ansible_user, "root")
-    host = data.tailscale_device.ansible_host[each.key].name
+    host = each.key
   }
 
   provisioner "remote-exec" {
-    inline = ["mkdir", "-p", "ddns"]
+    inline = ["mkdir -p ddns"]
   }
 
   provisioner "file" {

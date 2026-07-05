@@ -1,0 +1,30 @@
+name: SSH Config from Tailnet
+author: Sean Christians
+description: Build SSH configuration from Tailnet
+
+runs:
+  using: composite
+  steps:
+    - name: Setup system SSH
+      shell: bash
+      run: |
+        mkdir -p ~/.ssh/config.d
+        echo "Include config.d/10-tailnet" >> ~/.ssh/config
+
+    - name: Build SSH known_hosts
+      shell: bash
+      run: |
+        tailscale status --json | jq -r '.Peer | map(
+         	select(.sshHostKeys != null)
+          | ([.DNSName | rtrimstr(".")] + .TailscaleIPs | join(",")) as $ip
+          | .sshHostKeys | map($ip + " " + .) | join("\n")
+        ) | join("\n")' >> ~/.ssh/known_hosts
+
+    - name: Build SSH config
+      shell: bash
+      env:
+        TEMPLATE_FILE: ${{ github.action_path }}/host-template.txt
+      run: |
+        TEMPLATE=$(cat "$TEMPLATE_FILE")
+        TAILNET_SUFFIX=$(tailscale dns status --json | jq -r '"." + .CurrentTailnet.MagicDNSSuffix + "."')
+        tailscale status --json | jq -r --arg tailnet "$TAILNET_SUFFIX" ".Peer[] | \"$TEMPLATE\"" > ~/.ssh/config.d/10-tailnet
