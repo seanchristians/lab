@@ -20,7 +20,7 @@ resource "desec_token" "host" {
       SSH_HOST    = each.key
       DESEC_TOKEN = self.token
     }
-    command = "echo \"$DESEC_TOKEN\" | ssh $SSH_HOST 'mkdir -p ~/ddns cat > ~/ddns/desec.token'"
+    command = "echo \"$DESEC_TOKEN\" | ssh $SSH_HOST 'mkdir -p ~/ddns && cat > ~/ddns/desec.token'"
   }
 }
 
