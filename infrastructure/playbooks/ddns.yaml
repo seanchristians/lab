@@ -29,8 +29,9 @@
 
           DESEC_TOKEN=$(cat "$HOME/ddns/desec.token")
 
+          TAILNET_SUFFIX=$(tailscale dns status --json | jq -r '"." + .CurrentTailnet.MagicDNSSuffix + "."')
           DOMAIN='{{ desec_domain }}'
-          SUBDOMAIN=$(tailscale status --json --peers=false | jq -r '.Self.HostName')
+          SUBDOMAIN=$(tailscale status --json --peers=false | jq -r '.Self.DNSName | rtrimstr($tailnet)')
 
           curl -G -sSL --fail --retry 5 --retry-all-errors \
           -H "Authorization: Token $DESEC_TOKEN" \
