@@ -24,6 +24,14 @@ resource "desec_token" "host" {
   }
 }
 
+removed {
+  from = desec_token.host["squiggle-darkened"]
+
+  lifecycle {
+    destroy = true
+  }
+}
+
 resource "desec_token_policy" "default" {
   for_each = desec_token.host
 
