@@ -1,19 +1,20 @@
-resource "terraform_data" "ansible_playbook" {
-  for_each = data.local_file.ansible_playbook
+resource "terraform_data" "ansible_playbook_run" {
+  for_each = data.local_command.ansible_playbook_diff
 
-  triggers_replace = each.value.id
+  triggers_replace = each.value.stdout ? uuid() : null
 
   provisioner "local-exec" {
     environment = {
-      PLAYBOOK = each.value.filename
+      PLAYBOOK = each.key
     }
     command = "ansible-playbook \"$PLAYBOOK\""
   }
 }
 
-data "local_file" "ansible_playbook" {
-  for_each = local.ansible_playbooks
-  filename = each.key
+data "local_command" "ansible_playbook_diff" {
+  for_each  = local.ansible_playbooks
+  command   = "/bin/bash"
+  arguments = ["-c", "ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible-playbook ${each.key} --check --diff | jq -j '[.plays[].tasks[].hosts | map(.changed)] | flatten | any(.)'"]
 }
 
 locals {
