@@ -61,7 +61,7 @@ jobs:
 
       - name: SSH config from Tailnet
         if: ${{ github.ref_name == github.event.repository.default_branch }}
-        uses: seanchristians/lab/actions/ssh-config-tailnet@main
+        uses: seanchristians/lab/actions/ssh-config-tailnet@fix-desec-token-deployment
 
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
