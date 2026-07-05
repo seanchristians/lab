@@ -1,10 +1,7 @@
 resource "terraform_data" "ansible_playbook" {
   for_each = data.local_file.ansible_playbook
 
-  triggers_replace = [
-    each.value.id,
-    [for group in local.ansible_playbooks_target_groups[each.key] : base64sha512(jsonencode(try(local.ansible_inventory[group], null)))]
-  ]
+  triggers_replace = each.value.id
 
   provisioner "local-exec" {
     environment = {
@@ -12,8 +9,6 @@ resource "terraform_data" "ansible_playbook" {
     }
     command = "ansible-playbook \"$PLAYBOOK\""
   }
-
-  depends_on = [ephemeral.local_command.ansible_inventory]
 }
 
 data "local_file" "ansible_playbook" {
