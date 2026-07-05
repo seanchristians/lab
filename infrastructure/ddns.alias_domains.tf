@@ -8,7 +8,7 @@ resource "porkbun_dns_record" "ddns_cname" {
 }
 
 locals {
-  ddns_domains = merge([for host, data in var.ddns_servers : { for domain in data.alias_domains : domain =>
+  ddns_domains = merge([for host, values in var.ddns_servers : { for domain in values.alias_domains : domain =>
     one([for apex_domain in data.porkbun_domains.all.domains[*].domain : {
       apex_domain   = apex_domain
       subdomain     = domain == apex_domain ? "" : trimsuffix(domain, ".${apex_domain}")
