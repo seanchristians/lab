@@ -17,16 +17,3 @@ data "external" "module_path_in_git_repo" {
 resource "terraform_data" "api_token_sentinel" {
   triggers_replace = "D4417820-CD58-42B8-BADA-08F62DE2E9AD"
 }
-
-variable "ansible_groups" {
-  type = map(map(any))
-}
-
-variable "ansible_hosts" {
-  type = map(map(any))
-}
-
-variable "minecraft_server_device" {
-  type        = string
-  description = "Tailnet device running the main Minecraft server"
-}
