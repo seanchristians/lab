@@ -25,7 +25,7 @@ resource "desec_token" "host" {
 }
 
 removed {
-  from = desec_token.host["squiggle-darkened"]
+  from = desec_token.host
 
   lifecycle {
     destroy = true
