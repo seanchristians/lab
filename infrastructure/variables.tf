@@ -19,8 +19,12 @@ resource "terraform_data" "api_token_sentinel" {
 }
 
 variable "ddns_servers" {
-  type        = list(string)
-  description = "Servers enabled for DDNS. Must be a name that SSH can resolve and connect to, ie. user@server.example.com or a name set in the SSH config."
+  type = map(object({
+    alias_domains = list(string)
+  }))
+  description = "Servers enabled for DDNS.
+    The key must be a name that SSH can resolve and connect to, ie. user@server.example.com or a name set in the SSH config.
+    The ddns domain will be mapped to the alias domains with CNAME or ALIAS records, as appropriate"
   nullable    = true
   default     = []
 }
