@@ -17,3 +17,10 @@ data "external" "module_path_in_git_repo" {
 resource "terraform_data" "api_token_sentinel" {
   triggers_replace = "D4417820-CD58-42B8-BADA-08F62DE2E9AD"
 }
+
+variable "ddns_servers" {
+  type        = list(string)
+  description = "Servers enabled for DDNS. Must be a name that SSH can resolve and connect to, ie. user@server.example.com or a name set in the SSH config."
+  nullable    = true
+  default     = []
+}
