@@ -10,18 +10,17 @@ resource "desec_token" "host" {
 
   depends_on = [desec_domain.dns_proxy]
 
-  connection {
-    type = "ssh"
-    host = each.key
+  provisioner "local-exec" {
+    environment = { SSH_HOST = each.key }
+    command     = "ssh $SSH_HOST 'mkdir -p ddns'"
   }
 
-  provisioner "remote-exec" {
-    inline = ["mkdir -p ddns"]
-  }
-
-  provisioner "file" {
-    content     = self.token
-    destination = "ddns/desec.token"
+  provisioner "local-exec" {
+    environment = {
+      SSH_HOST    = each.key
+      DESEC_TOKEN = self.token
+    }
+    command = "echo \"$DESEC_TOKEN\" | ssh $SSH_HOST 'mkdir -p ~/ddns cat > ~/ddns/desec.token'"
   }
 }
 
