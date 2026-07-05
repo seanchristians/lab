@@ -1,5 +1,5 @@
 ephemeral "local_command" "ansible_playbook_run" {
-  for_each  = { for playbook, diff in data.data.local_command.ansible_playbook_diff : playbook => diff if diff.stdout == "true" }
+  for_each  = { for playbook, diff in data.local_command.ansible_playbook_diff : playbook => diff if diff.stdout == "true" }
   command   = "ansible-playbook"
   arguments = [each.key]
 }
