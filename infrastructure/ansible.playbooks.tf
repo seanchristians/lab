@@ -18,10 +18,6 @@ data "local_file" "ansible_playbook" {
 
 locals {
   ansible_playbooks = toset(compact(split("\n", data.local_command.ansible_playbooks.stdout)))
-
-  ansible_playbooks_target_groups = {
-    for playbook, data in data.local_file.ansible_playbook : playbook => yamldecode(data.content)[*].hosts
-  }
 }
 
 data "local_command" "ansible_playbooks" {
