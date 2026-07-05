@@ -1,7 +1,14 @@
-ephemeral "local_command" "ansible_playbook_run" {
-  for_each  = { for playbook, diff in data.local_command.ansible_playbook_diff : playbook => diff if diff.stdout }
-  command   = "ansible-playbook"
-  arguments = concat([each.key], terraform.applying ? [] : ["--check"])
+resource "terraform_data" "ansible_playbook_run" {
+  for_each = data.local_command.ansible_playbook_diff
+
+  triggers_replace = each.value.stdout ? uuid() : null
+
+  provisioner "local-exec" {
+    environment = {
+      PLAYBOOK = each.key
+    }
+    command = "ansible-playbook \"$PLAYBOOK\""
+  }
 }
 
 data "local_command" "ansible_playbook_diff" {
