@@ -15,7 +15,7 @@ data "external" "module_path_in_git_repo" {
 # Triggers all tokens to be regenerated
 # Add 'lifecycle {replace_triggered_by = [terraform_data.api_token_sentinel]}' to new token-generating resources
 resource "terraform_data" "api_token_sentinel" {
-  triggers_replace = "C8DF44B6-CAE1-49CD-B632-7D88346E206A"
+  triggers_replace = "4D599A79-327C-49EB-815D-092219AFCA38"
 }
 
 variable "ddns_servers" {
