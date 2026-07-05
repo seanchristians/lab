@@ -10,11 +10,6 @@ data "local_command" "ansible_playbook_diff" {
   arguments = ["-c", "ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible-playbook ${each.key} --check --diff | jq -r '.plays[].tasks[].hosts | map(.changed) | any(.)'"]
 }
 
-data "local_file" "ansible_playbook" {
-  for_each = local.ansible_playbooks
-  filename = each.key
-}
-
 locals {
   ansible_playbooks = toset(compact(split("\n", data.local_command.ansible_playbooks.stdout)))
 }
