@@ -7,7 +7,7 @@ data "local_command" "ansible_playbook_run" {
 data "local_command" "ansible_playbook_diff" {
   for_each  = local.ansible_playbooks
   command   = "/bin/bash"
-  arguments = ["-c", "ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible-playbook ${each.key} --check --diff | jq -r '[.plays[].tasks[].hosts | map(.changed)] | flatten | any(.)'"]
+  arguments = ["-c", "ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible-playbook ${each.key} --check --diff | jq -j '[.plays[].tasks[].hosts | map(.changed)] | flatten | any(.)'"]
 }
 
 locals {
