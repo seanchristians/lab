@@ -16,7 +16,7 @@ resource "desec_token" "host" {
   }
 
   provisioner "local-exec" {
-    eenvironment = {
+    environment = {
       SSH_HOST    = each.key
       DESEC_TOKEN = self.token
     }
