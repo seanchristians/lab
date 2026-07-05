@@ -14,5 +14,5 @@ data "desec_rrset" "dns_proxy_nameservers" {
 }
 
 data "porkbun_domain" "dns_proxy" {
-  domain = local.dns_proxy_domain
+  domain = var.dns_proxy_domain
 }

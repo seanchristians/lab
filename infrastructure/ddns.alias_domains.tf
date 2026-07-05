@@ -12,9 +12,7 @@ locals {
     one([for apex_domain in data.porkbun_domains.all.domains[*].domain : {
       apex_domain   = apex_domain
       subdomain     = domain == apex_domain ? "" : trimsuffix(domain, ".${apex_domain}")
-      target_domain = "${host}.${local.dns_proxy_domain}"
+      target_domain = "${host}.${var.dns_proxy_domain}"
     } if strcontains(domain, apex_domain)])
   }]...)
 }
-
-data "porkbun_domains" "all" {}
