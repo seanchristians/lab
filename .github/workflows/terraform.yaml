@@ -65,6 +65,8 @@ jobs:
 
       - name: Terraform
         uses: seanchristians/lab/actions/terraform@main
+        env:
+          TF_VAR_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
         with:
           module: infrastructure
           tf_backend_s3_bucket: ${{ vars.TF_BACKEND_AWS_BUCKET }}
