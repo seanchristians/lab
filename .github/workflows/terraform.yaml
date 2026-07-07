@@ -10,6 +10,7 @@ on:
     paths:
       - infrastructure/**
       - "!infrastructure/backend/**"
+      - services/minecraft-server/modrinth.lock.txt
   workflow_dispatch:
 
 defaults:
