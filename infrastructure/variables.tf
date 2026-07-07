@@ -39,3 +39,8 @@ variable "ddns_servers" {
   nullable    = true
   default     = {}
 }
+
+variable "backend_s3_bucket" {
+  type        = string
+  description = "S3 bucket where the backend is stored."
+}
