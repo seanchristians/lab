@@ -1,0 +1,20 @@
+name: Modrinth project lock-file
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "12 20 * * 0"
+      timezone: "America/Toronto"
+
+permissions: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: seanchristians/modrinth-project-lock@38a055cfb848105a75abfdc6af1b6de43eb31b3e # v1.1.0
+        with:
+          project-file: services/minecraft-server/modrinth.yaml
