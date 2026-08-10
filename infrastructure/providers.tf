@@ -24,7 +24,7 @@ terraform {
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "6.52.0"
+      version = "6.56.0"
     }
     porkbun = {
       source  = "marcfrederick/porkbun"
